@@ -1,150 +1,381 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>펭귄 서버 도감 검색기 🐧</title>
-<style>
-  body {
-    font-family: "Pretendard", sans-serif;
-    margin: 0;
-    background: #f9fafb;
-    color: #222;
-  }
-  header {
-    background: linear-gradient(135deg, #7dd3fc, #38bdf8);
-    color: white;
-    padding: 1.5rem;
-    text-align: center;
-    font-size: 1.6rem;
-    font-weight: bold;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  }
-  .controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    padding: 1rem;
-    background: white;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-  }
-  .controls input, .controls select {
-    padding: 0.5rem 0.8rem;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 0.95rem;
-  }
-  main {
-    max-width: 1000px;
-    margin: 1rem auto;
-    padding: 0 1rem;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-  }
-  .card {
-    background: white;
-    border-radius: 16px;
-    padding: 1rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    transition: transform 0.15s;
-  }
-  .card:hover { transform: translateY(-4px); }
-  .name { font-weight: bold; font-size: 1.1rem; margin-bottom: 0.25rem; }
-  .category { font-size: 0.85rem; color: #555; margin-bottom: 0.25rem; }
-  .tier { font-size: 0.85rem; color: #38bdf8; margin-bottom: 0.5rem; }
-  .desc { font-size: 0.9rem; color: #333; white-space: pre-line; }
-  footer {
-    text-align: center;
-    padding: 1rem;
-    font-size: 0.85rem;
-    color: #666;
-  }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>펭귄 서버 도감 검색기</title>
+  <meta name="description" content="펭귄 서버 도감 검색기 (요리/재료/광물) - GitHub Pages" />
+
+  <!-- 스타일 -->
+  <style>
+    :root{
+      /* 다크 퍼플(로고 톤) */
+      --bg1:#1a0b2e;      /* 아주 짙은 보라 */
+      --bg2:#2b1055;      /* 보라 그라데이션 시작 */
+      --bg3:#4f2d7f;      /* 보라 중간톤 */
+      --bg4:#7a4ed2;      /* 포인트 */
+      --mint:#5eead4;     /* 악센트 */
+      --ink:#eef0f6;      /* 본문 텍스트 */
+      --muted:#b9bfd1;    /* 보조 텍스트 */
+      --card:#201136;     /* 카드 배경 */
+      --line:#3b2a60;     /* 카드 경계 */
+      --chip:#2a1949;     /* 태그 칩 */
+      --shadow: 0 12px 28px rgba(0,0,0,.45), 0 2px 6px rgba(0,0,0,.3);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:
+        radial-gradient(1200px 500px at 10% -10%, #3a236b 0%, transparent 55%),
+        radial-gradient(900px 380px at 110% -30%, #5a2fb2 0%, transparent 60%),
+        linear-gradient(180deg,var(--bg2),var(--bg1));
+      color:var(--ink);
+      font:16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, "Apple SD Gothic Neo", "Noto Sans KR", Helvetica, Arial;
+    }
+    a{color:var(--mint);text-decoration:none}
+    .container{max-width:1100px;margin:0 auto;padding:0 16px}
+
+    /* 헤더 */
+    header{
+      position:relative;
+      padding:32px 0 18px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      overflow:hidden;
+    }
+    .hero{
+      display:flex; flex-direction:column; align-items:center; gap:12px;
+      text-align:center;
+    }
+    .logo{
+      width:min(520px,80vw);
+      filter: drop-shadow(0 10px 35px rgba(0,0,0,.45));
+    }
+    .subtitle{color:var(--muted)}
+    .halo{
+      position:absolute; inset:auto -20% -50% -20%;
+      height:420px;
+      background:
+        radial-gradient(600px 220px at 50% 0%, rgba(122,78,210,.45), transparent 60%),
+        radial-gradient(420px 160px at 10% 30%, rgba(94,234,212,.16), transparent 70%),
+        radial-gradient(500px 200px at 90% 40%, rgba(117,151,222,.18), transparent 70%);
+      pointer-events:none;
+      filter: blur(18px);
+    }
+
+    /* 고정 검색/필터 바 (띵타이쿤 느낌의 둥근 바) */
+    .toolbar{
+      position:sticky; top:0; z-index:20;
+      background:rgba(26,11,46,.55);
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .bar{
+      display:grid; gap:10px;
+      grid-template-columns: 1fr auto auto auto auto;
+      align-items:center;
+      padding:12px 0;
+    }
+    @media (max-width:980px){ .bar{grid-template-columns:1fr 1fr 1fr; } }
+    @media (max-width:560px){ .bar{grid-template-columns:1fr 1fr; } }
+
+    .search{
+      display:flex; align-items:center; gap:10px;
+      background:linear-gradient(180deg,#23123e,#1d1034);
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:10px 14px;
+      box-shadow: var(--shadow);
+    }
+    .search input{
+      flex:1; border:0; background:transparent; outline:0; color:var(--ink);
+    }
+    select,.btn{
+      background:linear-gradient(180deg,#251446,#1e1237);
+      border:1px solid var(--line);
+      color:var(--ink);
+      border-radius:999px;
+      padding:10px 12px;
+    }
+    .btn{cursor:pointer}
+    .btn.primary{background:linear-gradient(180deg,#7a4ed2,#5a38a8); border-color:transparent; color:#fff; box-shadow: var(--shadow)}
+    .count{color:var(--muted); font-size:14px; text-align:right}
+
+    /* 카드 그리드 */
+    main{padding:18px 0 28px}
+    .grid{
+      display:grid; gap:14px;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+    }
+    @media (max-width:1100px){ .grid{grid-template-columns: repeat(3, minmax(0,1fr));} }
+    @media (max-width:820px){ .grid{grid-template-columns: repeat(2, minmax(0,1fr));} }
+    @media (max-width:520px){ .grid{grid-template-columns: 1fr;} }
+
+    .card{
+      background:linear-gradient(180deg, #22133d, #1a0f30);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:14px;
+      box-shadow: var(--shadow);
+      transition: transform .15s ease, box-shadow .15s ease;
+      min-height:150px;
+    }
+    .card:hover{ transform: translateY(-4px); box-shadow: 0 16px 34px rgba(0,0,0,.55); }
+    .name{font-weight:800; letter-spacing:-.02em; font-size:18px}
+    .row{display:flex; gap:8px; flex-wrap:wrap; margin:6px 0}
+    .chip{
+      display:inline-flex; align-items:center; gap:6px;
+      background:var(--chip);
+      border:1px solid var(--line);
+      color:var(--muted);
+      padding:4px 10px; border-radius:999px; font-size:12px;
+    }
+    .desc{color:#dfe2f2; font-size:14px; margin-top:6px; white-space:pre-line}
+
+    /* 페이지네이션 */
+    .pager{display:flex; gap:10px; justify-content:center; margin:18px 0 6px}
+    .pager .btn{padding:8px 12px}
+
+    /* 푸터 */
+    footer{border-top:1px solid rgba(255,255,255,.06)}
+    footer .container{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:14px 0; color:var(--muted); flex-wrap:wrap}
+  </style>
 </head>
 <body>
-  <header>🐧 펭귄 서버 도감 검색기</header>
-  <div class="controls">
-    <input type="text" id="search" placeholder="검색 (이름, 재료, 효과 등)">
-    <select id="categoryFilter">
-      <option value="">전체 카테고리</option>
-      <option value="요리">요리</option>
-      <option value="재료">재료</option>
-      <option value="광물">광물</option>
-    </select>
-    <select id="tierFilter">
-      <option value="">전체 차수</option>
-      <option value="기본">기본</option>
-      <option value="0차">0차</option>
-      <option value="1차">1차</option>
-      <option value="2차">2차</option>
-      <option value="3차">3차</option>
-      <option value="4차">4차</option>
+  <!-- 헤더 -->
+  <header>
+    <div class="container hero">
+      <img class="logo" src="./penguin_logo.png" alt="펭귄서버 로고" onerror="this.style.display='none'">
+      <div class="subtitle">띵타이쿤 감성 · 도감 검색기 (요리/재료/광물 + 차수 필터)</div>
+    </div>
+    <div class="halo" aria-hidden></div>
+  </header>
 
-    </select>
+  <!-- 검색/필터 바 -->
+  <div class="toolbar">
+    <div class="container bar">
+      <div class="search">
+        <span>🔎</span>
+        <input id="q" placeholder="이름·설명·태그로 검색 (예: 화채, 포션, 해산물, 다이아)">
+      </div>
+      <select id="cat">
+        <option value="">카테고리 전체</option>
+        <option value="요리">요리</option>
+        <option value="재료">재료</option>
+        <option value="광물">광물</option>
+      </select>
+      <select id="tier">
+        <option value="">차수 전체</option>
+        <option>기본</option>
+        <option>0차</option>
+        <option>1차</option>
+        <option>2차</option>
+        <option>3차</option>
+        <option>4차</option>
+        <option>일반</option>
+        <option>희귀</option>
+        <option>전설</option>
+      </select>
+      <select id="sort">
+        <option value="name">이름순</option>
+        <option value="recent">최근 추가순</option>
+        <option value="cat">카테고리순</option>
+      </select>
+      <div class="count" id="count">–</div>
+    </div>
   </div>
 
-  <main id="result"></main>
+  <!-- 본문 -->
+  <main class="container">
+    <div id="grid" class="grid"></div>
+    <div class="pager" id="pager"></div>
+  </main>
 
-  <footer>© 2025 펭귄서버 도감 검색기 </footer>
-
-<script>
-// ====== 데이터 시작 ======
-const DATA = [
-  { id:'mat_milgagu', name:'밀가루', category:'재료', tier:'기본', desc:'밀 x 4', tags:['요리사','기본재료'], addedAt:'2025-01-15' },
-  { id:'mat_sugar_powder', name:'슈가파우더', category:'재료', tier:'기본', desc:'설탕 x 9', tags:['요리사','기본재료'], addedAt:'2025-01-15' },
-  { id:'mat_beet_box', name:'비트상자', category:'재료', tier:'기본', desc:'비트 x 4', tags:['요리사','기본재료'], addedAt:'2025-01-15' },
-  { id:'mat_potato_box', name:'감자상자', category:'재료', tier:'기본', desc:'감자 x 9', tags:['요리사','기본재료'], addedAt:'2025-01-15' },
-  { id:'mat_watermelon_juice', name:'수박 쥬스', category:'재료', tier:'기본', desc:'수박 x 4', tags:['요리사','기본재료'], addedAt:'2025-01-15' },
-
-  { id:'t0_garlic_steak', name:'마늘 스테이크', category:'요리', tier:'0차', desc:'시세 50 · 재료: 마늘, 스테이크, 감자상자 2 · 경험치 3' },
-  { id:'t0_kimchi', name:'배추 김치', category:'요리', tier:'0차', desc:'시세 78 · 재료: 배추, 고추, 밀가루 · 경험치 3' },
-  { id:'t0_lemon_dango', name:'레몬 당고', category:'요리', tier:'0차', desc:'시세 48 · 재료: 레몬, 슈가파우더, 밀가루 · 경험치 3' },
-  { id:'t0_potion_lowest', name:'최하급 포션', category:'요리', tier:'0차', desc:'체력 15% · 마나 4% · 쿨타임 30초 · 재료: 레몬, 마늘, 네더사마귀 상자 2' },
-
-  { id:'t1_strawberry_mochi', name:'딸기모찌', category:'요리', tier:'1차', desc:'시세 58 · 재료: 딸기, 슈가파우더, 밀가루 · 경험치 4' },
-  { id:'t1_cucumber_salad', name:'오이무침', category:'요리', tier:'1차', desc:'시세 86 · 재료: 오이, 고추, 밀가루 · 경험치 4' },
-  { id:'t1_salad', name:'샐러드', category:'요리', tier:'1차', desc:'시세 98 · 재료: 파프리카, 오이, 당근상자 2 · 경험치 4' },
-
-  { id:'t4_melon_bread', name:'메론빵', category:'요리', tier:'4차', desc:'시세 90 · 재료: 멜론, 슈가파우더, 밀가루 · 경험치 7' },
-  { id:'t4_bibimbap', name:'비빔밥', category:'요리', tier:'4차', desc:'시세 166 · 재료: 쌀, 상추, 당근 상자 2 · 경험치 7' },
-  { id:'t4_fish_chip', name:'생선 튀김', category:'요리', tier:'4차', desc:'시세 1610 · 재료: 1등급 도다리, 양파, 밀가루 · 경험치 30' },
-
-  { id:'ore_diamond', name:'다이아몬드', category:'광물', tier:'일반', desc:'단일 상점가 72 · 블록 상점가 720' },
-  { id:'ore_gold', name:'금', category:'광물', tier:'일반', desc:'단일 상점가 15 · 블록 상점가 150' },
-  { id:'ore_iron', name:'철', category:'광물', tier:'일반', desc:'단일 상점가 10 · 블록 상점가 100' },
-  { id:'ore_emerald', name:'에메랄드', category:'광물', tier:'희귀', desc:'단일 상점가 120 · 블록 상점가 1200' },
-  { id:'ore_netherite', name:'네더라이트', category:'광물', tier:'전설', desc:'단일 상점가 200 · 블록 상점가 2000' }
-];
-// ====== 데이터 끝 ======
-
-function renderList() {
-  const q = document.getElementById('search').value.toLowerCase();
-  const cat = document.getElementById('categoryFilter').value;
-  const tier = document.getElementById('tierFilter').value;
-  const list = DATA.filter(item => {
-    const matchQ = item.name.toLowerCase().includes(q) || (item.desc && item.desc.toLowerCase().includes(q));
-    const matchC = !cat || item.category === cat;
-    const matchT = !tier || item.tier === tier;
-    return matchQ && matchC && matchT;
-  });
-  const result = document.getElementById('result');
-  result.innerHTML = list.map(i=>`
-    <div class='card'>
-      <div class='name'>${i.name}</div>
-      <div class='category'>${i.category}</div>
-      <div class='tier'>${i.tier}</div>
-      <div class='desc'>${i.desc}</div>
+  <!-- 푸터 -->
+  <footer>
+    <div class="container">
+      <div>© 2025 펭귄서버 도감 · GitHub Pages</div>
+      <div><a href="#" id="share">현재 검색 공유</a></div>
     </div>
-  `).join('');
-}
+  </footer>
 
-document.getElementById('search').addEventListener('input', renderList);
-document.getElementById('categoryFilter').addEventListener('change', renderList);
-document.getElementById('tierFilter').addEventListener('change', renderList);
+  <!-- 스크립트 -->
+  <script>
+    // ---------- 유틸 ----------
+    const $ = s => document.querySelector(s);
+    const $$ = s => Array.from(document.querySelectorAll(s));
+    const norm = s => (s||'').toString().toLowerCase().replace(/\\s+/g,'').normalize('NFKD');
 
-renderList();
-</script>
+    // URL <-> 상태 동기화
+    function readParams(){
+      const p = new URLSearchParams(location.search);
+      return {
+        q: p.get('q')||'',
+        cat: p.get('cat')||'',
+        tier: p.get('tier')||'',
+        sort: p.get('sort')||'name',
+        page: parseInt(p.get('page')||'1',10)
+      }
+    }
+    function writeParams(state){
+      const p = new URLSearchParams();
+      if (state.q) p.set('q', state.q);
+      if (state.cat) p.set('cat', state.cat);
+      if (state.tier) p.set('tier', state.tier);
+      if (state.sort && state.sort!=='name') p.set('sort', state.sort);
+      if (state.page>1) p.set('page', String(state.page));
+      history.replaceState(null,'','?'+p.toString());
+    }
+
+    // ---------- 데이터 ----------
+    // 차수(tier) 사용, 도구/기타 제거됨. 광물 리스트 포함.
+    const DATA = [
+      // 기본 재료
+      { id:'mat_milgagu', name:'밀가루', category:'재료', tier:'기본', desc:'밀 x 4', tags:['요리사','기본재료'], addedAt:'2025-01-15' },
+      { id:'mat_sugar_powder', name:'슈가파우더', category:'재료', tier:'기본', desc:'설탕 x 9', tags:['요리사','기본재료'], addedAt:'2025-01-15' },
+      { id:'mat_beet_box', name:'비트상자', category:'재료', tier:'기본', desc:'비트 x 4', tags:['요리사','기본재료'], addedAt:'2025-01-15' },
+      { id:'mat_potato_box', name:'감자상자', category:'재료', tier:'기본', desc:'감자 x 9', tags:['요리사','기본재료'], addedAt:'2025-01-15' },
+      { id:'mat_watermelon_juice', name:'수박 쥬스', category:'재료', tier:'기본', desc:'수박 x 4', tags:['요리사','기본재료'], addedAt:'2025-01-15' },
+
+      // 0차
+      { id:'t0_garlic_steak', name:'마늘 스테이크', category:'요리', tier:'0차', desc:'시세 50 · 재료: 마늘, 스테이크, 감자상자 2 · 경험치 3', tags:['요리사'], addedAt:'2025-01-15' },
+      { id:'t0_kimchi', name:'배추 김치', category:'요리', tier:'0차', desc:'시세 78 · 재료: 배추, 고추, 밀가루 · 경험치 3', tags:['요리사'], addedAt:'2025-01-15' },
+      { id:'t0_lemon_dango', name:'레몬 당고', category:'요리', tier:'0차', desc:'시세 48 · 재료: 레몬, 슈가파우더, 밀가루 · 경험치 3', tags:['요리사','디저트'], addedAt:'2025-01-15' },
+      { id:'t0_potion_lowest', name:'최하급 포션', category:'요리', tier:'0차', desc:'체력 15% · 마나 4% · 쿨타임 30초 · 재료: 레몬, 마늘, 네더사마귀 상자 2 · 경험치 3', tags:['요리사','포션'], addedAt:'2025-01-15' },
+
+      // 1차
+      { id:'t1_strawberry_mochi', name:'딸기모찌', category:'요리', tier:'1차', desc:'시세 58 · 재료: 딸기, 슈가파우더, 밀가루 · 경험치 4', tags:['요리사','디저트'], addedAt:'2025-01-15' },
+      { id:'t1_cucumber_salad', name:'오이무침', category:'요리', tier:'1차', desc:'시세 86 · 재료: 오이, 고추, 밀가루 · 경험치 4', tags:['요리사'], addedAt:'2025-01-15' },
+      { id:'t1_salad', name:'샐러드', category:'요리', tier:'1차', desc:'시세 98 · 재료: 파프리카, 오이, 당근상자 2 · 경험치 4', tags:['요리사'], addedAt:'2025-01-15' },
+      { id:'t1_jellyfish_cold', name:'해파리냉채', category:'요리', tier:'1차', desc:'시세 1420 · 재료: 1등급 해파리, 오이, 파프리카 · 경험치 15', tags:['요리사','해산물'], addedAt:'2025-01-15' },
+      { id:'t1_potion_low', name:'하급 포션', category:'요리', tier:'1차', desc:'체력 20% · 마나 8% · 쿨타임 30초 · 재료: 딸기, 파프리카, 네더사마귀 상자 2 · 경험치 4', tags:['요리사','포션'], addedAt:'2025-01-15' },
+      { id:'t1_strawberry_punch', name:'딸기 화채', category:'요리', tier:'1차', desc:'포화 1분 · 재료: 딸기, 수박쥬스, 시원한 얼음 · 경험치 5', tags:['요리사','화채'], addedAt:'2025-01-15' },
+      { id:'t1_sweetpotato_salad', name:'고구마 샐러드', category:'요리', tier:'1차', desc:'시세 98 · 재료: 고구마, 오이, 당근상자 2 · 경험치 4', tags:['요리사'], addedAt:'2025-01-15' },
+
+      // 2차
+      { id:'t2_kkakdugi', name:'깍두기', category:'요리', tier:'2차', desc:'시세 100 · 재료: 무, 고추, 밀가루 · 경험치 5', tags:['요리사','김치'], addedAt:'2025-01-15' },
+      { id:'t2_orange_pudding', name:'오렌지 푸딩', category:'요리', tier:'2차', desc:'시세 72 · 재료: 오렌지, 슈가파우더, 밀가루 · 경험치 5', tags:['요리사','디저트'], addedAt:'2025-01-15' },
+      { id:'t2_summer_soup', name:'애호박 찌개', category:'요리', tier:'2차', desc:'시세 112 · 재료: 애호박, 대파, 감자상자 2 · 경험치 5', tags:['요리사','국물'], addedAt:'2025-01-15' },
+      { id:'t2_gray_mullet_spicy', name:'숭어 매운탕', category:'요리', tier:'2차', desc:'시세 1420 · 재료: 1등급 숭어, 무, 대파 · 경험치 20', tags:['요리사','해산물'], addedAt:'2025-01-15' },
+      { id:'t2_potion_base', name:'기본 포션', category:'요리', tier:'2차', desc:'체력 25% · 마나 12% · 쿨타임 30초 · 재료: 애호박, 오렌지, 네더사마귀 상자 2 · 경험치 5', tags:['요리사','포션'], addedAt:'2025-01-15' },
+      { id:'t2_orange_punch', name:'오렌지 화채', category:'요리', tier:'2차', desc:'포화 2분 · 재료: 오렌지, 수박쥬스, 시원한 얼음 · 경험치 8', tags:['요리사','화채'], addedAt:'2025-01-15' },
+
+      // 3차
+      { id:'t3_broccoli_salad', name:'브로콜리 샐러드', category:'요리', tier:'3차', desc:'시세 142 · 재료: 브로콜리, 양배추, 비트상자 1 · 경험치 6', tags:['요리사'], addedAt:'2025-01-15' },
+      { id:'t3_tomato_pasta', name:'토마토 파스타', category:'요리', tier:'3차', desc:'시세 130 · 재료: 토마토, 대파, 밀가루 · 경험치 6', tags:['요리사','면요리'], addedAt:'2025-01-15' },
+      { id:'t3_peach_ice_tea', name:'복숭아 아이스티', category:'요리', tier:'3차', desc:'시세 80 · 재료: 복숭아, 비트상자, 슈가파우더 2 · 경험치 6', tags:['요리사','음료'], addedAt:'2025-01-15' },
+      { id:'t3_shrimp_grill', name:'철판 새우', category:'요리', tier:'3차', desc:'시세 1610 · 재료: 1등급 새우, 브로콜리, 당근 상자 2 · 경험치 25', tags:['요리사','해산물'], addedAt:'2025-01-15' },
+      { id:'t3_potion_mid', name:'중급 포션', category:'요리', tier:'3차', desc:'체력 30% · 마나 16% · 쿨타임 30초 · 재료: 복숭아, 토마토, 네더사마귀 상자 2 · 경험치 6', tags:['요리사','포션'], addedAt:'2025-01-15' },
+      { id:'t3_peach_punch', name:'복숭아 화채', category:'요리', tier:'3차', desc:'포화 3분 · 재료: 복숭아, 수박쥬스, 시원한 얼음 · 경험치 12', tags:['요리사','화채'], addedAt:'2025-01-15' },
+
+      // 4차
+      { id:'t4_melon_bread', name:'메론빵', category:'요리', tier:'4차', desc:'시세 90 · 재료: 멜론, 슈가파우더, 밀가루 · 경험치 7', tags:['요리사','빵'], addedAt:'2025-01-15' },
+      { id:'t4_gimbap', name:'김밥', category:'요리', tier:'4차', desc:'시세 166 · 재료: 쌀, 양파, 비트 상자 1 · 경험치 7', tags:['요리사','한식'], addedAt:'2025-01-15' },
+      { id:'t4_bibimbap', name:'비빔밥', category:'요리', tier:'4차', desc:'시세 166 · 재료: 쌀, 상추, 당근 상자 2 · 경험치 7', tags:['요리사','한식'], addedAt:'2025-01-15' },
+      { id:'t4_fish_chip', name:'생선 튀김', category:'요리', tier:'4차', desc:'시세 1610 · 재료: 1등급 도다리, 양파, 밀가루 · 경험치 30', tags:['요리사','해산물'], addedAt:'2025-01-15' },
+      { id:'t4_potion_high', name:'상급 포션', category:'요리', tier:'4차', desc:'체력 35% · 마나 20% · 쿨타임 30초 · 재료: 멜론, 상추, 네더사마귀 상자 2 · 경험치 7', tags:['요리사','포션'], addedAt:'2025-01-15' },
+      { id:'t4_melon_punch', name:'메론 화채', category:'요리', tier:'4차', desc:'포화 4분 · 재료: 멜론, 수박쥬스, 시원한 얼음 · 경험치 16', tags:['요리사','화채'], addedAt:'2025-01-15' },
+
+      // 광물 (단일/블록 상점가)
+      { id:'ore_diamond', name:'다이아', category:'광물', tier:'일반', desc:'단일 상점가 72 · 블록 상점가 720', tags:['광물'], addedAt:'2025-01-15' },
+      { id:'ore_gold', name:'금', category:'광물', tier:'일반', desc:'단일 상점가 15 · 블록 상점가 150', tags:['광물'], addedAt:'2025-01-15' },
+      { id:'ore_iron', name:'철', category:'광물', tier:'일반', desc:'단일 상점가 10 · 블록 상점가 100', tags:['광물'], addedAt:'2025-01-15' },
+      { id:'ore_copper', name:'구리', category:'광물', tier:'일반', desc:'단일 상점가 4 · 블록 상점가 40', tags:['광물'], addedAt:'2025-01-15' },
+      { id:'ore_lapis', name:'청금석', category:'광물', tier:'일반', desc:'단일 상점가 6 · 블록 상점가 60', tags:['광물'], addedAt:'2025-01-15' },
+      { id:'ore_redstone', name:'레드스톤', category:'광물', tier:'일반', desc:'단일 상점가 6 · 블록 상점가 60', tags:['광물'], addedAt:'2025-01-15' },
+      { id:'ore_emerald', name:'에메랄드', category:'광물', tier:'희귀', desc:'단일 상점가 120 · 블록 상점가 1200', tags:['광물'], addedAt:'2025-01-15' },
+      { id:'ore_quartz', name:'석영', category:'광물', tier:'일반', desc:'단일 상점가 8 · 블록 상점가 없음', tags:['광물'], addedAt:'2025-01-15' },
+      { id:'ore_netherite', name:'네더라이트', category:'광물', tier:'전설', desc:'단일 상점가 200 · 블록 상점가 2000', tags:['광물'], addedAt:'2025-01-15' }
+    ];
+
+    // ---------- 렌더 ----------
+    const PAGE_SIZE = 24;
+    const state = readParams();
+    // UI 채우기
+    $('#q').value = state.q; $('#cat').value = state.cat; $('#tier').value = state.tier; $('#sort').value = state.sort;
+
+    function match(item, q){
+      if (!q) return true;
+      const nq = norm(q);
+      return [item.name, item.desc, ...(item.tags||[])].some(v => norm(v).includes(nq));
+    }
+    function apply(list, st){
+      let out = list.filter(it => match(it, st.q));
+      if (st.cat) out = out.filter(it => it.category === st.cat);
+      if (st.tier) out = out.filter(it => it.tier === st.tier);
+      switch(st.sort){
+        case 'recent': out.sort((a,b)=> new Date(b.addedAt) - new Date(a.addedAt)); break;
+        case 'cat': out.sort((a,b)=> (a.category||'').localeCompare(b.category||'','ko') || a.name.localeCompare(b.name,'ko')); break;
+        default: out.sort((a,b)=> a.name.localeCompare(b.name,'ko'));
+      }
+      return out;
+    }
+
+    function card(it){
+      const el = document.createElement('div');
+      el.className = 'card';
+      el.innerHTML = `
+        <div class="name">${it.name}</div>
+        <div class="row">
+          <span class="chip">${it.category}</span>
+          <span class="chip">차수: ${it.tier}</span>
+        </div>
+        <div class="desc">${it.desc || ''}</div>
+      `;
+      return el;
+    }
+
+    function render(){
+      state.q = $('#q').value.trim();
+      state.cat = $('#cat').value;
+      state.tier = $('#tier').value;
+      state.sort = $('#sort').value;
+
+      const filtered = apply(DATA, state);
+      const total = filtered.length;
+
+      // 페이지 보정
+      const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+      if (state.page > pages) state.page = pages;
+      if (state.page < 1) state.page = 1;
+
+      // 카운트
+      $('#count').textContent = `${total.toLocaleString()}개 결과`;
+
+      // 조각
+      const start = (state.page-1)*PAGE_SIZE;
+      const visible = filtered.slice(start, start+PAGE_SIZE);
+
+      // 그리드
+      const grid = $('#grid'); grid.innerHTML = '';
+      visible.forEach(it => grid.appendChild(card(it)));
+
+      // 페이지네이션
+      const pager = $('#pager'); pager.innerHTML = '';
+      if (pages > 1){
+        const mkBtn = (p, label=p) => {
+          const b = document.createElement('button'); b.className='btn' + (p===state.page? ' primary':''); b.textContent=label;
+          b.addEventListener('click', ()=>{ state.page=p; writeParams(state); render(); });
+          return b;
+        };
+        pager.appendChild(mkBtn(Math.max(1, state.page-1), '이전'));
+        for(let p=Math.max(1,state.page-2); p<=Math.min(pages,state.page+2); p++) pager.appendChild(mkBtn(p));
+        pager.appendChild(mkBtn(Math.min(pages, state.page+1), '다음'));
+      }
+
+      // URL 동기화
+      writeParams(state);
+    }
+
+    // 이벤트
+    $('#q').addEventListener('input', ()=>{ state.page=1; render(); });
+    $('#cat').addEventListener('change', ()=>{ state.page=1; render(); });
+    $('#tier').addEventListener('change', ()=>{ state.page=1; render(); });
+    $('#sort').addEventListener('change', ()=>{ state.page=1; render(); });
+    $('#share').addEventListener('click', (e)=>{ e.preventDefault(); navigator.clipboard.writeText(location.href); alert('현재 검색/필터 링크를 복사했습니다!'); });
+
+    // 초기 렌더
+    render();
+  </script>
 </body>
 </html>
