@@ -63,12 +63,13 @@
       filter: blur(18px);
     }
 
-    /* 고정 검색/필터 바 (띵타이쿤 느낌의 둥근 바) */
+    /* 고정 검색/필터 바바 */
     .toolbar{
       position:sticky; top:0; z-index:20;
       background:rgba(26,11,46,.55);
       backdrop-filter:blur(12px);
       border-bottom:1px solid rgba(255,255,255,.06);
+      margin-bottom: 32px;   /* ← 추가 (원하면 24~32px로 더 늘려도 OK) */
     }
     .bar{
       display:grid; gap:10px;
@@ -102,7 +103,7 @@
     .count{color:var(--muted); font-size:14px; text-align:right}
 
     /* 카드 그리드 */
-    main{padding:25px 0 28px}
+    main{padding:28px 0 28px}
     .grid{
       display:grid; gap:14px;
       grid-template-columns: repeat(4, minmax(0,1fr));
