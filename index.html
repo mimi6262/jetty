@@ -3,55 +3,61 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>펭귄 서버 도감 검색기</title>
-  <meta name="description" content="펭귄 서버 도감 검색기 (요리/재료/광물) - GitHub Pages" />
+  <title>펭귄 서버 검색기</title>
+  <meta name="description" content="펭귄 서버 검색기 (요리/재료/광물 · 차수 필터 · 즐겨찾기)" />
 
-  <!-- 스타일 -->
   <style>
+    /* =========================
+       테마 컬러(어두운 보라 계열)
+       ========================= */
     :root{
-      /* 다크 퍼플(로고 톤) */
-      --bg1:#1a0b2e;      /* 아주 짙은 보라 */
-      --bg2:#2b1055;      /* 보라 그라데이션 시작 */
-      --bg3:#4f2d7f;      /* 보라 중간톤 */
-      --bg4:#7a4ed2;      /* 포인트 */
-      --mint:#5eead4;     /* 악센트 */
-      --ink:#eef0f6;      /* 본문 텍스트 */
-      --muted:#b9bfd1;    /* 보조 텍스트 */
+      --bg1:#1a0b2e;      /* 전체 배경(아래쪽) */
+      --bg2:#2b1055;      /* 전체 배경(위쪽) */
+      --ink:#eef0f6;      /* 기본 텍스트 */
+      --muted:#b9bfd1;    /* 서브 텍스트 */
       --card:#201136;     /* 카드 배경 */
-      --line:#3b2a60;     /* 카드 경계 */
-      --chip:#2a1949;     /* 태그 칩 */
-      --shadow: 0 12px 28px rgba(0,0,0,.45), 0 2px 6px rgba(0,0,0,.3);
+      --line:#3b2a60;     /* 경계선 */
+      --chip:#2a1949;     /* 칩 배경 */
+      --accent:#5eead4;   /* 포인트(링크/버튼) */
+      --primary1:#7a4ed2; /* 버튼 그라데이션 상단 */
+      --primary2:#5a38a8; /* 버튼 그라데이션 하단 */
+      --shadow:0 12px 28px rgba(0,0,0,.45), 0 2px 6px rgba(0,0,0,.3);
     }
+
+    /* =========================
+       글로벌 기본 스타일
+       ========================= */
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
+      color:var(--ink);
+      font:16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto,
+           "Apple SD Gothic Neo","Noto Sans KR", Helvetica, Arial;
       background:
         radial-gradient(1200px 500px at 10% -10%, #3a236b 0%, transparent 55%),
         radial-gradient(900px 380px at 110% -30%, #5a2fb2 0%, transparent 60%),
         linear-gradient(180deg,var(--bg2),var(--bg1));
-      color:var(--ink);
-      font:16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, "Apple SD Gothic Neo", "Noto Sans KR", Helvetica, Arial;
     }
-    a{color:var(--mint);text-decoration:none}
+    a{color:var(--accent);text-decoration:none}
     .container{max-width:1100px;margin:0 auto;padding:0 16px}
 
-    /* 헤더 */
+    /* =========================
+       헤더(로고 + 서브타이틀)
+       ========================= */
     header{
       position:relative;
       padding:32px 0 18px;
       border-bottom:1px solid rgba(255,255,255,.06);
       overflow:hidden;
     }
-    .hero{
-      display:flex; flex-direction:column; align-items:center; gap:12px;
-      text-align:center;
-    }
+    .hero{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
     .logo{
       width:min(520px,80vw);
-      filter: drop-shadow(0 10px 35px rgba(0,0,0,.45));
+      filter:drop-shadow(0 10px 35px rgba(0,0,0,.45));
     }
-    .subtitle{color:var(--muted)}
+    .subtitle{color:var(--muted);font-size:14px}
+    /* 헤더 뒤쪽 은은한 빛 */
     .halo{
       position:absolute; inset:auto -20% -50% -20%;
       height:420px;
@@ -59,38 +65,43 @@
         radial-gradient(600px 220px at 50% 0%, rgba(122,78,210,.45), transparent 60%),
         radial-gradient(420px 160px at 10% 30%, rgba(94,234,212,.16), transparent 70%),
         radial-gradient(500px 200px at 90% 40%, rgba(117,151,222,.18), transparent 70%);
+      filter:blur(18px);
       pointer-events:none;
-      filter: blur(18px);
     }
 
-    /* 고정 검색/필터 바바 */
+    /* =========================
+       상단 고정 툴바(검색 + 필터 + 결과수 + 즐겨찾기 토글)
+       ========================= */
     .toolbar{
       position:sticky; top:0; z-index:20;
       background:rgba(26,11,46,.55);
       backdrop-filter:blur(12px);
       border-bottom:1px solid rgba(255,255,255,.06);
-      margin-bottom: 32px;   /* ← 추가 (원하면 24~32px로 더 늘려도 OK) */
+      margin-bottom:16px; /* ← 카드와 겹치지 않도록 하단 여백 */
     }
     .bar{
       display:grid; gap:10px;
-      grid-template-columns: 1fr auto auto auto auto;
+      grid-template-columns: 1fr auto auto auto auto; /* 검색창 + select*3 + 버튼/카운트 영역 */
       align-items:center;
       padding:12px 0;
     }
     @media (max-width:980px){ .bar{grid-template-columns:1fr 1fr 1fr; } }
     @media (max-width:560px){ .bar{grid-template-columns:1fr 1fr; } }
 
+    /* 검색창(둥근 모양) */
     .search{
       display:flex; align-items:center; gap:10px;
       background:linear-gradient(180deg,#23123e,#1d1034);
       border:1px solid var(--line);
       border-radius:999px;
       padding:10px 14px;
-      box-shadow: var(--shadow);
+      box-shadow:var(--shadow);
     }
     .search input{
       flex:1; border:0; background:transparent; outline:0; color:var(--ink);
     }
+
+    /* 드롭다운/버튼 공통 */
     select,.btn{
       background:linear-gradient(180deg,#251446,#1e1237);
       border:1px solid var(--line);
@@ -99,29 +110,37 @@
       padding:10px 12px;
     }
     .btn{cursor:pointer}
-    .btn.primary{background:linear-gradient(180deg,#7a4ed2,#5a38a8); border-color:transparent; color:#fff; box-shadow: var(--shadow)}
+    .btn.primary{
+      background:linear-gradient(180deg,var(--primary1),var(--primary2));
+      border-color:transparent; color:#fff; box-shadow:var(--shadow)
+    }
     .count{color:var(--muted); font-size:14px; text-align:right}
 
-    /* 카드 그리드 */
-    main{padding:28px 0 28px}
+    /* =========================
+       본문(카드 그리드 + 페이지네이션)
+       ========================= */
+    main{padding:18px 0 28px}
     .grid{
       display:grid; gap:14px;
-      grid-template-columns: repeat(4, minmax(0,1fr));
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      margin-top:12px; /* 툴바와의 추가 간격 */
     }
-    @media (max-width:1100px){ .grid{grid-template-columns: repeat(3, minmax(0,1fr));} }
-    @media (max-width:820px){ .grid{grid-template-columns: repeat(2, minmax(0,1fr));} }
-    @media (max-width:520px){ .grid{grid-template-columns: 1fr;} }
+    @media (max-width:1100px){ .grid{grid-template-columns:repeat(3,minmax(0,1fr));} }
+    @media (max-width:820px){ .grid{grid-template-columns:repeat(2,minmax(0,1fr));} }
+    @media (max-width:520px){ .grid{grid-template-columns:1fr;} }
 
     .card{
-      background:linear-gradient(180deg, #22133d, #1a0f30);
+      position:relative;
+      background:linear-gradient(180deg,#22133d,#1a0f30);
       border:1px solid var(--line);
       border-radius:22px;
       padding:14px;
-      box-shadow: var(--shadow);
-      transition: transform .15s ease, box-shadow .15s ease;
       min-height:150px;
+      box-shadow:var(--shadow);
+      transition:transform .15s ease, box-shadow .15s ease;
     }
-    .card:hover{ transform: translateY(-4px); box-shadow: 0 16px 34px rgba(0,0,0,.55); }
+    .card:hover{ transform:translateY(-4px); box-shadow:0 16px 34px rgba(0,0,0,.55); }
+
     .name{font-weight:800; letter-spacing:-.02em; font-size:18px}
     .row{display:flex; gap:8px; flex-wrap:wrap; margin:6px 0}
     .chip{
@@ -133,8 +152,18 @@
     }
     .desc{color:#dfe2f2; font-size:14px; margin-top:6px; white-space:pre-line}
 
-    /* 페이지네이션 */
-    .pager{display:flex; gap:100px; justify-content:center; margin:18px 0 6px}
+    /* 카드 우상단 하트(즐겨찾기) */
+    .card .fav{
+      position:absolute; right:10px; top:10px;
+      border:0; cursor:pointer;
+      padding:6px 9px; border-radius:999px;
+      background:linear-gradient(180deg,#271542,#1c1032);
+      border:1px solid var(--line); color:#ff9dbb;
+      box-shadow:var(--shadow);
+    }
+    .card .fav.active{ color:#fff; background:#ff5c8a; border-color:transparent }
+
+    .pager{display:flex; gap:10px; justify-content:center; margin:18px 0 6px}
     .pager .btn{padding:8px 12px}
 
     /* 푸터 */
@@ -143,28 +172,32 @@
   </style>
 </head>
 <body>
-  <!-- 헤더 -->
+  <!-- 헤더: 로고 + 부제 -->
   <header>
     <div class="container hero">
-      <img class="logo" src="./penguin_logo.png" alt="펭귄서버 로고" onerror="this.style.display='none'">
-      <div class="subtitle"> 펭귄 서버 (차수 필터)</div>
+      <!-- 같은 폴더에 penguin_logo.png 업로드 필요 -->
+      <img class="logo" src="./penguin_logo.png" alt="펭귄 서버 로고" onerror="this.style.display='none'">
+      <div class="subtitle">요리 · 재료 · 광물 검색 / 차수 필터 / 즐겨찾기 지원</div>
     </div>
     <div class="halo" aria-hidden></div>
   </header>
 
-  <!-- 검색/필터 바 -->
+  <!-- 상단 고정 툴바: 검색 + 필터 + 정렬 + 즐겨찾기 토글 + 결과수 -->
   <div class="toolbar">
     <div class="container bar">
+      <!-- 검색창 -->
       <div class="search">
         <span>🔎</span>
-        <input id="q" placeholder="이름·설명·태그로 검색 (예: 화채, 포션, 해산물, 다이아)">
+        <input id="q" placeholder="이름·설명·태그로 검색 (예: 화채, 포션, 다이아)">
       </div>
+      <!-- 카테고리 필터 -->
       <select id="cat">
         <option value="">카테고리 전체</option>
         <option value="요리">요리</option>
         <option value="재료">재료</option>
         <option value="광물">광물</option>
       </select>
+      <!-- 차수(등급) 필터 -->
       <select id="tier">
         <option value="">차수 전체</option>
         <option>기본</option>
@@ -173,20 +206,23 @@
         <option>2차</option>
         <option>3차</option>
         <option>4차</option>
-        <option>일반</option>
-        <option>희귀</option>
-        <option>전설</option>
+
       </select>
+      <!-- 정렬 -->
       <select id="sort">
         <option value="name">이름순</option>
         <option value="recent">최근 추가순</option>
         <option value="cat">카테고리순</option>
       </select>
+      <!-- 즐겨찾기만 보기 토글 -->
+      <button class="btn" id="favOnlyBtn" title="즐겨찾기만 보기">★ 즐겨찾기</button>
+
+      <!-- 결과 개수 -->
       <div class="count" id="count">–</div>
     </div>
   </div>
 
-  <!-- 본문 -->
+  <!-- 본문: 카드 그리드 + 페이지네이션 -->
   <main class="container">
     <div id="grid" class="grid"></div>
     <div class="pager" id="pager"></div>
@@ -195,41 +231,47 @@
   <!-- 푸터 -->
   <footer>
     <div class="container">
-      <div>© 2025 펭귄서버 도감 · GitHub Pages</div>
+      <div>© 2025 펭귄 서버 검색기 · GitHub Pages</div>
       <div><a href="#" id="share">현재 검색 공유</a></div>
     </div>
   </footer>
 
-  <!-- 스크립트 -->
   <script>
-    // ---------- 유틸 ----------
+    /* ============================================
+       유틸 함수/상태: 검색 파라미터, 문자열 정규화 등
+       ============================================ */
     const $ = s => document.querySelector(s);
     const $$ = s => Array.from(document.querySelectorAll(s));
     const norm = s => (s||'').toString().toLowerCase().replace(/\\s+/g,'').normalize('NFKD');
 
-    // URL <-> 상태 동기화
+    // URL -> 상태
     function readParams(){
       const p = new URLSearchParams(location.search);
       return {
-        q: p.get('q')||'',
-        cat: p.get('cat')||'',
-        tier: p.get('tier')||'',
-        sort: p.get('sort')||'name',
-        page: parseInt(p.get('page')||'1',10)
-      }
+        q: p.get('q') || '',
+        cat: p.get('cat') || '',
+        tier: p.get('tier') || '',
+        sort: p.get('sort') || 'name',
+        fav: p.get('fav') === '1' ? 1 : 0,  // 즐겨찾기만 보기
+        page: parseInt(p.get('page') || '1', 10)
+      };
     }
+    // 상태 -> URL
     function writeParams(state){
       const p = new URLSearchParams();
       if (state.q) p.set('q', state.q);
       if (state.cat) p.set('cat', state.cat);
       if (state.tier) p.set('tier', state.tier);
-      if (state.sort && state.sort!=='name') p.set('sort', state.sort);
-      if (state.page>1) p.set('page', String(state.page));
-      history.replaceState(null,'','?'+p.toString());
+      if (state.sort && state.sort !== 'name') p.set('sort', state.sort);
+      if (state.fav) p.set('fav','1');
+      if (state.page > 1) p.set('page', String(state.page));
+      history.replaceState(null, '', '?' + p.toString());
     }
 
-    // ---------- 데이터 ----------
-    // 차수(tier) 사용, 도구/기타 제거됨. 광물 리스트 포함.
+    /* ============================================
+       데이터: 차수(tier) 사용 · 도구/기타 없음 · 광물 포함
+       필요 시 여기에 항목을 계속 추가하세요.
+       ============================================ */
     const DATA = [
       // 기본 재료
       { id:'mat_milgagu', name:'밀가루', category:'재료', tier:'기본', desc:'밀 x 4', tags:['요리사','기본재료'], addedAt:'2025-01-15' },
@@ -277,24 +319,28 @@
       { id:'t4_potion_high', name:'상급 포션', category:'요리', tier:'4차', desc:'체력 35% · 마나 20% · 쿨타임 30초 · 재료: 멜론, 상추, 네더사마귀 상자 2 · 경험치 7', tags:['요리사','포션'], addedAt:'2025-01-15' },
       { id:'t4_melon_punch', name:'메론 화채', category:'요리', tier:'4차', desc:'포화 4분 · 재료: 멜론, 수박쥬스, 시원한 얼음 · 경험치 16', tags:['요리사','화채'], addedAt:'2025-01-15' },
 
-      // 광물 (단일/블록 상점가)
-      { id:'ore_diamond', name:'다이아', category:'광물', tier:'일반', desc:'단일 상점가 72 · 블록 상점가 720', tags:['광물'], addedAt:'2025-01-15' },
-      { id:'ore_gold', name:'금', category:'광물', tier:'일반', desc:'단일 상점가 15 · 블록 상점가 150', tags:['광물'], addedAt:'2025-01-15' },
-      { id:'ore_iron', name:'철', category:'광물', tier:'일반', desc:'단일 상점가 10 · 블록 상점가 100', tags:['광물'], addedAt:'2025-01-15' },
-      { id:'ore_copper', name:'구리', category:'광물', tier:'일반', desc:'단일 상점가 4 · 블록 상점가 40', tags:['광물'], addedAt:'2025-01-15' },
-      { id:'ore_lapis', name:'청금석', category:'광물', tier:'일반', desc:'단일 상점가 6 · 블록 상점가 60', tags:['광물'], addedAt:'2025-01-15' },
-      { id:'ore_redstone', name:'레드스톤', category:'광물', tier:'일반', desc:'단일 상점가 6 · 블록 상점가 60', tags:['광물'], addedAt:'2025-01-15' },
-      { id:'ore_emerald', name:'에메랄드', category:'광물', tier:'희귀', desc:'단일 상점가 120 · 블록 상점가 1200', tags:['광물'], addedAt:'2025-01-15' },
-      { id:'ore_quartz', name:'석영', category:'광물', tier:'일반', desc:'단일 상점가 8 · 블록 상점가 없음', tags:['광물'], addedAt:'2025-01-15' },
-      { id:'ore_netherite', name:'네더라이트', category:'광물', tier:'전설', desc:'단일 상점가 200 · 블록 상점가 2000', tags:['광물'], addedAt:'2025-01-15' }
+      // 광물(단일/블록 상점가)
+      { id:'ore_diamond', name:'다이아', category:'광물', tier:'기본', desc:'단일 상점가 72 · 블록 상점가 720', tags:['광물'], addedAt:'2025-01-15' },
+      { id:'ore_gold', name:'금', category:'광물', tier:'기본', desc:'단일 상점가 15 · 블록 상점가 150', tags:['광물'], addedAt:'2025-01-15' },
+      { id:'ore_iron', name:'철', category:'광물', tier:'기본', desc:'단일 상점가 10 · 블록 상점가 100', tags:['광물'], addedAt:'2025-01-15' },
+      { id:'ore_copper', name:'구리', category:'광물', tier:'기본', desc:'단일 상점가 4 · 블록 상점가 40', tags:['광물'], addedAt:'2025-01-15' },
+      { id:'ore_lapis', name:'청금석', category:'광물', tier:'기본', desc:'단일 상점가 6 · 블록 상점가 60', tags:['광물'], addedAt:'2025-01-15' },
+      { id:'ore_redstone', name:'레드스톤', category:'광물', tier:'기본', desc:'단일 상점가 6 · 블록 상점가 60', tags:['광물'], addedAt:'2025-01-15' },
+      { id:'ore_emerald', name:'에메랄드', category:'광물', tier:'기본', desc:'단일 상점가 120 · 블록 상점가 1200', tags:['광물'], addedAt:'2025-01-15' },
+      { id:'ore_quartz', name:'석영', category:'광물', tier:'기본', desc:'단일 상점가 8 · 블록 상점가 없음', tags:['광물'], addedAt:'2025-01-15' },
+      { id:'ore_netherite', name:'네더라이트', category:'기본', tier:'일반', desc:'단일 상점가 200 · 블록 상점가 2000', tags:['광물'], addedAt:'2025-01-15' }
     ];
 
-    // ---------- 렌더 ----------
-    const PAGE_SIZE = 24;
-    const state = readParams();
-    // UI 채우기
-    $('#q').value = state.q; $('#cat').value = state.cat; $('#tier').value = state.tier; $('#sort').value = state.sort;
+    /* ============================================
+       즐겨찾기 저장(로컬스토리지)
+       ============================================ */
+    const favKey = 'penguin-favs-v1';
+    const favs = new Set(JSON.parse(localStorage.getItem(favKey) || '[]'));
+    const saveFavs = () => localStorage.setItem(favKey, JSON.stringify([...favs]));
 
+    /* ============================================
+       검색/정렬/필터 로직
+       ============================================ */
     function match(item, q){
       if (!q) return true;
       const nq = norm(q);
@@ -302,81 +348,55 @@
     }
     function apply(list, st){
       let out = list.filter(it => match(it, st.q));
-      if (st.cat) out = out.filter(it => it.category === st.cat);
+      if (st.cat)  out = out.filter(it => it.category === st.cat);
       if (st.tier) out = out.filter(it => it.tier === st.tier);
+      if (st.fav)  out = out.filter(it => favs.has(it.id)); // 즐겨찾기만 보기
       switch(st.sort){
         case 'recent': out.sort((a,b)=> new Date(b.addedAt) - new Date(a.addedAt)); break;
-        case 'cat': out.sort((a,b)=> (a.category||'').localeCompare(b.category||'','ko') || a.name.localeCompare(b.name,'ko')); break;
-        default: out.sort((a,b)=> a.name.localeCompare(b.name,'ko'));
+        case 'cat':    out.sort((a,b)=> (a.category||'').localeCompare(b.category||'','ko') || a.name.localeCompare(b.name,'ko')); break;
+        default:       out.sort((a,b)=> a.name.localeCompare(b.name,'ko'));
       }
       return out;
     }
 
-    function card(it){
-      const el = document.createElement('div');
-      el.className = 'card';
-      el.innerHTML = `
-        <div class="name">${it.name}</div>
-        <div class="row">
-          <span class="chip">${it.category}</span>
-          <span class="chip">차수: ${it.tier}</span>
-        </div>
-        <div class="desc">${it.desc || ''}</div>
-      `;
-      return el;
+    /* ============================================
+       카드 생성(하트 토글 포함)
+       ============================================ */
+   function card(it){
+  const el = document.createElement('div');
+  el.className = 'card';
+  el.innerHTML = `
+    <!-- 즐겨찾기 하트 버튼 -->
+    <button class="fav ${favs.has(it.id)?'active':''}" aria-label="즐겨찾기" data-id="${it.id}">
+      ${favs.has(it.id)?'♥':'♡'}
+    </button>
+
+    <!-- 카드 이름 및 정보 -->
+    <div class="name">${it.name}</div>
+    <div class="row">
+      <span class="chip">${it.category}</span>
+      <span class="chip">차수: ${it.tier}</span>
+    </div>
+    <div class="desc">${it.desc || ''}</div>
+  `;
+
+  // 하트 버튼 클릭 시 즐겨찾기 토글
+  el.querySelector('.fav').addEventListener('click', (e)=>{
+    const id = e.currentTarget.getAttribute('data-id');
+
+    // 이미 즐겨찾기 되어 있으면 해제, 아니면 추가
+    if (favs.has(id)) {
+      favs.delete(id);
+    } else {
+      favs.add(id);
     }
 
-    function render(){
-      state.q = $('#q').value.trim();
-      state.cat = $('#cat').value;
-      state.tier = $('#tier').value;
-      state.sort = $('#sort').value;
+    // localStorage에 저장
+    saveFavs();
 
-      const filtered = apply(DATA, state);
-      const total = filtered.length;
-
-      // 페이지 보정
-      const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-      if (state.page > pages) state.page = pages;
-      if (state.page < 1) state.page = 1;
-
-      // 카운트
-      $('#count').textContent = `${total.toLocaleString()}개 결과`;
-
-      // 조각
-      const start = (state.page-1)*PAGE_SIZE;
-      const visible = filtered.slice(start, start+PAGE_SIZE);
-
-      // 그리드
-      const grid = $('#grid'); grid.innerHTML = '';
-      visible.forEach(it => grid.appendChild(card(it)));
-
-      // 페이지네이션
-      const pager = $('#pager'); pager.innerHTML = '';
-      if (pages > 1){
-        const mkBtn = (p, label=p) => {
-          const b = document.createElement('button'); b.className='btn' + (p===state.page? ' primary':''); b.textContent=label;
-          b.addEventListener('click', ()=>{ state.page=p; writeParams(state); render(); });
-          return b;
-        };
-        pager.appendChild(mkBtn(Math.max(1, state.page-1), '이전'));
-        for(let p=Math.max(1,state.page-2); p<=Math.min(pages,state.page+2); p++) pager.appendChild(mkBtn(p));
-        pager.appendChild(mkBtn(Math.min(pages, state.page+1), '다음'));
-      }
-
-      // URL 동기화
-      writeParams(state);
-    }
-
-    // 이벤트
-    $('#q').addEventListener('input', ()=>{ state.page=1; render(); });
-    $('#cat').addEventListener('change', ()=>{ state.page=1; render(); });
-    $('#tier').addEventListener('change', ()=>{ state.page=1; render(); });
-    $('#sort').addEventListener('change', ()=>{ state.page=1; render(); });
-    $('#share').addEventListener('click', (e)=>{ e.preventDefault(); navigator.clipboard.writeText(location.href); alert('현재 검색/필터 링크를 복사했습니다!'); });
-
-    // 초기 렌더
+    // UI 다시 렌더링
     render();
-  </script>
-</body>
-</html>
+  });
+
+  return el;
+}
