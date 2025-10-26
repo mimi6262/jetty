@@ -3,10 +3,288 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>내 첫 GitHub Pages</title>
+  <title>펭귄 서버 도감 검색기</title>
+  <meta name="description" content="펭귄 서버용 도감/아이템 검색기 – GitHub Pages에서 바로 동작" />
+  <style>
+    :root{
+      --bg:#0b0f15; --layer:#101826; --ink:#e6edf3; --muted:#9aa4b2; --line:#223049; --brand:#60a5fa; --accent:#22d3ee; --warn:#f59e0b; --heart:#ef4444;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:radial-gradient(1200px 400px at 10% -20%,#16233b 0%,transparent 55%),
+                      radial-gradient(800px 300px at 90% -30%,#2a1f45 0%,transparent 55%),
+                      linear-gradient(180deg,#0b0f15,#0e1522);
+         color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,Noto Sans KR,Helvetica,Arial}
+    a{color:var(--accent);text-decoration:none}
+    .container{max-width:1100px;margin:0 auto;padding:16px}
+    header{position:relative;padding:28px 16px 12px;border-bottom:1px solid #1a2436}
+    .title{font-size:28px;font-weight:800;letter-spacing:-.02em}
+    .subtitle{color:var(--muted)}
+
+    .controls{position:sticky;top:0;z-index:10;background:#0b0f15cc;backdrop-filter:blur(10px);border-bottom:1px solid #1a2436}
+    .controls .container{display:grid;gap:12px;grid-template-columns:1fr auto auto auto;align-items:center;padding:12px 16px}
+    @media (max-width:900px){.controls .container{grid-template-columns:1fr 1fr;}}
+    @media (max-width:520px){.controls .container{grid-template-columns:1fr;}}
+
+    .search{display:flex;align-items:center;gap:8px;background:var(--layer);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+    .search input{flex:1;border:0;background:transparent;color:var(--ink);outline:0}
+
+    select, .btn{background:var(--layer);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px 12px}
+    .btn{cursor:pointer}
+    .btn.primary{background:var(--brand);border-color:transparent;color:#fff}
+
+    .grid{display:grid;gap:14px;margin-top:16px;grid-template-columns:repeat(4,minmax(0,1fr))}
+    @media (max-width:1000px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    @media (max-width:720px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media (max-width:460px){.grid{grid-template-columns:1fr}}
+
+    .card{position:relative;background:var(--layer);border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:8px}
+    .card h3{margin:0;font-size:18px}
+    .muted{color:var(--muted)}
+    .tag{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);padding:4px 8px;border-radius:999px;font-size:12px;color:var(--muted)}
+    .row{display:flex;gap:8px;flex-wrap:wrap}
+
+    .fav{position:absolute;right:10px;top:10px;border:0;background:#0e1522;border-radius:999px;padding:6px 8px;cursor:pointer;border:1px solid var(--line)}
+    .fav.active{background:var(--heart);color:#fff;border-color:transparent}
+
+    .toolbar{display:flex;align-items:center;gap:8px}
+    .pagination{display:flex;gap:8px;justify-content:center;margin:16px 0}
+
+    .empty{padding:28px;text-align:center;border:1px dashed var(--line);border-radius:12px;color:var(--muted)}
+    .count{color:var(--muted);font-size:14px}
+
+    footer{border-top:1px solid #1a2436;margin-top:18px}
+    footer .container{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:16px}
+  </style>
 </head>
 <body>
-  <h1>안녕하세요!</h1>
-  <p>이건 GitHub Pages에서 보여질 첫 페이지입니다 🎉</p>
+  <header class="container">
+    <div class="title">🐧 펭귄 서버 도감 검색기</div>
+    <div class="subtitle">아이템/요리/재료를 빠르게 찾아보세요. </div>
+  </header>
+
+  <div class="controls">
+    <div class="container">
+      <div class="search"><span>🔎</span><input id="q" placeholder="이름, 태그, 설명으로 검색" autocomplete="off" /></div>
+      <select id="cat">
+        <option value="">전체 분류</option>
+        <option>요리</option>
+        <option>재료</option>
+        <option>도구</option>
+        <option>기타</option>
+      </select>
+      <select id="rar">
+        <option value="">희귀도 전체</option>
+        <option>★</option>
+        <option>★★</option>
+        <option>★★★</option>
+        <option>★★★★</option>
+        <option>★★★★★</option>
+      </select>
+      <select id="sort">
+        <option value="name">이름순</option>
+        <option value="rarity">희귀도 높은순</option>
+        <option value="recent">최근 추가순</option>
+      </select>
+    </div>
+  </div>
+
+  <main class="container">
+    <div class="toolbar">
+      <button class="btn" id="reset">필터 초기화</button>
+      <span class="count" id="count"></span>
+      <span style="flex:1"></span>
+      <button class="btn" id="exportFavs">즐겨찾기 내보내기</button>
+      <input type="file" id="importFavs" style="display:none" accept="application/json" />
+      <button class="btn" id="importFavsBtn">가져오기</button>
+    </div>
+
+    <div id="grid" class="grid"></div>
+    <div id="empty" class="empty" style="display:none">검색 결과가 없어요. 철자를 바꿔보거나 필터를 조정해보세요.</div>
+    <div class="pagination" id="pager"></div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div>Made for <b>펭귄 서버</b> · 정적 HTML/JS · GitHub Pages 호환</div>
+      <div><a href="#" id="share">현재 검색 공유</a></div>
+    </div>
+  </footer>
+
+  <script>
+    // ===== 데이터 샘플 =====
+    // 실제 사용 시 아래 DATA 배열을 여러분 서버 데이터로 교체하세요.
+    // 필드: id(고유), name, category, rarity(1~5), desc, tags[], sources[], addedAt(ISO)
+    const DATA = [
+      { id:'cook_001', name:'그린델 샐러드', category:'요리', rarity:3, desc:'신선한 허브와 채소로 만든 샐러드', tags:['회복','초반추천'], sources:['그린델 평원'], addedAt:'2025-01-01' },
+      { id:'mat_002', name:'펭귄 땅콩', category:'재료', rarity:2, desc:'고소한 향이 나는 특산 견과', tags:['요리재료'], sources:['펭귄 해안'], addedAt:'2025-01-04' },
+      { id:'tool_003', name:'얼음 절단기', category:'도구', rarity:4, desc:'두꺼운 얼음을 빠르게 절단', tags:['채집','모험'], sources:['북극 동굴'], addedAt:'2025-01-07' },
+      { id:'cook_004', name:'빙하 스튜', category:'요리', rarity:5, desc:'희귀 해산물로 끓인 깊은 맛', tags:['버프','체력증가'], sources:['빙하 호수'], addedAt:'2025-01-10' },
+      { id:'mat_005', name:'얼음꽃', category:'재료', rarity:3, desc:'차갑게 피는 신비한 꽃', tags:['연금','장식'], sources:['설원 초지'], addedAt:'2025-01-11' },
+      { id:'etc_006', name:'펭돌이 인형', category:'기타', rarity:1, desc:'귀여운 마스코트 굿즈', tags:['수집'], sources:['이벤트 상점'], addedAt:'2025-01-12' },
+    ];
+
+    // ===== 유틸 =====
+    const $ = s => document.querySelector(s);
+    const $$ = s => Array.from(document.querySelectorAll(s));
+    const norm = s => (s||'').toString().toLowerCase().replace(/\s+/g,'').normalize('NFKD');
+
+    // URL <-> 상태 동기화
+    function readParams(){
+      const p = new URLSearchParams(location.search);
+      return {
+        q: p.get('q')||'',
+        cat: p.get('cat')||'',
+        rar: p.get('rar')||'',
+        sort: p.get('sort')||'name',
+        page: parseInt(p.get('page')||'1',10)
+      };
+    }
+    function writeParams(state){
+      const p = new URLSearchParams();
+      if (state.q) p.set('q', state.q);
+      if (state.cat) p.set('cat', state.cat);
+      if (state.rar) p.set('rar', state.rar);
+      if (state.sort && state.sort!=='name') p.set('sort', state.sort);
+      if (state.page && state.page>1) p.set('page', String(state.page));
+      history.replaceState(null,'','?'+p.toString());
+    }
+
+    const PAGE_SIZE = 24;
+    const favKey = 'penguin-favs-v1';
+    const favs = new Set(JSON.parse(localStorage.getItem(favKey) || '[]'));
+
+    function toggleFav(id){
+      if (favs.has(id)) favs.delete(id); else favs.add(id);
+      localStorage.setItem(favKey, JSON.stringify([...favs]));
+      render();
+    }
+
+    function match(item, q){
+      if (!q) return true;
+      const nq = norm(q);
+      return [item.name, item.desc, ...(item.tags||[]), ...(item.sources||[])]
+        .some(v => norm(v).includes(nq));
+    }
+
+    function applyFilters(list, state){
+      let out = list.filter(it => match(it, state.q));
+      if (state.cat) out = out.filter(it => it.category === state.cat);
+      if (state.rar) out = out.filter(it => String('★'.repeat(it.rarity)) === state.rar);
+      switch(state.sort){
+        case 'rarity': out.sort((a,b)=> b.rarity - a.rarity || a.name.localeCompare(b.name)); break;
+        case 'recent': out.sort((a,b)=> new Date(b.addedAt) - new Date(a.addedAt)); break;
+        default: out.sort((a,b)=> a.name.localeCompare(b.name,'ko')); break;
+      }
+      return out;
+    }
+
+    function renderPager(total, page){
+      const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+      const el = $('#pager'); el.innerHTML = '';
+      if (pages <= 1) return;
+      const btn = (p, label=p) => {
+        const b = document.createElement('button');
+        b.className='btn'; b.textContent=label; if (p===page) b.classList.add('primary');
+        b.addEventListener('click', ()=>{state.page=p; writeParams(state); render();});
+        return b;
+      };
+      el.appendChild(btn(Math.max(1,page-1),'이전'));
+      for(let p=Math.max(1,page-2); p<=Math.min(pages,page+2); p++) el.appendChild(btn(p));
+      el.appendChild(btn(Math.min(pages,page+1),'다음'));
+    }
+
+    function star(n){ return '★'.repeat(n); }
+
+    function card(item){
+      const wrap = document.createElement('div');
+      wrap.className = 'card';
+      wrap.innerHTML = `
+        <button class="fav ${favs.has(item.id)?'active':''}" title="즐겨찾기">
+          ${favs.has(item.id)?'♥':'♡'}
+        </button>
+        <h3>${item.name}</h3>
+        <div class="row">
+          <span class="tag">${item.category}</span>
+          <span class="tag">${star(item.rarity)}</span>
+        </div>
+        <div class="muted">${item.desc||''}</div>
+        ${item.tags?.length? `<div class="row">${item.tags.map(t=>`<span class='tag'>#${t}</span>`).join('')}</div>`:''}
+        ${item.sources?.length? `<div class="row">${item.sources.map(s=>`<span class='tag'>${s}</span>`).join('')}</div>`:''}
+      `;
+      wrap.querySelector('.fav').addEventListener('click', ()=> toggleFav(item.id));
+      return wrap;
+    }
+
+    function render(){
+      // controls -> state
+      state.q = $('#q').value.trim();
+      state.cat = $('#cat').value;
+      state.rar = $('#rar').value;
+      state.sort = $('#sort').value;
+
+      const filtered = applyFilters(DATA, state);
+      const total = filtered.length;
+
+      // page bounds
+      const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+      if (state.page>pages) state.page = pages;
+      if (state.page<1) state.page = 1;
+
+      // render count
+      $('#count').textContent = `${total.toLocaleString()}개 결과` + (favs.size? ` · 즐겨찾기 ${favs.size}`:'');
+
+      // slice
+      const start = (state.page-1)*PAGE_SIZE;
+      const visible = filtered.slice(start, start+PAGE_SIZE);
+
+      // grid
+      const grid = $('#grid'); grid.innerHTML='';
+      visible.forEach(it => grid.appendChild(card(it)));
+
+      // empty
+      $('#empty').style.display = visible.length? 'none' : 'block';
+
+      // pager
+      renderPager(total, state.page);
+
+      // URL sync
+      writeParams(state);
+    }
+
+    // ===== 초기화 =====
+    const state = readParams();
+    // 채우기
+    $('#q').value = state.q; $('#cat').value = state.cat; $('#rar').value = state.rar; $('#sort').value = state.sort;
+
+    // 이벤트 바인딩(입력 즉시 반영)
+    $('#q').addEventListener('input', ()=>{ state.page=1; render(); });
+    $('#cat').addEventListener('change', ()=>{ state.page=1; render(); });
+    $('#rar').addEventListener('change', ()=>{ state.page=1; render(); });
+    $('#sort').addEventListener('change', ()=>{ state.page=1; render(); });
+    $('#reset').addEventListener('click', ()=>{
+      $('#q').value=''; $('#cat').value=''; $('#rar').value=''; $('#sort').value='name'; state.page=1; render();
+    });
+
+    // 공유 링크
+    $('#share').addEventListener('click', (e)=>{ e.preventDefault(); navigator.clipboard.writeText(location.href); alert('현재 검색/필터가 복사되었습니다!'); });
+
+    // 즐겨찾기 export/import
+    $('#exportFavs').addEventListener('click', ()=>{
+      const blob = new Blob([JSON.stringify([...favs], null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download='penguin-favs.json'; a.click(); URL.revokeObjectURL(url);
+    });
+    $('#importFavsBtn').addEventListener('click', ()=> $('#importFavs').click());
+    $('#importFavs').addEventListener('change', async (e)=>{
+      const file = e.target.files[0]; if (!file) return;
+      const text = await file.text();
+      try{ const arr = JSON.parse(text); localStorage.setItem(favKey, JSON.stringify(arr)); favs.clear(); arr.forEach(x=>favs.add(x)); render(); alert('가져오기 완료!'); }
+      catch{ alert('JSON 형식이 올바르지 않습니다.'); }
+    });
+
+    // 최초 렌더
+    render();
+  </script>
 </body>
 </html>
