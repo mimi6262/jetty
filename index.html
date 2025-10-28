@@ -81,6 +81,28 @@
 .note-item small{opacity:.75}
 .note-del{border:0; background:#41276f; color:#fff; border-radius:8px; padding:4px 8px; cursor:pointer}
 
+/* 드롭다운 배경 및 글자색 개선 */
+select {
+  appearance: none;
+  background: linear-gradient(180deg,#251446,#1e1237);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 10px 12px;
+}
+
+/* 드롭다운 펼쳐졌을 때 */
+select option {
+  background: #2b1a4b;
+  color: #fff;
+}
+
+/* 선택된 항목 hover 효과 */
+select option:hover,
+select option:focus {
+  background: var(--accent2);
+  color: #fff;
+}
 
     
   </style>
@@ -139,7 +161,7 @@
         <button id="noteClear" class="btn">초기화</button>
       </div>
     </div>
-    <textarea id="noteArea" placeholder="여기에 자유롭게 메모하세요.&#10;계산 팝업에서 결과를 산출하면 여기에 자동으로 한 줄 추가됩니다."></textarea>
+    <textarea id="noteArea" placeholder="여기에 자유롭게 메모하세요.&#10;계산 팝업에서 결과를 입력하면 여기에 자동으로 한 줄 추가됩니다."></textarea>
 
     <div class="note-subtitle">최근 계산 로그</div>
     <div id="noteLog" class="note-log" aria-live="polite"></div>
@@ -269,12 +291,24 @@ calcBox.style = `
 calcBox.innerHTML = `
   <h3 id="calcTitle" style="margin-top:0">가격 계산기</h3>
   <div id="calcDesc" style="opacity:.8;margin-bottom:12px;font-size:14px"></div>
+
+  <!-- 기준 선택 라디오 -->
+  <div id="oreMode" style="display:none; margin-bottom:8px;">
+    <label style="margin-right:10px;">
+      <input type="radio" name="oreType" value="single" checked> 단일 상점가 기준
+    </label>
+    <label>
+      <input type="radio" name="oreType" value="block"> 블록 상점가 기준
+    </label>
+  </div>
+
   <input id="calcRate" type="number" placeholder="변동 퍼센트 입력 (-30~80)"
     style="width:100%;padding:8px;border-radius:8px;border:1px solid #3b2a60;background:#2b1a4b;color:#fff;margin-bottom:10px;">
   <button id="calcRun" class="btn primary" style="width:100%;margin-bottom:8px;">계산하기</button>
   <div id="calcResult" style="margin-top:6px;font-size:15px;color:#ffd770;"></div>
   <button id="calcClose" class="btn" style="width:100%;margin-top:10px;">닫기</button>
 `;
+
 document.body.appendChild(calcBox);
 
 // 닫기 버튼
@@ -293,7 +327,9 @@ card = function(it){
     document.getElementById('calcTitle').innerHTML = `📦 ${it.name} 가격 계산`;
     document.getElementById('calcDesc').textContent = it.desc || '';
     document.getElementById('calcResult').textContent = '';
+    document.getElementById('oreMode').style.display = (it.category === '광물') ? 'block' : 'none';
     calcBox.style.display = 'block';
+
   });
   return el;
 };
@@ -311,32 +347,48 @@ document.getElementById('calcRun').addEventListener('click', ()=>{
   if(item.category === '요리'){
     const m = /시세\s*([0-9]+)/.exec(item.desc||'');
     base = m ? parseInt(m[1],10) : null;
-  }else if(item.category === '광물'){
-    // 기본: 단일 상점가 기준(원하면 라디오 버튼 만들어도 됨)
-    const m = /단일\s*상점가\s*([0-9]+)/.exec(item.desc||'');
-    base = m ? parseInt(m[1],10) : null;
-    kind = '단일 기준';
+  } else if(item.category === '광물'){
+    const mode = document.querySelector('input[name="oreType"]:checked').value;
+    if(mode === 'single'){
+      const m = /단일\s*상점가\s*([0-9]+)/.exec(item.desc||'');
+      base = m ? parseInt(m[1],10) : null;
+      kind = '단일 기준';
+    } else {
+      const m = /블록\s*상점가\s*([0-9]+)/.exec(item.desc||'');
+      base = m ? parseInt(m[1],10) : null;
+      kind = '블록 기준';
+    }
   }
 
   if(!base) return alert('이 아이템은 시세 정보를 찾을 수 없습니다.');
 
   const result = Math.round(base * (1 + rate/100));
+  const diff = result - base;
+
+  // 💸 손익 텍스트 + 색상 구분
+  const diffText = diff >= 0
+    ? `<span style="color:#80ffae">+${diff.toLocaleString()}원 이익</span>`
+    : `<span style="color:#ff8080">${diff.toLocaleString()}원 손해</span>`;
+
+  // 💬 팝업 결과 표시
   document.getElementById('calcResult').innerHTML =
-    `💰 변동 시세: <span style="color:#80ffae">${result.toLocaleString()}</span>원
-     <br><small>(기준 ${base.toLocaleString()}원, ${kind}, 변동 ${rate}%)</small>`;
+    `💰 <b>${item.name}</b> 현재 시세: <span style="color:#ffd770">${result.toLocaleString()}</span>원<br>
+     (${diffText}, 기준 ${base.toLocaleString()}원, ${kind}, 변동 ${rate}% )`;
 
-  // 👉 계산 결과를 우측 메모장에 **자동으로 기록**
+  // 📝 로그 기록 (우측 메모장 자동 반영)
   const now = new Date();
-  addLog({
+  const entry = {
     name: item.name,
-    base, rate, result,
-    kind,
+    base, rate, result, kind, diff,
     time: now.toLocaleString('ko-KR')
-  });
+  };
+  addLog(entry);
 
-  // 👉 메모영역에도 한 줄 자동 추가(원하면 주석 해제)
-  // noteArea.value += `\n${item.name}: ${result.toLocaleString()}원 (기준 ${base.toLocaleString()}원, ${kind}, ${rate}%)`;
-  // saveNotes();
+  // ✏️ 메모장 본문에도 색상 포함하여 자동 추가 (선택적)
+  const noteColor = diff >= 0 ? '#80ffae' : '#ff8080';
+  noteArea.value += `\n${item.name}: ${result.toLocaleString()}원 (${diff >= 0 ? '+' : ''}${diff.toLocaleString()}원, ${rate}%, ${kind})`;
+  noteArea.scrollTop = noteArea.scrollHeight;
+  saveNotes();
 });
 
 
