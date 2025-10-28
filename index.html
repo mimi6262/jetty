@@ -67,9 +67,7 @@
         <option>2차</option>
         <option>3차</option>
         <option>4차</option>
-        <option>일반</option>
-        <option>희귀</option>
-        <option>전설</option>
+
       </select>
       <select id="sort">
         <option value="name">이름순</option>
@@ -84,6 +82,19 @@
     <div id="grid" class="grid"></div>
   </main>
 
+<section id="calc" class="container" style="margin:40px auto;padding:20px;border-radius:16px;background:linear-gradient(180deg,#241443,#1a0f30);box-shadow:0 8px 20px rgba(0,0,0,.4);">
+  <h2 style="margin-top:0;font-size:20px">📈 요리 가격 변동 계산기</h2>
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">
+    <select id="calc-item" style="flex:1;min-width:180px;background:#2b1a4b;color:#fff;border:1px solid #3b2a60;border-radius:10px;padding:8px;">
+      <option value="">요리를 선택하세요</option>
+    </select>
+    <input id="calc-rate" type="number" placeholder="변동 % (예: 20)" style="width:120px;padding:8px;border-radius:10px;border:1px solid #3b2a60;background:#2b1a4b;color:#fff;">
+    <button id="calc-btn" class="btn primary">계산</button>
+  </div>
+  <div id="calc-result" style="margin-top:12px;font-weight:600;font-size:17px;color:#ffd770;"></div>
+</section>
+
+  
   <footer>
     <div class="container">
       <div>© 2025 펭귄 서버 검색기 · GitHub Pages</div>
@@ -99,15 +110,42 @@
     const favs = new Set(JSON.parse(localStorage.getItem(favKey) || '[]'));
     const saveFavs = () => localStorage.setItem(favKey, JSON.stringify([...favs]));
 
-    const DATA = [
-      { id:'mat_milgagu', name:'밀가루', category:'재료', tier:'기본', desc:'밀 x 4', tags:['요리사','기본재료'], addedAt:'2025-01-15' },
-      { id:'t0_garlic_steak', name:'마늘 스테이크', category:'요리', tier:'0차', desc:'시세 50 · 재료: 마늘, 스테이크, 감자상자 2 · 경험치 3', addedAt:'2025-01-15' },
-      { id:'t1_salad', name:'샐러드', category:'요리', tier:'1차', desc:'시세 98 · 재료: 파프리카, 오이, 당근상자 2 · 경험치 4', addedAt:'2025-01-15' },
-      { id:'t3_shrimp_grill', name:'철판 새우', category:'요리', tier:'3차', desc:'시세 1610 · 재료: 1등급 새우, 브로콜리, 당근 상자 2 · 경험치 25', addedAt:'2025-01-15' },
-      { id:'ore_diamond', name:'다이아', category:'광물', tier:'일반', desc:'단일 상점가 72 · 블록 상점가 720', addedAt:'2025-01-15' },
-      { id:'ore_emerald', name:'에메랄드', category:'광물', tier:'희귀', desc:'단일 상점가 120 · 블록 상점가 1200', addedAt:'2025-01-15' },
-      { id:'ore_netherite', name:'네더라이트', category:'광물', tier:'전설', desc:'단일 상점가 200 · 블록 상점가 2000', addedAt:'2025-01-15' }
-    ];
+ const DATA = [
+  // ───────── 재료 ─────────
+  { id:'mat_milgagu', name:'밀가루', category:'재료', tier:'기본', desc:'밀 x 4', tags:['요리사','기본재료'], addedAt:'2025-01-15' },
+
+  // ───────── 0차 ─────────
+  { id:'t0_garlic_steak', name:'마늘 스테이크', category:'요리', tier:'0차', desc:'시세 50 · 재료: 마늘, 스테이크, 감자상자 2 · 경험치 3', tags:['요리사','육류'], addedAt:'2025-01-15' },
+
+  // ───────── 1차 ─────────
+  { id:'t1_salad', name:'샐러드', category:'요리', tier:'1차', desc:'시세 98 · 재료: 파프리카, 오이, 당근상자 2 · 경험치 4', tags:['요리사','채소'], addedAt:'2025-01-15' },
+
+  // ───────── 3차 ─────────
+  { id:'t3_tomato_pasta', name:'토마토 파스타', category:'요리', tier:'3차', desc:'시세 130 · 재료: 토마토, 대파, 밀가루 · 경험치 6', tags:['요리사','면요리'], addedAt:'2025-01-15' },
+  { id:'t3_peach_ice_tea', name:'복숭아 아이스티', category:'요리', tier:'3차', desc:'시세 80 · 재료: 복숭아, 비트상자, 슈가파우더 2 · 경험치 6', tags:['요리사','음료'], addedAt:'2025-01-15' },
+  { id:'t3_shrimp_grill', name:'철판 새우', category:'요리', tier:'3차', desc:'시세 1610 · 재료: 1등급 새우, 브로콜리, 당근 상자 2 · 경험치 25', tags:['요리사','해산물'], addedAt:'2025-01-15' },
+  { id:'t3_potion_mid', name:'중급 포션', category:'요리', tier:'3차', desc:'체력 30% · 마나 16% · 쿨타임 30초 · 재료: 복숭아, 토마토, 네더사마귀 상자 2 · 경험치 6', tags:['요리사','포션'], addedAt:'2025-01-15' },
+  { id:'t3_peach_punch', name:'복숭아 화채', category:'요리', tier:'3차', desc:'포화 3분 · 재료: 복숭아, 수박쥬스, 시원한 얼음 · 경험치 12', tags:['요리사','화채'], addedAt:'2025-01-15' },
+
+  // ───────── 4차 ─────────
+  { id:'t4_melon_bread', name:'메론빵', category:'요리', tier:'4차', desc:'시세 90 · 재료: 멜론, 슈가파우더, 밀가루 · 경험치 7', tags:['요리사','빵'], addedAt:'2025-01-15' },
+  { id:'t4_gimbap', name:'김밥', category:'요리', tier:'4차', desc:'시세 166 · 재료: 쌀, 양파, 비트 상자 1 · 경험치 7', tags:['요리사','한식'], addedAt:'2025-01-15' },
+  { id:'t4_bibimbap', name:'비빔밥', category:'요리', tier:'4차', desc:'시세 166 · 재료: 쌀, 상추, 당근 상자 2 · 경험치 7', tags:['요리사','한식'], addedAt:'2025-01-15' },
+  { id:'t4_fish_chip', name:'생선 튀김', category:'요리', tier:'4차', desc:'시세 1610 · 재료: 1등급 도다리, 양파, 밀가루 · 경험치 30', tags:['요리사','해산물'], addedAt:'2025-01-15' },
+  { id:'t4_potion_high', name:'상급 포션', category:'요리', tier:'4차', desc:'체력 35% · 마나 20% · 쿨타임 30초 · 재료: 멜론, 상추, 네더사마귀 상자 2 · 경험치 7', tags:['요리사','포션'], addedAt:'2025-01-15' },
+  { id:'t4_melon_punch', name:'메론 화채', category:'요리', tier:'4차', desc:'포화 4분 · 재료: 멜론, 수박쥬스, 시원한 얼음 · 경험치 16', tags:['요리사','화채'], addedAt:'2025-01-15' },
+
+  // ───────── 광물 ─────────
+  { id:'ore_diamond', name:'다이아', category:'광물', tier:'기본', desc:'단일 상점가 72 · 블록 상점가 720', tags:['광물'], addedAt:'2025-01-15' },
+  { id:'ore_gold', name:'금', category:'광물', tier:'기본', desc:'단일 상점가 15 · 블록 상점가 150', tags:['광물'], addedAt:'2025-01-15' },
+  { id:'ore_iron', name:'철', category:'광물', tier:'기본', desc:'단일 상점가 10 · 블록 상점가 100', tags:['광물'], addedAt:'2025-01-15' },
+  { id:'ore_copper', name:'구리', category:'광물', tier:'기본', desc:'단일 상점가 4 · 블록 상점가 40', tags:['광물'], addedAt:'2025-01-15' },
+  { id:'ore_lapis', name:'청금석', category:'광물', tier:'기본', desc:'단일 상점가 6 · 블록 상점가 60', tags:['광물'], addedAt:'2025-01-15' },
+  { id:'ore_redstone', name:'레드스톤', category:'광물', tier:'기본', desc:'단일 상점가 6 · 블록 상점가 60', tags:['광물'], addedAt:'2025-01-15' },
+  { id:'ore_emerald', name:'에메랄드', category:'광물', tier:'기본', desc:'단일 상점가 120 · 블록 상점가 1200', tags:['광물'], addedAt:'2025-01-15' },
+  { id:'ore_quartz', name:'석영', category:'광물', tier:'기본', desc:'단일 상점가 8', tags:['광물'], addedAt:'2025-01-15' },
+  { id:'ore_netherite', name:'네더라이트', category:'광물', tier:'기본', desc:'단일 상점가 200 · 블록 상점가 2000', tags:['광물'], addedAt:'2025-01-15' }
+];
 
     const PAGE_SIZE = 24;
     const state = {q:'',cat:'',tier:'',sort:'name',fav:0,page:1};
@@ -162,6 +200,39 @@
     $('#share').addEventListener('click', e=>{e.preventDefault(); navigator.clipboard.writeText(location.href); alert('현재 검색 링크를 복사했습니다!');});
 
     render();
+
+    // ───────── 요리 가격 변동 계산기 ─────────
+const calcSel = document.getElementById('calc-item');
+const calcRate = document.getElementById('calc-rate');
+const calcBtn = document.getElementById('calc-btn');
+const calcResult = document.getElementById('calc-result');
+
+// 요리 항목만 드롭다운에 추가
+DATA.filter(x=>x.category==='요리').forEach(x=>{
+  const opt = document.createElement('option');
+  opt.value = x.id;
+  opt.textContent = x.name;
+  calcSel.appendChild(opt);
+});
+
+calcBtn.addEventListener('click', ()=>{
+  const id = calcSel.value;
+  const rate = parseFloat(calcRate.value);
+  if(!id) return alert('요리를 선택하세요.');
+  if(isNaN(rate)) return alert('변동 퍼센트를 입력하세요.');
+  if(rate < -30 || rate > 80) return alert('변동 범위는 -30% ~ +80% 입니다.');
+
+  const item = DATA.find(x=>x.id===id);
+  const match = item.desc.match(/시세\\s*([0-9]+)/);
+  if(!match) return alert('이 요리는 시세 정보가 없습니다.');
+
+  const base = parseFloat(match[1]);
+  const result = Math.round(base * (1 + rate/100));
+
+  calcResult.innerHTML = `💰 <b>${item.name}</b>의 변동 시세: <span style="color:#80ffae">${result.toLocaleString()}</span>원 (기준 ${base}원, 변동 ${rate}% )`;
+});
+
+    
   </script>
 </body>
 </html>
