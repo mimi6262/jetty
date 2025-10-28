@@ -437,10 +437,14 @@ calcBox.style = `
   box-shadow:0 8px 24px rgba(0,0,0,.6);color:#fff;max-width:380px;width:90%;
 `;
 calcBox.innerHTML = `
-  <h3 id="calcTitle" style="margin-top:0">가격 계산기</h3>
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+    <img id="calcThumb" alt="" style="width:36px;height:36px;border-radius:8px;object-fit:cover;border:1px solid #3b2a60;display:none">
+    <h3 id="calcTitle" style="margin:0">가격 계산기</h3>
+  </div>
+
   <div id="calcDesc" style="opacity:.8;margin-bottom:12px;font-size:14px"></div>
 
-  <!-- 기준 선택 라디오 -->
+  <!-- 광물 기준 라디오 -->
   <div id="oreMode" style="display:none; margin-bottom:8px;">
     <label style="margin-right:10px;">
       <input type="radio" name="oreType" value="single" checked> 단일 상점가 기준
@@ -450,13 +454,93 @@ calcBox.innerHTML = `
     </label>
   </div>
 
-  <input id="calcRate" type="number" placeholder="변동 퍼센트 입력 (-30~80)"
-    style="width:100%;padding:8px;border-radius:8px;border:1px solid #3b2a60;background:#2b1a4b;color:#fff;margin-bottom:10px;">
+  <!-- 범위 안내 -->
+  <div id="rangeBox" style="margin:8px 0 10px;padding:10px;border:1px solid #3b2a60;border-radius:10px;background:#22143d;">
+    <div style="font-weight:700;margin-bottom:6px;">가격 범위 (-30% ~ +80%)</div>
+    <div id="rangeValues" style="font-size:14px;opacity:.9;">기준가를 선택하면 자동 계산됩니다.</div>
+  </div>
+
+  <!-- 퍼센트 입력 + 슬라이더 + 프리셋 -->
+  <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px;">
+    <input id="calcRate" type="number" placeholder="변동 퍼센트 입력 (-30~80)"
+      style="width:100%;padding:8px;border-radius:8px;border:1px solid #3b2a60;background:#2b1a4b;color:#fff;">
+    <input id="rateSlider" type="range" min="-30" max="80" value="0"
+      style="width:100%">
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="btn" data-rate="-30">-30%</button>
+      <button class="btn" data-rate="-20">-20%</button>
+      <button class="btn" data-rate="0">0%</button>
+      <button class="btn" data-rate="20">+20%</button>
+      <button class="btn" data-rate="80">+80%</button>
+    </div>
+  </div>
+
   <button id="calcRun" class="btn primary" style="width:100%;margin-bottom:8px;">계산하기</button>
   <div id="calcResult" style="margin-top:6px;font-size:15px;color:#ffd770;"></div>
   <button id="calcClose" class="btn" style="width:100%;margin-top:10px;">닫기</button>
 `;
 
+function clampRate(v){ return Math.min(80, Math.max(-30, v)); }
+
+// 기준가 산출 (범위용) — 물고기/농작물도 ‘시세’ 인식, 쉼표 허용
+function getBasePriceForRange(item){
+  if (!item) return null;
+  if (['요리','물고기','농작물'].includes(item.category)) {
+    const m = /(?:시세|가격|판매가)\s*([\d,]+)/.exec(item.desc || '');
+    return m ? parseInt(m[1].replace(/,/g,''), 10) : null;
+  }
+  if (item.category === '광물') {
+    // 라디오 선택 반영
+    const mode = document.querySelector('input[name="oreType"]:checked')?.value || 'single';
+    if (mode === 'block') {
+      const m = /블록\s*상점가\s*([\d,]+)/.exec(item.desc || '');
+      return m ? parseInt(m[1].replace(/,/g,''), 10) : null;
+    } else {
+      const m = /단일\s*상점가\s*([\d,]+)/.exec(item.desc || '');
+      return m ? parseInt(m[1].replace(/,/g,''), 10) : null;
+    }
+  }
+  return null;
+}
+
+function renderRangeBox(base){
+  const box = document.getElementById('rangeValues');
+  if (!base) {
+    box.innerHTML = '기준가가 없어 범위를 계산할 수 없어요.';
+    return;
+  }
+  const minP = Math.round(base * 0.70); // -30%
+  const maxP = Math.round(base * 1.80); // +80%
+  box.innerHTML = `최저가(−30%): <b>${minP.toLocaleString()}</b>원 · 최고가(+80%): <b>${maxP.toLocaleString()}</b>원
+                   <br><small>기준 ${base.toLocaleString()}원</small>`;
+}
+
+// 슬라이더/인풋/프리셋 동기화
+const rateInput  = document.getElementById('calcRate');
+const rateSlider = document.getElementById('rateSlider');
+rateInput.addEventListener('input', ()=>{
+  const v = clampRate(parseFloat(rateInput.value) || 0);
+  rateSlider.value = v;
+});
+rateSlider.addEventListener('input', ()=>{
+  rateInput.value = rateSlider.value;
+});
+document.querySelectorAll('#calcBox [data-rate]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const v = +btn.dataset.rate;
+    rateInput.value = v;
+    rateSlider.value = v;
+  });
+});
+
+// 광물 기준 라디오가 바뀔 때 범위 다시 계산
+document.getElementById('oreMode').addEventListener('change', ()=>{
+  if (!selectedItem) return;
+  const base = getBasePriceForRange(selectedItem);
+  renderRangeBox(base);
+});
+
+    
 document.body.appendChild(calcBox);
 
 // 닫기 버튼
@@ -469,14 +553,36 @@ document.getElementById('calcClose').addEventListener('click', () => {
 const originalCard = card;
 card = function(it){
   const el = originalCard(it);
-  el.addEventListener('click', e=>{
-    if(e.target.classList.contains('fav')) return; // 하트 클릭 제외
-    selectedItem = it;
-    document.getElementById('calcTitle').innerHTML = `📦 ${it.name} 가격 계산`;
-    document.getElementById('calcDesc').textContent = it.desc || '';
-    document.getElementById('calcResult').textContent = '';
-    document.getElementById('oreMode').style.display = (it.category === '광물') ? 'block' : 'none';
-    calcBox.style.display = 'block';
+el.addEventListener('click', e=>{
+  if(e.target.classList.contains('fav')) return;
+  selectedItem = it;
+
+  // 제목/설명
+  document.getElementById('calcTitle').innerHTML = `📦 ${it.name} 가격 계산`;
+  document.getElementById('calcDesc').textContent = it.desc || '';
+
+  // 썸네일 (it.img가 있으면 그걸, 없으면 penguin_logo.png / 없으면 숨김)
+  const thumb = document.getElementById('calcThumb');
+  const src = it.img || 'penguin_logo.png';
+  thumb.src = src;
+  thumb.onerror = ()=>{ thumb.style.display='none'; };
+  thumb.onload  = ()=>{ thumb.style.display='block'; };
+
+  // 광물 라디오 표시 토글
+  document.getElementById('oreMode').style.display = (it.category === '광물') ? 'block' : 'none';
+
+  // 초기화
+  document.getElementById('calcResult').textContent = '';
+  document.getElementById('calcRate').value = '';
+  document.getElementById('rateSlider').value = 0;
+
+  // 기준가를 구해 범위 상자 채우기
+  const base = getBasePriceForRange(it);   // 아래 3) 함수 추가
+  renderRangeBox(base);                    // 아래 3) 함수 추가
+
+  calcBox.style.display = 'block';
+});
+
 
   });
   return el;
@@ -491,8 +597,12 @@ document.getElementById('calcRun').addEventListener('click', ()=>{
 
   const item = selectedItem;
 
-  
-let base = null, kind = '시세 기준';
+  // 계산 실행 로직은 그대로 - 입력만 동기화 
+let base = getBasePriceForRange(item);
+let kind = (item.category==='광물'
+  ? (document.querySelector('input[name="oreType"]:checked')?.value === 'block' ? '블록 기준' : '단일 기준')
+  : '시세 기준');
+
 
 // 요리/물고기/농작물: desc 안의 "시세 1,500" 같은 패턴 인식
 if (['요리','물고기','농작물'].includes(item.category)) {
