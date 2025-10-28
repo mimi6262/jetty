@@ -150,7 +150,7 @@ select option:focus {
 
     <!-- 빠른 카테고리 버튼 -->
   <div class="container" id="quickCats" 
-       style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 0;">
+       style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 0;justify-content:center;">
     <button class="chip" data-cat="">전체</button>
     <button class="chip" data-cat="요리">요리</button>
     <button class="chip" data-cat="재료">재료</button>
@@ -260,24 +260,24 @@ document.getElementById('quickCats').addEventListener('click', e => {
 { id:'t4_melon_punch', name:'메론 화채', category:'요리', tier:'4차', desc:'포화 4분 · 재료: 멜론, 수박쥬스, 시원한 얼음 · 경험치 16', tags:['요리사','화채'], addedAt:'2025-10-28' },
 
   // ───────── 광물 ─────────
-  { id:'ore_diamond', name:'다이아', category:'광물', tier:'기본', desc:'단일 상점가 72 · 블록 상점가 720', tags:['광물'], addedAt:'2025-01-15' },
-  { id:'ore_gold', name:'금', category:'광물', tier:'기본', desc:'단일 상점가 15 · 블록 상점가 150', tags:['광물'], addedAt:'2025-01-15' },
-  { id:'ore_iron', name:'철', category:'광물', tier:'기본', desc:'단일 상점가 10 · 블록 상점가 100', tags:['광물'], addedAt:'2025-01-15' },
-  { id:'ore_copper', name:'구리', category:'광물', tier:'기본', desc:'단일 상점가 4 · 블록 상점가 40', tags:['광물'], addedAt:'2025-01-15' },
-  { id:'ore_lapis', name:'청금석', category:'광물', tier:'기본', desc:'단일 상점가 6 · 블록 상점가 60', tags:['광물'], addedAt:'2025-01-15' },
-  { id:'ore_redstone', name:'레드스톤', category:'광물', tier:'기본', desc:'단일 상점가 6 · 블록 상점가 60', tags:['광물'], addedAt:'2025-01-15' },
-  { id:'ore_emerald', name:'에메랄드', category:'광물', tier:'기본', desc:'단일 상점가 120 · 블록 상점가 1200', tags:['광물'], addedAt:'2025-01-15' },
-  { id:'ore_quartz', name:'석영', category:'광물', tier:'기본', desc:'단일 상점가 8', tags:['광물'], addedAt:'2025-01-15' },
-  { id:'ore_netherite', name:'네더라이트', category:'광물', tier:'기본', desc:'단일 상점가 200 · 블록 상점가 2000', tags:['광물'], addedAt:'2025-01-15' },
+  { id:'ore_diamond', name:'다이아', category:'광물', tier:'기본', desc:'단일 상점가 72 · 블록 상점가 720', tags:['광물'], addedAt:'2025-10-28' },
+  { id:'ore_gold', name:'금', category:'광물', tier:'기본', desc:'단일 상점가 15 · 블록 상점가 150', tags:['광물'], addedAt:'2025-10-28' },
+  { id:'ore_iron', name:'철', category:'광물', tier:'기본', desc:'단일 상점가 10 · 블록 상점가 100', tags:['광물'], addedAt:'2025-10-28' },
+  { id:'ore_copper', name:'구리', category:'광물', tier:'기본', desc:'단일 상점가 4 · 블록 상점가 40', tags:['광물'], addedAt:'2025-10-28' },
+  { id:'ore_lapis', name:'청금석', category:'광물', tier:'기본', desc:'단일 상점가 6 · 블록 상점가 60', tags:['광물'], addedAt:'2025-10-28' },
+  { id:'ore_redstone', name:'레드스톤', category:'광물', tier:'기본', desc:'단일 상점가 6 · 블록 상점가 60', tags:['광물'], addedAt:'2025-10-28' },
+  { id:'ore_emerald', name:'에메랄드', category:'광물', tier:'기본', desc:'단일 상점가 120 · 블록 상점가 1200', tags:['광물'], addedAt:'2025-10-28' },
+  { id:'ore_quartz', name:'석영', category:'광물', tier:'기본', desc:'단일 상점가 8', tags:['광물'], addedAt:'2025-10-28' },
+  { id:'ore_netherite', name:'네더라이트', category:'광물', tier:'기본', desc:'단일 상점가 200 · 블록 상점가 2000', tags:['광물'], addedAt:'2025-10-28' },
 
 // 도감(백과) — 가격 계산 대상 아님
-{ id:'dex_slime', name:'슬라임', category:'도감', tier:'기본',   desc:'출현: 늪지 / 특성: 점액 / 드랍: 끈끈이',   tags:['몬스터','도감'], addedAt:'2025-01-16' },
+{ id:'dex_slime', name:'슬라임', category:'도감', tier:'기본',   desc:'출현: 늪지 / 특성: 점액 / 드랍: 끈끈이',   tags:['몬스터','도감'], addedAt:'2025-10-28' },
 
 // 물고기 — 등급/낚시 정보(가격이 있으면 desc에 숫자를 포함)
-{ id:'fish_carp', name:'잉어', category:'물고기', tier:'일반',   desc:'서식: 강 · 시간: 낮 · 미끼: 벌레',   tags:['물고기','낚시'], addedAt:'2025-01-16' },
+{ id:'fish_carp', name:'잉어', category:'물고기', tier:'일반',   desc:'서식: 강 · 시간: 낮 · 미끼: 벌레',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
 
 // 농작물 — 수확주기/판매가 등(판매가 있으면 desc에 “시세 00”을 넣으면 계산 가능)
-{ id:'crop_wheat', name:'밀', category:'농작물', tier:'기본',   desc:'성장: 3단계 · 수확량: 1~3',   tags:['농작물','재배'], addedAt:'2025-01-16' },
+{ id:'crop_wheat', name:'밀', category:'농작물', tier:'기본',   desc:'성장: 3단계 · 수확량: 1~3',   tags:['농작물','재배'], addedAt:'2025-10-28' },
    
 ];
 
