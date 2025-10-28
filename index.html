@@ -531,7 +531,7 @@ document.querySelectorAll('#calcBox [data-rate]').forEach(btn=>{
     rateInput.value = v;
     rateSlider.value = v;
   });
-});
+
 
 // 광물 기준 라디오가 바뀔 때 범위 다시 계산
 document.getElementById('oreMode').addEventListener('change', ()=>{
@@ -738,7 +738,7 @@ noteArea.addEventListener('input', ()=>{
 });
 loadNotes();
 
-    // 모든 정의가 끝난 뒤 호출
+ // 모든 정의가 끝난 뒤 호출
         render();
     
   </script>
