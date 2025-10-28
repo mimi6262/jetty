@@ -15,7 +15,7 @@
     }
     *{box-sizing:border-box}
     body{margin:0;background:linear-gradient(180deg,var(--bg2),var(--bg1));color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,Noto Sans KR,Helvetica,Arial}
-    .container{max-width:1100px;margin:0 auto;padding:0 16px}
+    .container{max-width:110    0px;margin:0 auto;padding:0 16px}
     header{text-align:center;padding:28px 0 14px;border-bottom:1px solid rgba(255,255,255,.06)}
     .subtitle{color:var(--muted)}
     .toolbar{position:sticky;top:0;z-index:99;background:rgba(26,11,46,.65);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:24px}
@@ -103,16 +103,6 @@ select option:focus {
   background: var(--accent2);
   color: #fff;
 }
-
-    .empty {
-  color: var(--muted);
-  text-align: center;
-  padding: 36px 0 28px;
-  border: 1px dashed var(--line);
-  border-radius: 14px;
-  background: rgba(255,255,255,0.03);
-}
-
     
   </style>
 </head>
@@ -223,29 +213,51 @@ document.getElementById('quickCats').addEventListener('click', e => {
     const saveFavs = () => localStorage.setItem(favKey, JSON.stringify([...favs]));
 
  const DATA = [
-  // ───────── 재료 ─────────
-  { id:'mat_milgagu', name:'밀가루', category:'재료', tier:'기본', desc:'밀 x 4', tags:['요리사','기본재료'], addedAt:'2025-01-15' },
+ // ───────── 기본 재료 ─────────
+{ id:'mat_milgagu',   name:'밀가루',   category:'재료', tier:'기본', desc:'밀 x 4',           tags:['요리사','기본재료'], addedAt:'2025-10-28' },
+{ id:'mat_sugar_pow', name:'슈가파우더', category:'재료', tier:'기본', desc:'설탕 x 9',        tags:['요리사','기본재료'], addedAt:'2025-10-28' },
+{ id:'mat_beet_box',  name:'비트상자',  category:'재료', tier:'기본', desc:'비트 x 4',        tags:['요리사','기본재료'], addedAt:'2025-10-28' },
+{ id:'mat_potato_box',name:'감자상자',  category:'재료', tier:'기본', desc:'감자 x 9',        tags:['요리사','기본재료'], addedAt:'2025-10-28' },
+{ id:'mat_watermelon_juice', name:'수박 쥬스', category:'재료', tier:'기본', desc:'수박 x 4', tags:['요리사','기본재료'], addedAt:'2025-10-28' },
 
-  // ───────── 0차 ─────────
-  { id:'t0_garlic_steak', name:'마늘 스테이크', category:'요리', tier:'0차', desc:'시세 50 · 재료: 마늘, 스테이크, 감자상자 2 · 경험치 3', tags:['요리사','육류'], addedAt:'2025-01-15' },
+// ───────── 0차 요리 ─────────
+{ id:'t0_garlic_steak', name:'마늘 스테이크', category:'요리', tier:'0차', desc:'시세 50 · 재료: 마늘, 스테이크, 감자상자 2 · 경험치 3', tags:['요리사','육류'], addedAt:'2025-10-28' },
+{ id:'t0_kimchi',       name:'배추 김치',     category:'요리', tier:'0차', desc:'시세 78 · 재료: 배추, 고추, 밀가루 · 경험치 3',        tags:['요리사','발효'], addedAt:'2025-10-28' },
+{ id:'t0_lemon_dango',  name:'레몬 당고',     category:'요리', tier:'0차', desc:'시세 48 · 재료: 레몬, 슈가파우더, 밀가루 · 경험치 3', tags:['요리사','간식'], addedAt:'2025-10-28' },
+{ id:'t0_potion_lowest',name:'최하급 포션',   category:'요리', tier:'0차', desc:'체력 15% · 마나 4% · 쿨타임 30초 · 재료: 레몬, 마늘, 네더사마귀 상자 2 · 경험치 3', tags:['요리사','포션'], addedAt:'2025-10-28' },
 
-  // ───────── 1차 ─────────
-  { id:'t1_salad', name:'샐러드', category:'요리', tier:'1차', desc:'시세 98 · 재료: 파프리카, 오이, 당근상자 2 · 경험치 4', tags:['요리사','채소'], addedAt:'2025-01-15' },
+// ───────── 1차 요리 ─────────
+{ id:'t1_strawberry_mochi', name:'딸기모찌',   category:'요리', tier:'1차', desc:'시세 58 · 재료: 딸기, 슈가파우더, 밀가루 · 경험치 4',      tags:['요리사','디저트'], addedAt:'2025-10-28' },
+{ id:'t1_cucumber_muchim',  name:'오이무침',   category:'요리', tier:'1차', desc:'시세 86 · 재료: 오이, 고추, 밀가루 · 경험치 4',            tags:['요리사','한식'], addedAt:'2025-10-28' },
+{ id:'t1_salad',            name:'샐러드',     category:'요리', tier:'1차', desc:'시세 98 · 재료: 파프리카, 오이, 당근상자 2 · 경험치 4',    tags:['요리사','채소'], addedAt:'2025-10-28' },
+{ id:'t1_jellyfish_cold',   name:'해파리냉채', category:'요리', tier:'1차', desc:'시세 1420 · 재료: 1등급 해파리, 오이, 파프리카 · 경험치 15', tags:['요리사','해산물'], addedAt:'2025-10-28' },
+{ id:'t1_potion_low',       name:'하급 포션',  category:'요리', tier:'1차', desc:'체력 20% · 마나 8% · 쿨타임 30초 · 재료: 딸기, 파프리카, 네더사마귀 상자 2 · 경험치 4', tags:['요리사','포션'], addedAt:'2025-10-28' },
+{ id:'t1_strawberry_punch', name:'딸기 화채', category:'요리', tier:'1차', desc:'포화 1분 · 재료: 딸기, 수박쥬스, 시원한 얼음 · 경험치 5', tags:['요리사','화채'], addedAt:'2025-10-28' },
+{ id:'t1_sweet_potato_salad', name:'고구마 샐러드', category:'요리', tier:'1차', desc:'시세 98 · 재료: 고구마, 오이, 당근상자 2 · 경험치 4', tags:['요리사','채소'], addedAt:'2025-10-28' },
 
-  // ───────── 3차 ─────────
-  { id:'t3_tomato_pasta', name:'토마토 파스타', category:'요리', tier:'3차', desc:'시세 130 · 재료: 토마토, 대파, 밀가루 · 경험치 6', tags:['요리사','면요리'], addedAt:'2025-01-15' },
-  { id:'t3_peach_ice_tea', name:'복숭아 아이스티', category:'요리', tier:'3차', desc:'시세 80 · 재료: 복숭아, 비트상자, 슈가파우더 2 · 경험치 6', tags:['요리사','음료'], addedAt:'2025-01-15' },
-  { id:'t3_shrimp_grill', name:'철판 새우', category:'요리', tier:'3차', desc:'시세 1610 · 재료: 1등급 새우, 브로콜리, 당근 상자 2 · 경험치 25', tags:['요리사','해산물'], addedAt:'2025-01-15' },
-  { id:'t3_potion_mid', name:'중급 포션', category:'요리', tier:'3차', desc:'체력 30% · 마나 16% · 쿨타임 30초 · 재료: 복숭아, 토마토, 네더사마귀 상자 2 · 경험치 6', tags:['요리사','포션'], addedAt:'2025-01-15' },
-  { id:'t3_peach_punch', name:'복숭아 화채', category:'요리', tier:'3차', desc:'포화 3분 · 재료: 복숭아, 수박쥬스, 시원한 얼음 · 경험치 12', tags:['요리사','화채'], addedAt:'2025-01-15' },
+// ───────── 2차 요리 ─────────
+{ id:'t2_kkakdugi',     name:'깍두기',     category:'요리', tier:'2차', desc:'시세 100 · 재료: 무, 고추, 밀가루 · 경험치 5',               tags:['요리사','발효'], addedAt:'2025-10-28' },
+{ id:'t2_orange_pudding', name:'오렌지 푸딩', category:'요리', tier:'2차', desc:'시세 72 · 재료: 오렌지, 슈가파우더, 밀가루 · 경험치 5',      tags:['요리사','디저트'], addedAt:'2025-10-28' },
+{ id:'t2_zucchini_stew', name:'애호박 찌개', category:'요리', tier:'2차', desc:'시세 112 · 재료: 애호박, 대파, 감자상자 2 · 경험치 5',       tags:['요리사','국물'], addedAt:'2025-10-28' },
+{ id:'t2_gray_mullet_spicy', name:'숭어 매운탕', category:'요리', tier:'2차', desc:'시세 1420 · 재료: 1등급 숭어, 무, 대파 · 경험치 20',        tags:['요리사','해산물'], addedAt:'2025-10-28' },
+{ id:'t2_potion_basic',  name:'기본 포션',  category:'요리', tier:'2차', desc:'체력 25% · 마나 12% · 쿨타임 30초 · 재료: 애호박, 오렌지, 네더사마귀 상자 2 · 경험치 5', tags:['요리사','포션'], addedAt:'2025-10-28' },
+{ id:'t2_orange_punch',  name:'오렌지 화채', category:'요리', tier:'2차', desc:'포화 2분 · 재료: 오렌지, 수박쥬스, 시원한 얼음 · 경험치 8', tags:['요리사','화채'], addedAt:'2025-10-28' },
 
-  // ───────── 4차 ─────────
-  { id:'t4_melon_bread', name:'메론빵', category:'요리', tier:'4차', desc:'시세 90 · 재료: 멜론, 슈가파우더, 밀가루 · 경험치 7', tags:['요리사','빵'], addedAt:'2025-01-15' },
-  { id:'t4_gimbap', name:'김밥', category:'요리', tier:'4차', desc:'시세 166 · 재료: 쌀, 양파, 비트 상자 1 · 경험치 7', tags:['요리사','한식'], addedAt:'2025-01-15' },
-  { id:'t4_bibimbap', name:'비빔밥', category:'요리', tier:'4차', desc:'시세 166 · 재료: 쌀, 상추, 당근 상자 2 · 경험치 7', tags:['요리사','한식'], addedAt:'2025-01-15' },
-  { id:'t4_fish_chip', name:'생선 튀김', category:'요리', tier:'4차', desc:'시세 1610 · 재료: 1등급 도다리, 양파, 밀가루 · 경험치 30', tags:['요리사','해산물'], addedAt:'2025-01-15' },
-  { id:'t4_potion_high', name:'상급 포션', category:'요리', tier:'4차', desc:'체력 35% · 마나 20% · 쿨타임 30초 · 재료: 멜론, 상추, 네더사마귀 상자 2 · 경험치 7', tags:['요리사','포션'], addedAt:'2025-01-15' },
-  { id:'t4_melon_punch', name:'메론 화채', category:'요리', tier:'4차', desc:'포화 4분 · 재료: 멜론, 수박쥬스, 시원한 얼음 · 경험치 16', tags:['요리사','화채'], addedAt:'2025-01-15' },
+// ───────── 3차 요리 ─────────
+{ id:'t3_broccoli_salad', name:'브로콜리 샐러드', category:'요리', tier:'3차', desc:'시세 142 · 재료: 브로콜리, 양배추, 비트상자 1 · 경험치 6', tags:['요리사','채소'], addedAt:'2025-10-28' },
+{ id:'t3_tomato_pasta',  name:'토마토 파스타',  category:'요리', tier:'3차', desc:'시세 130 · 재료: 토마토, 대파, 밀가루 · 경험치 6',           tags:['요리사','면요리'], addedAt:'2025-10-28' },
+{ id:'t3_peach_ice_tea', name:'복숭아 아이스티', category:'요리', tier:'3차', desc:'시세 80 · 재료: 복숭아, 비트상자, 슈가파우더 2 · 경험치 6',  tags:['요리사','음료'], addedAt:'2025-10-28' },
+{ id:'t3_shrimp_grill',  name:'철판 새우',      category:'요리', tier:'3차', desc:'시세 1610 · 재료: 1등급 새우, 브로콜리, 당근 상자 2 · 경험치 25', tags:['요리사','해산물'], addedAt:'2025-10-28' },
+{ id:'t3_potion_mid',    name:'중급 포션',      category:'요리', tier:'3차', desc:'체력 30% · 마나 16% · 쿨타임 30초 · 재료: 복숭아, 토마토, 네더사마귀 상자 2 · 경험치 6', tags:['요리사','포션'], addedAt:'2025-10-28' },
+{ id:'t3_peach_punch',   name:'복숭아 화채',    category:'요리', tier:'3차', desc:'포화 3분 · 재료: 복숭아, 수박쥬스, 시원한 얼음 · 경험치 12', tags:['요리사','화채'], addedAt:'2025-10-28' },
+
+// ───────── 4차 요리 ─────────
+{ id:'t4_melon_bread', name:'메론빵',    category:'요리', tier:'4차', desc:'시세 90 · 재료: 멜론, 슈가파우더, 밀가루 · 경험치 7',   tags:['요리사','빵'], addedAt:'2025-10-28' },
+{ id:'t4_gimbap',      name:'김밥',      category:'요리', tier:'4차', desc:'시세 166 · 재료: 쌀, 양파, 비트 상자 1 · 경험치 7',     tags:['요리사','한식'], addedAt:'2025-10-28' },
+{ id:'t4_bibimbap',    name:'비빔밥',    category:'요리', tier:'4차', desc:'시세 166 · 재료: 쌀, 상추, 당근 상자 2 · 경험치 7',     tags:['요리사','한식'], addedAt:'2025-10-28' },
+{ id:'t4_fish_chip',   name:'생선 튀김', category:'요리', tier:'4차', desc:'시세 1610 · 재료: 1등급 도다리, 양파, 밀가루 · 경험치 30', tags:['요리사','해산물'], addedAt:'2025-10-28' },
+{ id:'t4_potion_high', name:'상급 포션', category:'요리', tier:'4차', desc:'체력 35% · 마나 20% · 쿨타임 30초 · 재료: 멜론, 상추, 네더사마귀 상자 2 · 경험치 7', tags:['요리사','포션'], addedAt:'2025-10-28' },
+{ id:'t4_melon_punch', name:'메론 화채', category:'요리', tier:'4차', desc:'포화 4분 · 재료: 멜론, 수박쥬스, 시원한 얼음 · 경험치 16', tags:['요리사','화채'], addedAt:'2025-10-28' },
 
   // ───────── 광물 ─────────
   { id:'ore_diamond', name:'다이아', category:'광물', tier:'기본', desc:'단일 상점가 72 · 블록 상점가 720', tags:['광물'], addedAt:'2025-01-15' },
