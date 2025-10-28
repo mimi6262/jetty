@@ -201,37 +201,74 @@
 
     render();
 
-// ───────── 요리 가격 변동 계산기 ─────────
-const calcSel = document.getElementById('calc-item');
-const calcRate = document.getElementById('calc-rate');
-const calcBtn = document.getElementById('calc-btn');
-const calcResult = document.getElementById('calc-result');
+// ───────── 클릭 시 계산기 열기 ─────────
+let selectedItem = null;
 
-// 요리 항목 중 0차 제외
-DATA.filter(x => x.category === '요리' && x.tier !== '0차').forEach(x => {
-  const opt = document.createElement('option');
-  opt.value = x.id;
-  opt.textContent = x.name;
-  calcSel.appendChild(opt);
+// 계산기 UI 생성 (body 맨 아래에 삽입)
+const calcBox = document.createElement('div');
+calcBox.id = 'calcBox';
+calcBox.style = `
+  display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
+  background:linear-gradient(180deg,#241443,#1a0f30);
+  border:1px solid #3b2a60;border-radius:16px;padding:20px 24px;z-index:9999;
+  box-shadow:0 8px 24px rgba(0,0,0,.6);color:#fff;max-width:380px;width:90%;
+`;
+calcBox.innerHTML = `
+  <h3 id="calcTitle" style="margin-top:0">가격 계산기</h3>
+  <div id="calcDesc" style="opacity:.8;margin-bottom:12px;font-size:14px"></div>
+  <input id="calcRate" type="number" placeholder="변동 퍼센트 입력 (-30~80)"
+    style="width:100%;padding:8px;border-radius:8px;border:1px solid #3b2a60;background:#2b1a4b;color:#fff;margin-bottom:10px;">
+  <button id="calcRun" class="btn primary" style="width:100%;margin-bottom:8px;">계산하기</button>
+  <div id="calcResult" style="margin-top:6px;font-size:15px;color:#ffd770;"></div>
+  <button id="calcClose" class="btn" style="width:100%;margin-top:10px;">닫기</button>
+`;
+document.body.appendChild(calcBox);
+
+// 닫기 버튼
+document.getElementById('calcClose').addEventListener('click', () => {
+  calcBox.style.display = 'none';
+  selectedItem = null;
 });
 
-calcBtn.addEventListener('click', () => {
-  const id = calcSel.value;
-  const rate = parseFloat(calcRate.value);
-  if (!id) return alert('요리를 선택하세요.');
-  if (isNaN(rate)) return alert('변동 퍼센트를 입력하세요.');
-  if (rate < -30 || rate > 80) return alert('변동 범위는 -30% ~ +80% 입니다.');
+// 카드 클릭 시 열기 (card 함수 수정)
+const originalCard = card;
+card = function(it){
+  const el = originalCard(it);
+  el.addEventListener('click', e=>{
+    if(e.target.classList.contains('fav')) return; // 하트 클릭 제외
+    selectedItem = it;
+    document.getElementById('calcTitle').innerHTML = `📦 ${it.name} 가격 계산`;
+    document.getElementById('calcDesc').textContent = it.desc || '';
+    document.getElementById('calcResult').textContent = '';
+    calcBox.style.display = 'block';
+  });
+  return el;
+};
 
-  const item = DATA.find(x => x.id === id);
-  const match = item.desc.match(/시세\s*([0-9]+)/);
-  if (!match) return alert('이 요리는 시세 정보가 없습니다.');
+// 계산 실행
+document.getElementById('calcRun').addEventListener('click', ()=>{
+  if(!selectedItem) return;
+  const rate = parseFloat(document.getElementById('calcRate').value);
+  if(isNaN(rate)) return alert('변동 퍼센트를 입력하세요.');
+  if(rate < -30 || rate > 80) return alert('변동 범위는 -30% ~ +80% 입니다.');
 
-  const base = parseFloat(match[1]);
-  const result = Math.round(base * (1 + rate / 100));
+  const item = selectedItem;
+  let base = null;
 
-  calcResult.innerHTML = `💰 <b>${item.name}</b>의 변동 시세: 
-    <span style="color:#80ffae">${result.toLocaleString()}</span>원 
-    (기준 ${base.toLocaleString()}원, 변동 ${rate}% )`;
+  if(item.category === '요리'){
+    const m = /시세\s*([0-9]+)/.exec(item.desc||'');
+    base = m ? parseInt(m[1],10) : null;
+  }else if(item.category === '광물'){
+    const m = /단일\s*상점가\s*([0-9]+)/.exec(item.desc||'');
+    base = m ? parseInt(m[1],10) : null;
+  }
+
+  if(!base) return alert('이 아이템은 시세 정보를 찾을 수 없습니다.');
+
+  const result = Math.round(base * (1 + rate/100));
+  document.getElementById('calcResult').innerHTML =
+    `💰 변동 시세: <span style="color:#80ffae">${result.toLocaleString()}</span>원
+     <br><small>(기준 ${base.toLocaleString()}원, 변동 ${rate}%)</small>`;
 });
 
     
