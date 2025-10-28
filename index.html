@@ -273,9 +273,9 @@ document.getElementById('quickCats').addEventListener('click', e => {
   { id:'ore_quartz', name:'석영', category:'광물', tier:'기본', desc:'단일 상점가 8', tags:['광물'], addedAt:'2025-10-28' },
   { id:'ore_netherite', name:'네더라이트', category:'광물', tier:'기본', desc:'단일 상점가 200 · 블록 상점가 2000', tags:['광물'], addedAt:'2025-10-28' },
  { id:'ore_s1', name:'신비로운 스피넬', category:'광물', tier:'기본', desc:'단일 상점가 150', tags:['광물'], addedAt:'2025-10-28' },
- { id:'ore_s1', name:'신비로운 태양석', category:'광물', tier:'기본', desc:'단일 상점가 500', tags:['광물'], addedAt:'2025-10-28' },   
- { id:'ore_s1', name:'신비로운 루비', category:'광물', tier:'기본', desc:'단일 상점가 1800', tags:['광물'], addedAt:'2025-10-28' },
-  { id:'ore_s1', name:'신비로운 크리스탈', category:'광물', tier:'기본', desc:'단일 상점가 12000', tags:['광물'], addedAt:'2025-10-28' },  
+ { id:'ore_s2', name:'신비로운 태양석', category:'광물', tier:'기본', desc:'단일 상점가 500', tags:['광물'], addedAt:'2025-10-28' },   
+ { id:'ore_s3', name:'신비로운 루비', category:'광물', tier:'기본', desc:'단일 상점가 1800', tags:['광물'], addedAt:'2025-10-28' },
+  { id:'ore_s4', name:'신비로운 크리스탈', category:'광물', tier:'기본', desc:'단일 상점가 12000', tags:['광물'], addedAt:'2025-10-28' },  
 
 // 도감(백과) — 가격 계산 대상 아님
   { id:'dex_test', name:'테스트', category:'도감', tier:'기본', desc:'단일 상점가 200 · 블록 상점가 2000', tags:['테스트'], addedAt:'2025-10-28' },
@@ -580,9 +580,9 @@ el.addEventListener('click', e=>{
   const base = getBasePriceForRange(it);   // 아래 3) 함수 추가
   renderRangeBox(base);                    // 아래 3) 함수 추가
 
+  // 팝업 오픈
   calcBox.style.display = 'block';
 });
-
 
   return el;
 };
