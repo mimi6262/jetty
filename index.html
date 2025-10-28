@@ -201,35 +201,37 @@
 
     render();
 
-    // ───────── 요리 가격 변동 계산기 ─────────
+// ───────── 요리 가격 변동 계산기 ─────────
 const calcSel = document.getElementById('calc-item');
 const calcRate = document.getElementById('calc-rate');
 const calcBtn = document.getElementById('calc-btn');
 const calcResult = document.getElementById('calc-result');
 
-// 요리 항목만 드롭다운에 추가
-DATA.filter(x=>x.category==='요리').forEach(x=>{
+// 요리 항목 중 0차 제외
+DATA.filter(x => x.category === '요리' && x.tier !== '0차').forEach(x => {
   const opt = document.createElement('option');
   opt.value = x.id;
   opt.textContent = x.name;
   calcSel.appendChild(opt);
 });
 
-calcBtn.addEventListener('click', ()=>{
+calcBtn.addEventListener('click', () => {
   const id = calcSel.value;
   const rate = parseFloat(calcRate.value);
-  if(!id) return alert('요리를 선택하세요.');
-  if(isNaN(rate)) return alert('변동 퍼센트를 입력하세요.');
-  if(rate < -30 || rate > 80) return alert('변동 범위는 -30% ~ +80% 입니다.');
+  if (!id) return alert('요리를 선택하세요.');
+  if (isNaN(rate)) return alert('변동 퍼센트를 입력하세요.');
+  if (rate < -30 || rate > 80) return alert('변동 범위는 -30% ~ +80% 입니다.');
 
-  const item = DATA.find(x=>x.id===id);
-  const match = item.desc.match(/시세\\s*([0-9]+)/);
-  if(!match) return alert('이 요리는 시세 정보가 없습니다.');
+  const item = DATA.find(x => x.id === id);
+  const match = item.desc.match(/시세\s*([0-9]+)/);
+  if (!match) return alert('이 요리는 시세 정보가 없습니다.');
 
   const base = parseFloat(match[1]);
-  const result = Math.round(base * (1 + rate/100));
+  const result = Math.round(base * (1 + rate / 100));
 
-  calcResult.innerHTML = `💰 <b>${item.name}</b>의 변동 시세: <span style="color:#80ffae">${result.toLocaleString()}</span>원 (기준 ${base}원, 변동 ${rate}% )`;
+  calcResult.innerHTML = `💰 <b>${item.name}</b>의 변동 시세: 
+    <span style="color:#80ffae">${result.toLocaleString()}</span>원 
+    (기준 ${base.toLocaleString()}원, 변동 ${rate}% )`;
 });
 
     
