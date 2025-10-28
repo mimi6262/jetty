@@ -272,6 +272,10 @@ document.getElementById('quickCats').addEventListener('click', e => {
   { id:'ore_emerald', name:'에메랄드', category:'광물', tier:'기본', desc:'단일 상점가 120 · 블록 상점가 1200', tags:['광물'], addedAt:'2025-10-28' },
   { id:'ore_quartz', name:'석영', category:'광물', tier:'기본', desc:'단일 상점가 8', tags:['광물'], addedAt:'2025-10-28' },
   { id:'ore_netherite', name:'네더라이트', category:'광물', tier:'기본', desc:'단일 상점가 200 · 블록 상점가 2000', tags:['광물'], addedAt:'2025-10-28' },
+ { id:'ore_s1', name:'신비로운 스피넬', category:'광물', tier:'기본', desc:'단일 상점가 150', tags:['광물'], addedAt:'2025-10-28' },
+ { id:'ore_s1', name:'신비로운 태양석', category:'광물', tier:'기본', desc:'단일 상점가 500', tags:['광물'], addedAt:'2025-10-28' },   
+ { id:'ore_s1', name:'신비로운 루비', category:'광물', tier:'기본', desc:'단일 상점가 1800', tags:['광물'], addedAt:'2025-10-28' },
+  { id:'ore_s1', name:'신비로운 크리스탈', category:'광물', tier:'기본', desc:'단일 상점가 12000', tags:['광물'], addedAt:'2025-10-28' },  
 
 // 도감(백과) — 가격 계산 대상 아님
   { id:'dex_test', name:'테스트', category:'도감', tier:'기본', desc:'단일 상점가 200 · 블록 상점가 2000', tags:['테스트'], addedAt:'2025-10-28' },
@@ -310,16 +314,47 @@ document.getElementById('quickCats').addEventListener('click', e => {
 
 // 농작물 — 수확주기/판매가 등(판매가 있으면 desc에 “시세 00”을 넣으면 계산 가능)
 { id:'crop_coin0', name:'농부코인', category:'농작물', tier:'기본',   desc:'시세 1200 · 제단 또는 재료',   tags:['코인','제단'], addedAt:'2025-10-28' },
-{ id:'crop_wheat', name:'1등급 마늘', category:'농작물', tier:'0차',   desc:'시세 24',   tags:['농작물','재배'], addedAt:'2025-10-28' },
-{ id:'crop_wheat', name:'1등급 배추', category:'농작물', tier:'0차',   desc:'시세 24',   tags:['농작물','재배'], addedAt:'2025-10-28' },
-{ id:'crop_wheat', name:'1등급 고추', category:'농작물', tier:'0차',   desc:'시세 24',   tags:['농작물','재배'], addedAt:'2025-10-28' },
-{ id:'crop_wheat', name:'1등급 레몬', category:'농작물', tier:'0차',   desc:'시세 24',   tags:['농작물','재배'], addedAt:'2025-10-28' },
-{ id:'crop_wheat', name:'황금 마늘', category:'농작물', tier:'0차',   desc:'시세 100',   tags:['농작물','재배'], addedAt:'2025-10-28' },
-{ id:'crop_wheat', name:'황금 배추', category:'농작물', tier:'0차',   desc:'시세 100',   tags:['농작물','재배'], addedAt:'2025-10-28' },
-{ id:'crop_wheat', name:'황금 레몬', category:'농작물', tier:'0차',   desc:'시세 100',   tags:['농작물','재배'], addedAt:'2025-10-28' },
+{ id:'crop_wheat1', name:'1등급 마늘', category:'농작물', tier:'0차',   desc:'시세 24',   tags:['농작물','재배'], addedAt:'2025-10-28' },
+{ id:'crop_wheat2', name:'1등급 배추', category:'농작물', tier:'0차',   desc:'시세 24',   tags:['농작물','재배'], addedAt:'2025-10-28' },
+{ id:'crop_wheat3', name:'1등급 고추', category:'농작물', tier:'0차',   desc:'시세 24',   tags:['농작물','재배'], addedAt:'2025-10-28' },
+{ id:'crop_wheat4', name:'1등급 레몬', category:'농작물', tier:'0차',   desc:'시세 24',   tags:['농작물','재배'], addedAt:'2025-10-28' },
+{ id:'crop_wheat5', name:'황금 마늘', category:'농작물', tier:'0차',   desc:'시세 100',   tags:['농작물','재배'], addedAt:'2025-10-28' },
+{ id:'crop_wheat6', name:'황금 배추', category:'농작물', tier:'0차',   desc:'시세 100',   tags:['농작물','재배'], addedAt:'2025-10-28' },
+{ id:'crop_wheat7', name:'황금 레몬', category:'농작물', tier:'0차',   desc:'시세 100',   tags:['농작물','재배'], addedAt:'2025-10-28' },
+{ id:'crop_wheat8', name:'1등급 고구마', category:'농작물', tier:'1차',   desc:'시세 30',   tags:['농작물','재배'], addedAt:'2025-10-28' },
+{ id:'crop_wheat9', name:'1등급 파프리카', category:'농작물', tier:'1차',   desc:'시세 30',   tags:['농작물','재배'], addedAt:'2025-10-28' },
+{ id:'crop_wheat10', name:'1등급 오이', category:'농작물', tier:'1차',   desc:'시세 30',   tags:['농작물','재배'], addedAt:'2025-10-28' },
+{ id:'crop_wheat11', name:'1등급 딸기', category:'농작물', tier:'1차',   desc:'시세 30',   tags:['농작물','재배'], addedAt:'2025-10-28' },
+{ id:'crop_wheat12', name:'황금 고구마', category:'농작물', tier:'1차',   desc:'시세 200',   tags:['농작물','재배'], addedAt:'2025-10-28' },
+{ id:'crop_wheat13', name:'황금 파프리카', category:'농작물', tier:'1차',   desc:'시세 200',   tags:['농작물','재배'], addedAt:'2025-10-28' },
+{ id:'crop_wheat14', name:'황금 오이', category:'농작물', tier:'1차',   desc:'시세 200',   tags:['농작물','재배'], addedAt:'2025-10-28' },
+{ id:'crop_wheat15', name:'황금 딸기', category:'농작물', tier:'1차',   desc:'시세 200',   tags:['농작물','재배'], addedAt:'2025-10-28' },
+{ id:'crop_wheat16', name:'1등급 애호박', category:'농작물', tier:'2차',   desc:'시세 36',   tags:['농작물','재배'], addedAt:'2025-10-28' },
+{ id:'crop_wheat17', name:'1등급 대파', category:'농작물', tier:'2차',   desc:'시세 36',   tags:['농작물','재배'], addedAt:'2025-10-28' },   
+{ id:'crop_wheat18', name:'1등급 무', category:'농작물', tier:'2차',   desc:'시세 36',   tags:['농작물','재배'], addedAt:'2025-10-28' },   
+{ id:'crop_wheat19', name:'1등급 오렌지', category:'농작물', tier:'2차',   desc:'시세 36',   tags:['농작물','재배'], addedAt:'2025-10-28' },   
+{ id:'crop_wheat20', name:'황금 애호박', category:'농작물', tier:'2차',   desc:'시세 300',   tags:['농작물','재배'], addedAt:'2025-10-28' },
+{ id:'crop_wheat21', name:'황금 대파', category:'농작물', tier:'2차',   desc:'시세 300',   tags:['농작물','재배'], addedAt:'2025-10-28' },   
+{ id:'crop_wheat22', name:'황금 무', category:'농작물', tier:'2차',   desc:'시세 300',   tags:['농작물','재배'], addedAt:'2025-10-28' },   
+{ id:'crop_wheat23', name:'황금 오렌지', category:'농작물', tier:'2차',   desc:'시세 300',   tags:['농작물','재배'], addedAt:'2025-10-28' },   
+{ id:'crop_wheat24', name:'1등급 토마토', category:'농작물', tier:'3차',   desc:'시세 42',   tags:['농작물','재배'], addedAt:'2025-10-28' },      
+{ id:'crop_wheat25', name:'1등급 양배추', category:'농작물', tier:'3차',   desc:'시세 42',   tags:['농작물','재배'], addedAt:'2025-10-28' },         
+{ id:'crop_wheat26', name:'1등급 브로콜리', category:'농작물', tier:'3차',   desc:'시세 42',   tags:['농작물','재배'], addedAt:'2025-10-28' },      
+{ id:'crop_wheat27', name:'1등급 복숭아', category:'농작물', tier:'3차',   desc:'시세 42',   tags:['농작물','재배'], addedAt:'2025-10-28' },      
+{ id:'crop_wheat28', name:'황금 토마토', category:'농작물', tier:'3차',   desc:'시세 400',   tags:['농작물','재배'], addedAt:'2025-10-28' },      
+{ id:'crop_wheat29', name:'황금 양배추', category:'농작물', tier:'3차',   desc:'시세 400',   tags:['농작물','재배'], addedAt:'2025-10-28' },         
+{ id:'crop_wheat30', name:'황금 브로콜리', category:'농작물', tier:'3차',   desc:'시세 400',   tags:['농작물','재배'], addedAt:'2025-10-28' },      
+{ id:'crop_wheat31', name:'황금 복숭아', category:'농작물', tier:'3차',   desc:'시세 400',   tags:['농작물','재배'], addedAt:'2025-10-28' }, 
+{ id:'crop_wheat32', name:'1등급 상추', category:'농작물', tier:'4차',   desc:'시세 48',   tags:['농작물','재배'], addedAt:'2025-10-28' },      
+{ id:'crop_wheat33', name:'1등급 씰', category:'농작물', tier:'4차',   desc:'시세 48',   tags:['농작물','재배'], addedAt:'2025-10-28' },         
+{ id:'crop_wheat34', name:'1등급 양파', category:'농작물', tier:'4차',   desc:'시세 48',   tags:['농작물','재배'], addedAt:'2025-10-28' },      
+{ id:'crop_wheat35', name:'1등급 멜론', category:'농작물', tier:'4차',   desc:'시세 48',   tags:['농작물','재배'], addedAt:'2025-10-28' },      
+{ id:'crop_wheat36', name:'황금 상추', category:'농작물', tier:'4차',   desc:'시세 500',   tags:['농작물','재배'], addedAt:'2025-10-28' },      
+{ id:'crop_wheat37', name:'황금 쌀', category:'농작물', tier:'4차',   desc:'시세 500',   tags:['농작물','재배'], addedAt:'2025-10-28' },         
+{ id:'crop_wheat38', name:'황금 양파', category:'농작물', tier:'4차',   desc:'시세 500',   tags:['농작물','재배'], addedAt:'2025-10-28' },      
+{ id:'crop_wheat39', name:'황금 멜론', category:'농작물', tier:'4차',   desc:'시세 500',   tags:['농작물','재배'], addedAt:'2025-10-28' }, 
+   
 
-   
-   
    
 ];
 
