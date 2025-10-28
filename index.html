@@ -422,7 +422,7 @@ function render(){
     $('#favOnlyBtn').addEventListener('click', ()=>{state.fav=state.fav?0:1; render();});
     $('#share').addEventListener('click', e=>{e.preventDefault(); navigator.clipboard.writeText(location.href); alert('현재 검색 링크를 복사했습니다!');});
 
-    render();
+
 
 // ───────── 클릭 시 계산기 열기 ─────────
 let selectedItem = null;
@@ -738,6 +738,8 @@ noteArea.addEventListener('input', ()=>{
 });
 loadNotes();
 
+    // 모든 정의가 끝난 뒤 호출
+        render();
     
   </script>
 </body>
