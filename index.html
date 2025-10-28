@@ -352,6 +352,90 @@ select option:focus {
     render();
   });
 
+<!-- ▼▼ JS: 메모장 저장/로드 모듈 ▼▼ -->
+<script>
+// ───────── 메모장 저장/로드 ─────────
+const NOTE_KEY = 'penguin-notes-v1';
+const LOG_KEY  = 'penguin-notelogs-v1';
+
+const noteArea = document.getElementById('noteArea');   // 우측 메모 textarea
+const noteLog  = document.getElementById('noteLog');    // 최근 계산 로그 컨테이너
+
+function renderLogs(logs){
+  noteLog.innerHTML = '';
+  logs.forEach((row, idx)=>{
+    const div = document.createElement('div');
+    div.className = 'note-item';
+    div.innerHTML = `
+      <div>
+        <div><b>${row.name}</b> — ${row.result.toLocaleString()}원 
+          <small>(${row.base.toLocaleString()}원, ${row.kind}, ${row.rate}%)</small>
+        </div>
+        <small>${row.time}</small>
+      </div>
+      <button class="note-del" data-idx="${idx}">삭제</button>
+    `;
+    noteLog.appendChild(div);
+  });
+}
+
+function loadNotes(){
+  noteArea.value = localStorage.getItem(NOTE_KEY) || '';
+  const logs = JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
+  renderLogs(logs);
+}
+
+function saveNotes(){
+  localStorage.setItem(NOTE_KEY, noteArea.value);
+}
+
+function addLog(entry){
+  const logs = JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
+  logs.unshift(entry);                                 // 최신이 위로 오도록
+  localStorage.setItem(LOG_KEY, JSON.stringify(logs.slice(0,200))); // 최대 200건 유지
+  renderLogs(logs.slice(0,200));
+}
+
+function clearNotesAndLogs(){
+  localStorage.removeItem(NOTE_KEY);
+  localStorage.removeItem(LOG_KEY);
+  noteArea.value = '';
+  renderLogs([]);
+}
+
+// 버튼/이벤트 연결
+document.getElementById('noteSave') .addEventListener('click', saveNotes);
+document.getElementById('noteClear').addEventListener('click', clearNotesAndLogs);
+
+// 로그 리스트에서 개별 삭제
+noteLog.addEventListener('click', (e)=>{
+  if(e.target.classList.contains('note-del')){
+    const idx = +e.target.dataset.idx;
+    const logs = JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
+    logs.splice(idx,1);
+    localStorage.setItem(LOG_KEY, JSON.stringify(logs));
+    renderLogs(logs);
+  }
+});
+
+// 입력 자동 저장(간단 디바운스)
+let noteTimer=null;
+noteArea.addEventListener('input', ()=>{
+  clearTimeout(noteTimer);
+  noteTimer = setTimeout(saveNotes, 400);
+});
+
+// 최초 로드
+loadNotes();
+
+// 팝업 핸들러에서 접근할 수 있도록 전역 노출(안전빵)
+window.addLog   = addLog;
+window.noteArea = noteArea;
+window.saveNotes= saveNotes;
+</script>
+<!-- ▲▲ JS: 메모장 저장/로드 모듈 ▲▲ -->
+
+  
   // 7) 검색/필터 UI
   $('#q').addEventListener('input', e=>{state.q=e.target.value; render();});
   $('#cat').addEventListener('change', e=>{state.cat=e.target.value; render();});
