@@ -443,23 +443,29 @@ document.getElementById('calcRun').addEventListener('click', ()=>{
   if(rate < -30 || rate > 80) return alert('변동 범위는 -30% ~ +80% 입니다.');
 
   const item = selectedItem;
-  let base = null, kind = '시세 기준';
 
-  if(item.category === '요리'){
-    const m = /시세\s*([0-9]+)/.exec(item.desc||'');
-    base = m ? parseInt(m[1],10) : null;
-  } else if(item.category === '광물'){
-    const mode = document.querySelector('input[name="oreType"]:checked').value;
-    if(mode === 'single'){
-      const m = /단일\s*상점가\s*([0-9]+)/.exec(item.desc||'');
-      base = m ? parseInt(m[1],10) : null;
-      kind = '단일 기준';
-    } else {
-      const m = /블록\s*상점가\s*([0-9]+)/.exec(item.desc||'');
-      base = m ? parseInt(m[1],10) : null;
-      kind = '블록 기준';
-    }
+  
+let base = null, kind = '시세 기준';
+
+// 요리/물고기/농작물: desc 안의 "시세 1,500" 같은 패턴 인식
+if (['요리','물고기','농작물'].includes(item.category)) {
+  const m = /(?:시세|가격|판매가)\s*([\d,]+)/.exec(item.desc || '');
+  base = m ? parseInt(m[1].replace(/,/g,''), 10) : null;
+}
+// 광물: 단일/블록 상점가
+else if (item.category === '광물') {
+  const mode = document.querySelector('input[name="oreType"]:checked').value;
+  if (mode === 'single') {
+    const m = /단일\s*상점가\s*([\d,]+)/.exec(item.desc || '');
+    base = m ? parseInt(m[1].replace(/,/g,''), 10) : null;
+    kind = '단일 기준';
+  } else {
+    const m = /블록\s*상점가\s*([\d,]+)/.exec(item.desc || '');
+    base = m ? parseInt(m[1].replace(/,/g,''), 10) : null;
+    kind = '블록 기준';
   }
+}
+
 
  // ⬇⬇ 기존의 if(!base) ... 한 줄을 이 블록으로 교체 ⬇⬇
 if (!base) {
