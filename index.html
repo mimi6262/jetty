@@ -531,213 +531,192 @@ document.querySelectorAll('#calcBox [data-rate]').forEach(btn=>{
     rateInput.value = v;
     rateSlider.value = v;
   });
+});
 
+// 전역 상태
+let selectedItem = null;
 
-// 광물 기준 라디오가 바뀔 때 범위 다시 계산
+// 1) 팝업 컨테이너 만들기 + 붙이기 (append 이후에만 내부 요소를 찾을 수 있음)
+const calcBox = document.createElement('div');
+calcBox.id = 'calcBox';
+calcBox.style.cssText = 'position:fixed;inset:auto auto 20px 20px;max-width:360px;z-index:1000;background:#22143d;border:1px solid #3b2a60;border-radius:12px;padding:14px;display:none;box-shadow:0 12px 28px rgba(0,0,0,.45)';
+calcBox.innerHTML = `
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+    <img id="calcThumb" alt="" style="width:36px;height:36px;border-radius:8px;object-fit:cover;border:1px solid #3b2a60;display:none">
+    <h3 id="calcTitle" style="margin:0">가격 계산기</h3>
+  </div>
+  <div id="calcDesc" style="opacity:.8;margin-bottom:12px;font-size:14px"></div>
+
+  <div id="oreMode" style="display:none; margin-bottom:8px;">
+    <label style="margin-right:10px;"><input type="radio" name="oreType" value="single" checked> 단일 상점가 기준</label>
+    <label><input type="radio" name="oreType" value="block"> 블록 상점가 기준</label>
+  </div>
+
+  <div id="rangeBox" style="margin:8px 0 10px;padding:10px;border:1px solid #3b2a60;border-radius:10px;background:#241443;">
+    <div style="font-weight:700;margin-bottom:6px;">가격 범위 (-30% ~ +80%)</div>
+    <div id="rangeValues" style="font-size:14px;opacity:.9;">기준가를 선택하면 자동 계산됩니다.</div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px;">
+    <input id="calcRate" type="number" placeholder="변동 퍼센트 입력 (-30~80)"
+      style="width:100%;padding:8px;border-radius:8px;border:1px solid #3b2a60;background:#2b1a4b;color:#fff;">
+    <input id="rateSlider" type="range" min="-30" max="80" value="0" style="width:100%">
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="btn" data-rate="-30">-30%</button>
+      <button class="btn" data-rate="-20">-20%</button>
+      <button class="btn" data-rate="0">0%</button>
+      <button class="btn" data-rate="20">+20%</button>
+      <button class="btn" data-rate="80">+80%</button>
+    </div>
+  </div>
+
+  <button id="calcRun" class="btn primary" style="width:100%;margin-bottom:8px;">계산하기</button>
+  <div id="calcResult" style="margin-top:6px;font-size:15px;color:#ffd770;"></div>
+  <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end">
+    <button id="calcClose" class="btn">닫기</button>
+  </div>
+`;
+document.body.appendChild(calcBox);
+
+// 2) 유틸 함수들
+function clampRate(v){ return Math.min(80, Math.max(-30, v)); }
+function getBasePriceForRange(item){
+  if (!item) return null;
+  if (['요리','물고기','농작물'].includes(item.category)) {
+    const m = /(?:시세|가격|판매가)\s*([\d,]+)/.exec(item.desc || '');
+    return m ? parseInt(m[1].replace(/,/g,''), 10) : null;
+  }
+  if (item.category === '광물') {
+    const mode = document.querySelector('input[name="oreType"]:checked')?.value || 'single';
+    if (mode === 'block') {
+      const m = /블록\s*상점가\s*([\d,]+)/.exec(item.desc || '');
+      return m ? parseInt(m[1].replace(/,/g,''), 10) : null;
+    } else {
+      const m = /단일\s*상점가\s*([\d,]+)/.exec(item.desc || '');
+      return m ? parseInt(m[1].replace(/,/g,''), 10) : null;
+    }
+  }
+  return null;
+}
+function renderRangeBox(base){
+  const box = document.getElementById('rangeValues');
+  if (!base) { box.innerHTML = '기준가가 없어 범위를 계산할 수 없어요.'; return; }
+  const minP = Math.round(base * 0.70);
+  const maxP = Math.round(base * 1.80);
+  box.innerHTML = `최저가(−30%): <b>${minP.toLocaleString()}</b>원 · 최고가(+80%): <b>${maxP.toLocaleString()}</b>원
+                   <br><small>기준 ${base.toLocaleString()}원</small>`;
+}
+
+// 3) 입력/슬라이더/프리셋/라디오 동기화 (※ append 이후!)
+const rateInput  = document.getElementById('calcRate');
+const rateSlider = document.getElementById('rateSlider');
+rateInput.addEventListener('input', ()=>{
+  const v = clampRate(parseFloat(rateInput.value) || 0);
+  rateSlider.value = v;
+});
+rateSlider.addEventListener('input', ()=>{
+  rateInput.value = rateSlider.value;
+});
+document.querySelectorAll('#calcBox [data-rate]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const v = +btn.dataset.rate;
+    rateInput.value = v;
+    rateSlider.value = v;
+  });
+}); // ← 이 닫힘 꼭 필요!
 document.getElementById('oreMode').addEventListener('change', ()=>{
   if (!selectedItem) return;
   const base = getBasePriceForRange(selectedItem);
   renderRangeBox(base);
 });
 
-    
-document.body.appendChild(calcBox);
-
-// 닫기 버튼
+// 4) 닫기 버튼
 document.getElementById('calcClose').addEventListener('click', () => {
   calcBox.style.display = 'none';
   selectedItem = null;
 });
 
-// 카드 클릭 시 열기 (card 함수 수정)
-const originalCard = card;
+// 5) 카드 클릭 시 팝업 열기 (반드시 원본 card 정의 이후에 배치)
+const originalCard = card; // 원본이 존재해야 함
 card = function(it){
   const el = originalCard(it);
-el.addEventListener('click', e=>{
-  if(e.target.classList.contains('fav')) return;
-  selectedItem = it;
+  el.addEventListener('click', e=>{
+    if(e.target.classList.contains('fav')) return;
+    selectedItem = it;
 
-  // 제목/설명
-  document.getElementById('calcTitle').innerHTML = `📦 ${it.name} 가격 계산`;
-  document.getElementById('calcDesc').textContent = it.desc || '';
+    // 제목/설명
+    document.getElementById('calcTitle').innerHTML = `📦 ${it.name} 가격 계산`;
+    document.getElementById('calcDesc').textContent = it.desc || '';
 
-  // 썸네일 (it.img가 있으면 그걸, 없으면 penguin_logo.png / 없으면 숨김)
-  const thumb = document.getElementById('calcThumb');
-  const src = it.img || 'penguin_logo.png';
-  thumb.src = src;
-  thumb.onerror = ()=>{ thumb.style.display='none'; };
-  thumb.onload  = ()=>{ thumb.style.display='block'; };
+    // 썸네일
+    const thumb = document.getElementById('calcThumb');
+    const src = it.img || 'penguin_logo.png';
+    thumb.src = src;
+    thumb.onerror = ()=>{ thumb.style.display='none'; };
+    thumb.onload  = ()=>{ thumb.style.display='block'; };
 
-  // 광물 라디오 표시 토글
-  document.getElementById('oreMode').style.display = (it.category === '광물') ? 'block' : 'none';
+    // 광물 라디오
+    document.getElementById('oreMode').style.display = (it.category === '광물') ? 'block' : 'none';
 
-  // 초기화
-  document.getElementById('calcResult').textContent = '';
-  document.getElementById('calcRate').value = '';
-  document.getElementById('rateSlider').value = 0;
+    // 초기화 + 범위
+    document.getElementById('calcResult').textContent = '';
+    rateInput.value = '';
+    rateSlider.value = 0;
+    const base = getBasePriceForRange(it);
+    renderRangeBox(base);
 
-  // 기준가를 구해 범위 상자 채우기
-  const base = getBasePriceForRange(it);   // 아래 3) 함수 추가
-  renderRangeBox(base);                    // 아래 3) 함수 추가
-
-  // 팝업 오픈
-  calcBox.style.display = 'block';
-});
-
+    calcBox.style.display = 'block';
+  });
   return el;
 };
 
-// 계산 실행
+// 6) 계산 실행 (손익/메모장)
 document.getElementById('calcRun').addEventListener('click', ()=>{
   if(!selectedItem) return;
-  const rate = parseFloat(document.getElementById('calcRate').value);
+  const rate = parseFloat(rateInput.value);
   if(isNaN(rate)) return alert('변동 퍼센트를 입력하세요.');
   if(rate < -30 || rate > 80) return alert('변동 범위는 -30% ~ +80% 입니다.');
 
   const item = selectedItem;
+  let base = getBasePriceForRange(item);
+  let kind = (item.category==='광물'
+    ? (document.querySelector('input[name="oreType"]:checked')?.value === 'block' ? '블록 기준' : '단일 기준')
+    : '시세 기준');
 
-  // 계산 실행 로직은 그대로 - 입력만 동기화 
-let base = getBasePriceForRange(item);
-let kind = (item.category==='광물'
-  ? (document.querySelector('input[name="oreType"]:checked')?.value === 'block' ? '블록 기준' : '단일 기준')
-  : '시세 기준');
-
-
-// 요리/물고기/농작물: desc 안의 "시세 1,500" 같은 패턴 인식
-if (['요리','물고기','농작물'].includes(item.category)) {
-  const m = /(?:시세|가격|판매가)\s*([\d,]+)/.exec(item.desc || '');
-  base = m ? parseInt(m[1].replace(/,/g,''), 10) : null;
-}
-// 광물: 단일/블록 상점가
-else if (item.category === '광물') {
-  const mode = document.querySelector('input[name="oreType"]:checked').value;
-  if (mode === 'single') {
-    const m = /단일\s*상점가\s*([\d,]+)/.exec(item.desc || '');
-    base = m ? parseInt(m[1].replace(/,/g,''), 10) : null;
-    kind = '단일 기준';
-  } else {
-    const m = /블록\s*상점가\s*([\d,]+)/.exec(item.desc || '');
-    base = m ? parseInt(m[1].replace(/,/g,''), 10) : null;
-    kind = '블록 기준';
-  }
-}
-
-
- // ⬇⬇ 기존의 if(!base) ... 한 줄을 이 블록으로 교체 ⬇⬇
-if (!base) {
-  // 광물 + 블록 기준인데 블록 상점가가 없는 경우(예: 석영)
-  if (item.category === '광물') {
-    const mode = document.querySelector('input[name="oreType"]:checked')?.value;
-    if (mode === 'block') {
+  if (!base) {
+    if (item.category === '광물' && document.querySelector('input[name="oreType"]:checked')?.value === 'block') {
       document.getElementById('calcResult').innerHTML =
         `<span style="color:#ffb3b3">블록 상점가 정보가 없어 계산할 수 없습니다.</span>
          <br><small>이 광물은 블록 상점가가 기록되어 있지 않아요. 단일 기준으로 계산해 보세요.</small>`;
       return;
     }
+    document.getElementById('calcResult').innerHTML =
+      `<span style="color:#ffb3b3">가격 정보가 없어 계산할 수 없습니다.</span>
+       <br><small>이 항목은 판매/시세 데이터가 기록되어 있지 않아요.</small>`;
+    return;
   }
-  // 그 외: 시세가 아예 없는 카테고리(도감/일부 물고기/농작물 등)
-  document.getElementById('calcResult').innerHTML =
-    `<span style="color:#ffb3b3">가격 정보가 없어 계산할 수 없습니다.</span>
-     <br><small>이 항목은 판매/시세 데이터가 기록되어 있지 않아요.</small>`;
-  return;
-}
-
-
-  
 
   const result = Math.round(base * (1 + rate/100));
   const diff = result - base;
-
-  // 💸 손익 텍스트 + 색상 구분
   const diffText = diff >= 0
     ? `<span style="color:#80ffae">+${diff.toLocaleString()}원 이익</span>`
     : `<span style="color:#ff8080">${diff.toLocaleString()}원 손해</span>`;
-
-  // 💬 팝업 결과 표시
   document.getElementById('calcResult').innerHTML =
     `💰 <b>${item.name}</b> 현재 시세: <span style="color:#ffd770">${result.toLocaleString()}</span>원<br>
      (${diffText}, 기준 ${base.toLocaleString()}원, ${kind}, 변동 ${rate}% )`;
 
-  // 📝 로그 기록 (우측 메모장 자동 반영)
+  // 로그 반영 (addLog / noteArea 등은 기존 그대로)
   const now = new Date();
-  const entry = {
-    name: item.name,
-    base, rate, result, kind, diff,
-    time: now.toLocaleString('ko-KR')
-  };
-  addLog(entry);
-
-  // ✏️ 메모장 본문에도 색상 포함하여 자동 추가 (선택적)
-  const noteColor = diff >= 0 ? '#80ffae' : '#ff8080';
+  addLog({ name:item.name, base, rate, result, kind, diff, time: now.toLocaleString('ko-KR') });
   noteArea.value += `\n${item.name}: ${result.toLocaleString()}원 (${diff >= 0 ? '+' : ''}${diff.toLocaleString()}원, ${rate}%, ${kind})`;
   noteArea.scrollTop = noteArea.scrollHeight;
   saveNotes();
 });
 
+// 7) (중요) 모든 정의 끝난 뒤 최초 렌더
+render();
 
-    // ───────── 메모장 저장/로드 ─────────
-const NOTE_KEY = 'penguin-notes-v1';
-const LOG_KEY  = 'penguin-notelogs-v1';
-const noteArea = document.getElementById('noteArea');
-const noteLog  = document.getElementById('noteLog');
-
-// 로드
-function loadNotes(){
-  noteArea.value = localStorage.getItem(NOTE_KEY) || '';
-  const logs = JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
-  renderLogs(logs);
-}
-function renderLogs(logs){
-  noteLog.innerHTML = '';
-  logs.forEach((row, idx)=>{
-    const div = document.createElement('div');
-    div.className = 'note-item';
-    div.innerHTML = `
-      <div>
-        <div><b>${row.name}</b> — ${row.result.toLocaleString()}원 <small>(${row.base.toLocaleString()}원, ${row.kind}, ${row.rate}%)</small></div>
-        <small>${row.time}</small>
-      </div>
-      <button class="note-del" data-idx="${idx}">삭제</button>
-    `;
-    noteLog.appendChild(div);
-  });
-}
-function saveNotes(){
-  localStorage.setItem(NOTE_KEY, noteArea.value);
-}
-function addLog(entry){
-  const logs = JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
-  logs.unshift(entry);           // 위로 누적
-  localStorage.setItem(LOG_KEY, JSON.stringify(logs.slice(0,200))); // 최대 200건 보관
-  renderLogs(logs.slice(0,200));
-}
-function clearNotesAndLogs(){
-  localStorage.removeItem(NOTE_KEY);
-  localStorage.removeItem(LOG_KEY);
-  noteArea.value = '';
-  renderLogs([]);
-}
-
-// 이벤트
-document.getElementById('noteSave').addEventListener('click', saveNotes);
-document.getElementById('noteClear').addEventListener('click', clearNotesAndLogs);
-noteLog.addEventListener('click', (e)=>{
-  if(e.target.classList.contains('note-del')){
-    const idx = +e.target.dataset.idx;
-    const logs = JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
-    logs.splice(idx,1);
-    localStorage.setItem(LOG_KEY, JSON.stringify(logs));
-    renderLogs(logs);
-  }
-});
-// 입력 자동 저장(조금 디바운스)
-let noteTimer=null;
-noteArea.addEventListener('input', ()=>{
-  clearTimeout(noteTimer);
-  noteTimer=setTimeout(saveNotes, 400);
-});
-loadNotes();
-
+    
  // 모든 정의가 끝난 뒤 호출
         render();
     
