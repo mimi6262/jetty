@@ -58,7 +58,7 @@
     .empty{padding:28px; text-align:center; color:#9ca3af}
     .empty b{color:#e5e7eb}
 
-    /* 테이블 (컬렉션북) */
+    /* 테이블 (도감) */
     .tbl{width:100%; border-collapse:separate; border-spacing:0 8px}
     .tbl th, .tbl td{ padding:10px 12px; text-align:left }
     .tbl thead th{ font-size:12px; color:#9ca3af }
@@ -99,7 +99,7 @@
       <div class="controls">
         <!-- 무역섬 버튼은 '검색' 화면을 그대로 사용하되 모드만 전환 -->
         <button id="btnTrade" class="btn" aria-pressed="false" title="무역섬 모드 토글(T)">🏝️ 무역섬</button>
-        <button id="btnCollection" class="btn" aria-pressed="false" title="컬렉션북 열기(C)">📚 컬렉션북</button>
+        <button id="btnCollection" class="btn" aria-pressed="false" title="도감 열기(C)">📚 도감</button>
         <button id="btnFavoritesOnly" class="btn ghost" aria-pressed="false" title="즐겨찾기만 보기(F)">⭐ 즐겨찾기만</button>
         <input id="q" class="input" type="search" placeholder="검색 (/)" aria-label="검색">
         <button id="btnMemo" class="btn ghost" title="메모 열기/닫기(M)">📝 메모</button>
@@ -131,17 +131,17 @@
         </section>
       </main>
 
-      <!-- 컬렉션북 화면 -->
-      <main id="view-collection" class="hidden" aria-label="컬렉션북 화면">
+      <!-- 도감 화면 -->
+      <main id="view-collection" class="hidden" aria-label="도감 화면">
         <section class="panel row">
           <div>
-            <strong>📚 컬렉션북</strong>
+            <strong>📚 도감</strong>
             <span class="muted">— 진행률과 필요 수량을 한눈에</span>
           </div>
           <div class="row" style="gap:6px"><!-- import/export 제거됨 --></div>
         </section>
 
-        <!-- 컬렉션북 전용 카테고리 -->
+        <!-- 도감 전용 카테고리 -->
         <section class="panel toolbar" aria-label="컬렉션 카테고리">
           <div class="chipbar" id="collectionChips" role="group" aria-label="컬렉션 카테고리"></div>
         </section>
@@ -174,7 +174,7 @@
 
         <div class="row" style="gap:8px">
           <button id="btnBackToSearch" class="btn">← 검색으로</button>
-          <span class="muted">T: 무역섬 모드 • C: 컬렉션북 • F: 즐겨찾기만 • /: 검색 • M: 메모</span>
+          <span class="muted">T: 무역섬 모드 • C: 도감 • F: 즐겨찾기만 • /: 검색 • M: 메모</span>
         </div>
       </main>
     </div>
@@ -376,6 +376,202 @@
       
       // 예2) 무역섬(검색)에는 없지만, 컬렉션에만 존재하는 아이템
       { id: 'c-rough-dirt', need: 10, name: '거친 흙', ccat: '블록' },
+      { id:'c-dirt',       need:64,    name:'흙',        ccat:'블록' },
+      { id:'c-coarse_dirt',  need:64,  name:'거친 흙',    ccat:'블록' },
+      { id:'c-podzol',       need:64,  name:'포드졸',     ccat:'블록' },
+      { id:'c-rooted_dirt',  need:64,  name:'뿌리내린 흙', ccat:'블록' },
+      { id:'c-mud',         need:64,   name:'진흙',       ccat:'블록' },
+      { id:'c-clay',       need:64,    name:'점토',       ccat:'블록' },
+      { id:'c-gravel',      need:64,   name:'자갈',       ccat:'블록' },
+      { id:'c-sand',        need:64,   name:'모래',       ccat:'블록' },
+      { id:'c-stone',        need:64, name:'돌',         ccat:'블록' },
+      { id:'c-andesite',     need:64, name:'안산암',     ccat:'블록' },
+      { id:'c-diorite',      need:64, name:'섬록암',     ccat:'블록' },
+      { id:'c-sand',         need:64, name:'모래',       ccat:'블록' },
+      { id:'c-sandstone',    need:64, name:'사암',       ccat:'블록' },
+      { id:'c-red_sand',     need:64, name:'붉은 모래',  ccat:'블록' },
+      { id:'c-red_sandstone',need:64, name:'붉은 사암',  ccat:'블록' },
+      { id:'c-ice',          need:64, name:'얼음',       ccat:'블록' },
+      { id:'c-packed_ice',      need:64, name:'꽁꽁 언 얼음',      ccat:'블록' },
+      { id:'c-blue_ice',        need:64, name:'푸른 얼음',        ccat:'블록' },
+      { id:'c-snow_block',      need:64, name:'눈 블록',          ccat:'블록' },
+      { id:'c-moss_block',      need:64, name:'이끼 블록',        ccat:'블록' },
+      { id:'c-mossy_cobblestone',need:64, name:'이끼 낀 조약돌', ccat:'블록' },
+      { id:'c-cobblestone',     need:64, name:'조약돌',          ccat:'블록' },
+      { id:'c-deepslate',       need:64, name:'심층암',          ccat:'블록' },
+      { id:'c-granite',           need:64, name:'화강암',           ccat:'블록' },
+      { id:'c-diorite',           need:64, name:'섬록암',           ccat:'블록' },
+      { id:'c-andesite',          need:64, name:'안산암',           ccat:'블록' },
+      { id:'c-calcite',           need:64, name:'석회암',           ccat:'블록' },
+      { id:'c-tuff',              need:64, name:'응회암',           ccat:'블록' },
+      { id:'c-dripstone_block',   need:64, name:'점적석 블록',      ccat:'블록' },
+      { id:'c-smooth_quartz',     need:64, name:'매끄러운 석영 블록',ccat:'블록' },
+      { id:'c-prismarine',         need:64, name:'프리즈마린',        ccat:'블록' },
+      { id:'c-magma_block',        need:64, name:'마그마 블록',        ccat:'블록' },
+      { id:'c-netherrack',         need:64, name:'네더랙',            ccat:'블록' },
+      { id:'c-crimson_nylium',     need:64, name:'진홍빛 균사',       ccat:'블록' },
+      { id:'c-warped_nylium',      need:64, name:'뒤틀린 균사',       ccat:'블록' },
+      { id:'c-mud',                need:64, name:'진흙',              ccat:'블록' },
+      { id:'c-packed_mud',         need:64, name:'굳은 진흙',         ccat:'블록' },
+      { id:'c-mud_bricks',         need:64, name:'진흙 벽돌',         ccat:'블록' },
+            { id:'c-bone_block',         need:64, name:'뼛가루 블록',       ccat:'블록' },
+      { id:'c-blackstone',         need:64, name:'흑석',              ccat:'블록' },
+      { id:'c-basalt',             need:64, name:'현무암',            ccat:'블록' },
+      { id:'c-smooth_basalt',      need:64, name:'매끄러운 현무암',   ccat:'블록' },
+      { id:'c-stripped_oak_log',   need:64, name:'껍질 벗긴 참나무',  ccat:'블록' },
+      { id:'c-stripped_spruce_log',need:64, name:'껍질 벗긴 가문비나무',ccat:'블록' },
+      { id:'c-stripped_birch_log', need:64, name:'껍질 벗긴 자작나무', ccat:'블록' },
+      { id:'c-birch_log',          need:64, name:'자작나무 원목',      ccat:'블록' },
+            { id:'c-oak_log',            need:64, name:'참나무 원목',       ccat:'블록' },
+      { id:'c-dark_oak_log',       need:64, name:'짙은 참나무 원목',  ccat:'블록' },
+      { id:'c-spruce_log',         need:64, name:'가문비나무 원목',   ccat:'블록' },
+      { id:'c-crimson_stem',       need:64, name:'진홍빛 자루',       ccat:'블록' },
+      { id:'c-warped_stem',        need:64, name:'뒤틀린 자루',       ccat:'블록' },
+      { id:'c-mangrove_log',       need:64, name:'맹그로브 원목',     ccat:'블록' },
+      { id:'c-cherry_log',         need:64, name:'벚나무 원목',       ccat:'블록' },
+      { id:'c-stripped_cherry_log',need:64, name:'껍질 벗긴 벚나무',  ccat:'블록' },
+            { id:'c-warped_wart_block',  need:64, name:'뒤틀린 사마귀 블록', ccat:'블록' },
+      { id:'c-oak_leaves',         need:64, name:'참나무 잎',        ccat:'블록' },
+      { id:'c-dark_oak_leaves',    need:64, name:'짙은 참나무 잎',   ccat:'블록' },
+      { id:'c-spruce_leaves',      need:64, name:'가문비나무 잎',    ccat:'블록' },
+      { id:'c-birch_leaves',       need:64, name:'자작나무 잎',      ccat:'블록' },
+      { id:'c-jungle_leaves',      need:64, name:'정글나무 잎',      ccat:'블록' },
+      { id:'c-acacia_leaves',      need:64, name:'아카시아 잎',      ccat:'블록' },
+      { id:'c-purple_block',       need:64, name:'페퍼 블록',        ccat:'블록' },
+
+//자연
+      { id:'c-brown_mushroom',   need:64, name:'갈색 버섯',    ccat:'자연' },
+      { id:'c-red_mushroom',     need:64, name:'빨간 버섐',    ccat:'자연' },
+      { id:'c-crimson_fungus',   need:64, name:'진홍빛 버섯',  ccat:'자연' },
+      { id:'c-warped_fungus',    need:64, name:'뒤틀린 버섯',  ccat:'자연' },
+      { id:'c-dandelion',        need:32, name:'민들레',       ccat:'자연' },
+      { id:'c-poppy',            need:32, name:'양귀비',       ccat:'자연' },
+      { id:'c-blue_orchid',      need:32, name:'파란 난초',    ccat:'자연' },
+      { id:'c-allium',         need:32, name:'올리엄',       ccat:'자연' },
+      { id:'c-red_tulip',      need:32, name:'빨간 튤립',    ccat:'자연' },
+      { id:'c-orange_tulip',   need:32, name:'주황 튤립',    ccat:'자연' },
+      { id:'c-white_tulip',    need:32, name:'흰 튤립',     ccat:'자연' },
+      { id:'c-pink_tulip',     need:32, name:'분홍 튤립',   ccat:'자연' },
+      { id:'c-wither_rose',    need:8,  name:'위더 장미',    ccat:'자연' },
+      { id:'c-rose_bush',       need:3,  name:'장미 관목',       ccat:'자연' },
+      { id:'c-oxeye_daisy',     need:32, name:'데이지',         ccat:'자연' },
+      { id:'c-dandelion_white', need:32, name:'수선화',         ccat:'자연' },   // 실제 명칭: 아네모네(1.21)
+      { id:'c-lily_of_the_valley', need:32, name:'은방울꽃',    ccat:'자연' },
+      { id:'c-sunflower',       need:8,  name:'해바라기',       ccat:'자연' },
+      { id:'c-pink_petals',     need:32, name:'벚꽃 잎',       ccat:'자연' },
+      { id:'c-dead_bush',       need:4,  name:'마른 덤불',      ccat:'자연' },
+      { id:'c-beetroot',      need:64, name:'비트',        ccat:'자연' },
+      { id:'c-wheat_seeds',   need:64, name:'씨앗',        ccat:'자연' },
+      { id:'c-cactus',        need:64, name:'선인장',      ccat:'자연' },
+      { id:'c-sugar_cane',    need:64, name:'사탕수수',    ccat:'자연' },
+      { id:'c-bamboo',        need:64, name:'대나무',      ccat:'자연' },
+      { id:'c-string',        need:16, name:'실',         ccat:'자연' },
+            { id:'c-fern',           need:32, name:'고사리',          ccat:'자연' },
+      { id:'c-glow_lichen',    need:32, name:'발광 이끼',       ccat:'자연' },
+      { id:'c-sweet_berries',  need:64, name:'스위트 베리',     ccat:'자연' },
+      { id:'c-glow_berries',   need:64, name:'발광 베리',       ccat:'자연' },
+      { id:'c-cocoa_beans',    need:64, name:'코코아콩',        ccat:'자연' },
+      { id:'c-hanging_roots',  need:3,  name:'매달린 뿌리',     ccat:'자연' },
+      { id:'c-tropical_fish',     need:3,  name:'열대어',            ccat:'자연' },
+      { id:'c-turtle_egg',        need:3,  name:'거북 알',           ccat:'자연' },
+      { id:'c-pumpkin',           need:32, name:'호박',              ccat:'자연' },
+      { id:'c-carved_pumpkin',    need:32, name:'조각된 호박',       ccat:'자연' },
+      { id:'c-melon',             need:32, name:'수박',              ccat:'자연' },
+      { id:'c-cobblestone',       need:32, name:'조약돌',            ccat:'자연' },
+      { id:'c-mossy_cobblestone', need:32, name:'이끼 낀 조약돌',    ccat:'자연' },
+            { id:'c-orange_wool', need:32, name:'주황 양털',   ccat:'자연' },
+      { id:'c-red_wool',    need:32, name:'빨간 양털',   ccat:'자연' },
+      { id:'c-pink_wool',   need:32, name:'분홍 양털',   ccat:'자연' },
+      { id:'c-blue_wool',   need:32, name:'파란 양털',   ccat:'자연' },
+      { id:'c-blue_dye',    need:16, name:'청색 염료',   ccat:'자연' },
+      { id:'c-gray_dye',    need:16, name:'회색 염료',   ccat:'자연' },
+      { id:'c-black_dye',   need:16, name:'검정 염료',   ccat:'자연' },
+            { id:'c-brown_mushroom_block', need:16, name:'갈색 버섯 블록',  ccat:'자연' },
+      { id:'c-red_mushroom_block',   need:16, name:'빨간 버섯 블록',  ccat:'자연' },
+      { id:'c-orange_dye',     need:16, name:'주황 염료',   ccat:'자연' },
+      { id:'c-yellow_dye',     need:16, name:'노란 염료',   ccat:'자연' },
+      { id:'c-lime_dye',       need:16, name:'연두 염료',   ccat:'자연' },
+      { id:'c-light_blue_dye', need:16, name:'하늘 염료',   ccat:'자연' },
+      { id:'c-purple_dye',     need:16, name:'보라 염료',   ccat:'자연' },
+      { id:'c-blue_dye',   need:16, name:'청색 염료',  ccat:'자연' },
+      { id:'c-green_dye',  need:16, name:'녹색 염료',  ccat:'자연' },
+      { id:'c-purple_dye', need:16, name:'보라 염료',  ccat:'자연' },
+      { id:'c-cyan_dye',   need:16, name:'청록 염료',  ccat:'자연' },
+      { id:'c-pink_dye',   need:16, name:'분홍 염료',  ccat:'자연' },
+      { id:'c-cookie',     need:16, name:'쿠키',      ccat:'자연' },
+      { id:'c-bread',      need:16, name:'빵',        ccat:'자연' },
+            { id:'c-cake',           need:32, name:'케이크',          ccat:'자연' },
+      { id:'c-oak_sapling',    need:32, name:'참나무 묘목',     ccat:'자연' },
+      { id:'c-spruce_sapling', need:32, name:'가문비 묘목',     ccat:'자연' },
+      { id:'c-birch_sapling',  need:32, name:'자작나무 묘목',   ccat:'자연' },
+      { id:'c-jungle_sapling', need:32, name:'정글나무 묘목',   ccat:'자연' },
+      { id:'c-acacia_sapling', need:32, name:'아카시아 묘목',   ccat:'자연' },
+      { id:'c-dark_oak_sapling', need:32, name:'짙은 참나무 묘목', ccat:'자연' },
+            { id:'c-cherry_leaves', need:32, name:'벚꽃 잎',       ccat:'자연' },
+      { id:'c-warped_roots',  need:32, name:'뒤틀린 뿌리',   ccat:'자연' },
+
+  //광물
+      { id:'c-coal_ore',        need:64, name:'석탄 광석',        ccat:'광물' },
+      { id:'c-iron_ore',        need:64, name:'철 광석',          ccat:'광물' },
+      { id:'c-copper_ore',      need:64, name:'구리 광석',        ccat:'광물' },
+      { id:'c-gold_ore',        need:64, name:'금 광석',          ccat:'광물' },
+      { id:'c-redstone_ore',    need:64, name:'레드스톤 광석',    ccat:'광물' },
+      { id:'c-lapis_ore',       need:8,  name:'청금석 광석',      ccat:'광물' },
+      { id:'c-emerald_ore',     need:8,  name:'에메랄드 광석',    ccat:'광물' },
+      { id:'c-deepslate_diamond_ore',    need:8,  name:'심층암 다이아몬드 광석',     ccat:'광물' },
+      { id:'c-deepslate_coal_ore',       need:3,  name:'심층암 석탄 광석',          ccat:'광물' },
+      { id:'c-deepslate_iron_ore',       need:16, name:'심층암 철 광석',           ccat:'광물' },
+      { id:'c-deepslate_copper_ore',     need:16, name:'심층암 구리 광석',         ccat:'광물' },
+      { id:'c-deepslate_gold_ore',       need:16, name:'심층암 금 광석',           ccat:'광물' },
+      { id:'c-deepslate_redstone_ore',   need:64, name:'심층암 레드스톤 광석',     ccat:'광물' },
+      { id:'c-deepslate_lapis_ore',      need:64, name:'심층암 청금석 광석',       ccat:'광물' },
+      { id:'c-deepslate_emerald_ore',   need:3,  name:'심층암 에메랄드 광석',   ccat:'광물' },
+      { id:'c-deepslate_diamond_ore',   need:16, name:'심층암 다이아몬드 광석', ccat:'광물' },
+      { id:'c-nether_gold_ore',         need:64, name:'네더 금 광석',          ccat:'광물' },
+      { id:'c-nether_quartz_ore',       need:64, name:'네더 석영 광석',        ccat:'광물' },
+      { id:'c-nether_bricks',           need:3,  name:'네더 벽돌',             ccat:'광물' },
+      { id:'c-weathered_copper',        need:64, name:'산화된 구리 블록',        ccat:'광물' },
+      { id:'c-amethyst_block',          need:64, name:'자수정 블록',           ccat:'광물' },
+      { id:'c-mud_bricks',     need:64, name:'머드 브릭',     ccat:'광물' },
+      { id:'c-coal',           need:64, name:'석탄',           ccat:'광물' },
+      { id:'c-copper_ingot',   need:64, name:'구리 주괴',      ccat:'광물' },
+      { id:'c-iron_ingot',     need:64, name:'철 주괴',        ccat:'광물' },
+      { id:'c-gold_ingot',     need:64, name:'금 주괴',        ccat:'광물' },
+      { id:'c-lapis_lazuli',   need:64, name:'청금석',         ccat:'광물' },
+      { id:'c-redstone',       need:64, name:'레드스톤',       ccat:'광물' },
+      { id:'c-diamond',                 need:32, name:'다이아몬드',            ccat:'광물' },
+      { id:'c-emerald',                 need:32, name:'에메랄드',              ccat:'광물' },
+      { id:'c-netherite_ingot',         need:3,  name:'네더라이트 주괴',       ccat:'광물' },
+      { id:'c-prismarine',              need:32, name:'프리즈마린',            ccat:'광물' },
+      { id:'c-prismarine_bricks',       need:32, name:'프리즈마린 벽돌',       ccat:'광물' },
+      { id:'c-dark_prismarine',         need:32, name:'다크 프리즈마린',       ccat:'광물' },
+      { id:'c-cut_copper',              need:32, name:'절단된 구리',           ccat:'광물' },
+      { id:'c-exposed_cut_copper',      need:32, name:'노출된 절단된 구리',    ccat:'광물' },
+      { id:'c-weathered_cut_copper',    need:32, name:'풍화된 절단된 구리',    ccat:'광물' },
+      { id:'c-oxidized_cut_copper',     need:32, name:'산화된 절단된 구리',    ccat:'광물' },
+      { id:'c-raw_copper_block',        need:8,  name:'원시 구리 블록',        ccat:'광물' },
+      { id:'c-raw_gold_block',          need:8,  name:'원시 금 블록',          ccat:'광물' },
+      { id:'c-raw_iron_block',          need:8,  name:'원시 철 블록',          ccat:'광물' },
+
+
+      
+
+    
+
+
+
+
+      
+
+
+
+
+
+
+      
+
+      
+
       
  
     ];
@@ -386,7 +582,7 @@
     const save = (k,v) => localStorage.setItem(k, JSON.stringify(v));
     const load = (k, def) => JSON.parse(localStorage.getItem(k) || JSON.stringify(def));
 
-    // mode: 'search' | 'trade'; collectionCategory: '전체'|'블록'|'자연'|'광부'|'전리품'|'커스텀'
+    // mode: 'search' | 'trade'; collectionCategory: '전체'|'블록'|'자연'|'광물'|'전리품'|'커스텀'
     const state = { q:'', category:'전체', tier:'', favoritesOnly:false, view:'search', mode:'search', collectionCategory:'전체' };
 
     const favKey = 'jetty:favorites';
@@ -421,7 +617,7 @@
       const wrap=document.getElementById('collectionChips');
       if(!wrap) return;
       wrap.innerHTML='';
-      ['전체','블록','자연','광부','전리품','커스텀'].forEach(cat=>{
+      ['전체','블록','자연','광물','전리품','커스텀'].forEach(cat=>{
         const b=document.createElement('button');
         b.className='chip';
         b.type='button';
@@ -452,13 +648,13 @@
       const el=$('#list'); el.innerHTML=''; list.forEach(it=> el.appendChild(Card(it))); $('#emptySearch').classList.toggle('hidden', list.length>0);
     }
 
-    // ===================== 렌더: 컬렉션북 =====================
+    // ===================== 렌더: 도감 =====================
     function renderCollection(){
-      document.getElementById('subtitle').textContent = '컬렉션북';
+      document.getElementById('subtitle').textContent = '도감';
       document.getElementById('view-search').classList.add('hidden');
       document.getElementById('view-collection').classList.remove('hidden');
       document.getElementById('btnCollection').setAttribute('aria-pressed','true');
-      // 컬렉션북 진입 시 즐겨찾기만 자동 해제
+      // 도감 진입 시 즐겨찾기만 자동 해제
       if(state.favoritesOnly){ state.favoritesOnly=false; document.getElementById('btnFavoritesOnly').setAttribute('aria-pressed','false'); }
 
       // 칩 상태 업데이트
