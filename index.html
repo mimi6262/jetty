@@ -40,76 +40,44 @@
     footer{border-top:1px solid rgba(255,255,255,.06)}
     footer .container{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 0;color:var(--muted);flex-wrap:wrap}
 
-/* 메모장 페이지 그리드: 왼쪽 2/3, 오른쪽 1/3 */
-.page{
-  display:grid; gap:16px;
-  grid-template-columns: 2fr 1fr;
-  align-items:start;
-}
-@media (max-width:980px){
-  .page{ grid-template-columns: 1fr; }
-}
+    /* 페이지 레이아웃: 왼쪽 2/3, 오른쪽 1/3 */
+    .page{ display:grid; gap:16px; grid-template-columns: 2fr 1fr; align-items:start; }
+    @media (max-width:980px){ .page{ grid-template-columns: 1fr; } }
 
-/* 오른쪽 메모장 패널 */
-#notePanel{
-  position:sticky; top:80px;  /* 툴바 밑에 고정 */
-  background:linear-gradient(180deg,#241443,#1a0f30);
-  border:1px solid var(--line);
-  border-radius:16px;
-  padding:14px;
-  box-shadow: var(--shadow);
-  min-height:300px;
-}
-.note-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
-.note-title{font-weight:800}
-.note-actions .btn{padding:6px 10px;border-radius:10px}
-#noteArea{
-  width:100%; min-height:160px; resize:vertical;
-  background:#2b1a4b; color:#fff; border:1px solid var(--line);
-  border-radius:10px; padding:10px; font-family:inherit;
-}
-.note-subtitle{margin:10px 0 6px; color:var(--muted); font-size:14px}
-.note-log{
-  display:flex; flex-direction:column; gap:6px;
-  max-height:220px; overflow:auto;
-}
-.note-item{
-  background:#2a1949; border:1px solid var(--line); border-radius:10px;
-  padding:8px; font-size:14px; color:#e9ecff;
-  display:flex; justify-content:space-between; gap:8px; align-items:center;
-}
-.note-item small{opacity:.75}
-.note-del{border:0; background:#41276f; color:#fff; border-radius:8px; padding:4px 8px; cursor:pointer}
+    /* 메모장 패널 */
+    #notePanel{
+      position:sticky; top:80px;
+      background:linear-gradient(180deg,#241443,#1a0f30);
+      border:1px solid var(--line); border-radius:16px;
+      padding:14px; box-shadow: var(--shadow); min-height:300px;
+    }
+    .note-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+    .note-title{font-weight:800}
+    .note-actions .btn{padding:6px 10px;border-radius:10px}
+    #noteArea{
+      width:100%; min-height:160px; resize:vertical;
+      background:#2b1a4b; color:#fff; border:1px solid var(--line);
+      border-radius:10px; padding:10px; font-family:inherit;
+    }
+    .note-subtitle{margin:10px 0 6px; color:var(--muted); font-size:14px}
+    .note-log{ display:flex; flex-direction:column; gap:6px; max-height:220px; overflow:auto; }
+    .note-item{
+      background:#2a1949; border:1px solid var(--line); border-radius:10px;
+      padding:8px; font-size:14px; color:#e9ecff; display:flex; justify-content:space-between; gap:8px; align-items:center;
+    }
+    .note-item small{opacity:.75}
+    .note-del{border:0; background:#41276f; color:#fff; border-radius:8px; padding:4px 8px; cursor:pointer}
 
-/* 드롭다운 배경 및 글자색 개선 */
-select {
-  appearance: none;
-  background: linear-gradient(180deg,#251446,#1e1237);
-  color: var(--ink);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 10px 12px;
-}
-
-/* 드롭다운 펼쳐졌을 때 */
-select option {
-  background: #2b1a4b;
-  color: #fff;
-}
-
-/* 선택된 항목 hover 효과 */
-select option:hover,
-select option:focus {
-  background: var(--accent2);
-  color: #fff;
-}
-    
+    /* 드롭다운 보기 좋게 */
+    select { appearance:none; background:linear-gradient(180deg,#251446,#1e1237); color:var(--ink); border:1px solid var(--line); border-radius:999px; padding:10px 12px; }
+    select option { background:#2b1a4b; color:#fff; }
+    select option:hover, select option:focus { background:var(--accent2); color:#fff; }
   </style>
 </head>
 <body>
   <header>
     <h1>펭귄 서버 검색기</h1>
-    <div class="subtitle">요리 · 재료 · 광물 검색 / 차수 필터 / 즐겨찾기 지원</div>
+    <div class="subtitle">요리 · 재료 · 광물 · 도감 · 물고기 · 농작물 / 차수 필터 / 즐겨찾기</div>
   </header>
 
   <div class="toolbar">
@@ -118,17 +86,17 @@ select option:focus {
         <span>🔎</span>
         <input id="q" placeholder="이름·설명·태그로 검색 (예: 화채, 포션, 다이아)">
       </div>
-      
-<select id="cat">
-  <option value="">카테고리 전체</option>
-  <option value="요리">요리</option>
-  <option value="재료">재료</option>
-  <option value="광물">광물</option>
-  <option value="도감">도감</option>
-  <option value="물고기">물고기</option>
-  <option value="농작물">농작물</option>
 
+      <select id="cat">
+        <option value="">카테고리 전체</option>
+        <option value="요리">요리</option>
+        <option value="재료">재료</option>
+        <option value="광물">광물</option>
+        <option value="도감">도감</option>
+        <option value="물고기">물고기</option>
+        <option value="농작물">농작물</option>
       </select>
+
       <select id="tier">
         <option value="">차수 전체</option>
         <option>기본</option>
@@ -137,19 +105,20 @@ select option:focus {
         <option>2차</option>
         <option>3차</option>
         <option>4차</option>
-
       </select>
+
       <select id="sort">
         <option value="name">이름순</option>
         <option value="recent">최근 추가순</option>
         <option value="cat">카테고리순</option>
       </select>
+
       <button class="btn" id="favOnlyBtn" title="즐겨찾기만 보기">★ 즐겨찾기</button>
     </div>
   </div>
 
-    <!-- 빠른 카테고리 버튼 -->
-  <div class="container" id="quickCats" 
+  <!-- 빠른 카테고리 버튼 -->
+  <div class="container" id="quickCats"
        style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 0;justify-content:center;">
     <button class="chip" data-cat="">전체</button>
     <button class="chip" data-cat="요리">요리</button>
@@ -160,31 +129,24 @@ select option:focus {
     <button class="chip" data-cat="농작물">농작물</button>
   </div>
 
-  
-<!-- 기존의 <main class="container"> ... </main> 를 아래로 교체 -->
-<div class="container page">
-  <!-- 왼쪽: 기존 카드 영역 -->
-  <main class="content">
-    <div id="grid" class="grid"></div>
-  </main>
+  <div class="container page">
+    <main class="content">
+      <div id="grid" class="grid"></div>
+    </main>
 
-  <!-- 오른쪽: 메모장 패널 -->
-  <aside id="notePanel" aria-label="메모장">
-    <div class="note-head">
-      <div class="note-title">📝 메모장</div>
-      <div class="note-actions">
-        <button id="noteSave" class="btn">저장</button>
-        <button id="noteClear" class="btn">초기화</button>
+    <aside id="notePanel" aria-label="메모장">
+      <div class="note-head">
+        <div class="note-title">📝 메모장</div>
+        <div class="note-actions">
+          <button id="noteSave" class="btn">저장</button>
+          <button id="noteClear" class="btn">초기화</button>
+        </div>
       </div>
-    </div>
-    <textarea id="noteArea" placeholder="여기에 자유롭게 메모하세요.&#10;계산 팝업에서 결과를 입력하면 여기에 자동으로 한 줄 추가됩니다."></textarea>
-
-    <div class="note-subtitle">최근 계산 로그</div>
-    <div id="noteLog" class="note-log" aria-live="polite"></div>
-  </aside>
-</div>
-
-  
+      <textarea id="noteArea" placeholder="여기에 자유롭게 메모하세요.&#10;계산 팝업에서 결과를 입력하면 여기에도 자동으로 추가됩니다."></textarea>
+      <div class="note-subtitle">최근 계산 로그</div>
+      <div id="noteLog" class="note-log" aria-live="polite"></div>
+    </aside>
+  </div>
 
   <footer>
     <div class="container">
@@ -193,421 +155,393 @@ select option:focus {
     </div>
   </footer>
 
+  <script>
+    /* ========== 0) 유틸 & 저장소 ========== */
+    const $ = s => document.querySelector(s);
+    const norm = s => (s||'').toString().toLowerCase().replace(/\s+/g,'').normalize('NFKD');
 
-<script>
-  // 0) 도우미
-  const $ = s => document.querySelector(s);
-  const norm = s => (s||'').toString().toLowerCase().replace(/\s+/g,'').normalize('NFKD');
+    const favKey = 'penguin-favs-v1';
+    const favs = new Set(JSON.parse(localStorage.getItem(favKey) || '[]'));
+    const saveFavs = () => localStorage.setItem(favKey, JSON.stringify([...favs]));
 
-  // 1) 즐겨찾기 저장소
-  const favKey = 'penguin-favs-v1';
-  const favs = new Set(JSON.parse(localStorage.getItem(favKey) || '[]'));
-  const saveFavs = () => localStorage.setItem(favKey, JSON.stringify([...favs]));
+    /* ========== 1) 데이터 ========== */
+    const DATA = [
+      /* ───── 기본 재료 ───── */
+      { id:'mat_milgagu',   name:'밀가루',   category:'재료', tier:'기본', desc:'밀 x 4',           tags:['요리사','기본재료'], addedAt:'2025-10-28' },
+      { id:'mat_sugar_pow', name:'슈가파우더', category:'재료', tier:'기본', desc:'설탕 x 9',        tags:['요리사','기본재료'], addedAt:'2025-10-28' },
+      { id:'mat_beet_box',  name:'비트상자',  category:'재료', tier:'기본', desc:'비트 x 4',        tags:['요리사','기본재료'], addedAt:'2025-10-28' },
+      { id:'mat_potato_box',name:'감자상자',  category:'재료', tier:'기본', desc:'감자 x 9',        tags:['요리사','기본재료'], addedAt:'2025-10-28' },
+      { id:'mat_watermelon_juice', name:'수박 쥬스', category:'재료', tier:'기본', desc:'수박 x 4', tags:['요리사','기본재료'], addedAt:'2025-10-28' },
 
-  // 2) 데이터
-  const DATA = [
-    // ───────── 기본 재료 ─────────
-    { id:'mat_milgagu',   name:'밀가루',   category:'재료', tier:'기본', desc:'밀 x 4',           tags:['요리사','기본재료'], addedAt:'2025-10-28' },
-    { id:'mat_sugar_pow', name:'슈가파우더', category:'재료', tier:'기본', desc:'설탕 x 9',        tags:['요리사','기본재료'], addedAt:'2025-10-28' },
-    { id:'mat_beet_box',  name:'비트상자',  category:'재료', tier:'기본', desc:'비트 x 4',        tags:['요리사','기본재료'], addedAt:'2025-10-28' },
-    { id:'mat_potato_box',name:'감자상자',  category:'재료', tier:'기본', desc:'감자 x 9',        tags:['요리사','기본재료'], addedAt:'2025-10-28' },
-    { id:'mat_watermelon_juice', name:'수박 쥬스', category:'재료', tier:'기본', desc:'수박 x 4', tags:['요리사','기본재료'], addedAt:'2025-10-28' },
+      /* ───── 0차 요리 ───── */
+      { id:'t0_garlic_steak', name:'갈릭 스테이크', category:'요리', tier:'0차', desc:'시세 50 · 재료: 마늘, 스테이크, 감자상자 2 · 경험치 3', tags:['요리사','육류'], addedAt:'2025-10-28' },
+      { id:'t0_kimchi',       name:'배추 김치',     category:'요리', tier:'0차', desc:'시세 78 · 재료: 배추, 고추, 밀가루 · 경험치 3',        tags:['요리사','발효'], addedAt:'2025-10-28' },
+      { id:'t0_lemon_dango',  name:'레몬 당고',     category:'요리', tier:'0차', desc:'시세 48 · 재료: 레몬, 슈가파우더, 밀가루 · 경험치 3', tags:['요리사','간식'], addedAt:'2025-10-28' },
+      { id:'t0_potion_lowest',name:'최하급 포션',   category:'요리', tier:'0차', desc:'체력 15% · 마나 4% · 쿨타임 30초 · 재료: 레몬, 마늘, 네더사마귀 상자 2 · 경험치 3', tags:['요리사','포션'], addedAt:'2025-10-28' },
 
-    // ───────── 0차 요리 ─────────
-    { id:'t0_garlic_steak', name:'갈릭 스테이크', category:'요리', tier:'0차', desc:'시세 50 · 재료: 마늘, 스테이크, 감자상자 2 · 경험치 3', tags:['요리사','육류'], addedAt:'2025-10-28' },
-    { id:'t0_kimchi',       name:'배추 김치',     category:'요리', tier:'0차', desc:'시세 78 · 재료: 배추, 고추, 밀가루 · 경험치 3',        tags:['요리사','발효'], addedAt:'2025-10-28' },
-    { id:'t0_lemon_dango',  name:'레몬 당고',     category:'요리', tier:'0차', desc:'시세 48 · 재료: 레몬, 슈가파우더, 밀가루 · 경험치 3', tags:['요리사','간식'], addedAt:'2025-10-28' },
-    { id:'t0_potion_lowest',name:'최하급 포션',   category:'요리', tier:'0차', desc:'체력 15% · 마나 4% · 쿨타임 30초 · 재료: 레몬, 마늘, 네더사마귀 상자 2 · 경험치 3', tags:['요리사','포션'], addedAt:'2025-10-28' },
+      /* ───── 1차 요리 ───── */
+      { id:'t1_coin3', name:'요리사코인', category:'요리', tier:'기본',   desc:'시세 1200 · 제단 또는 재료',   tags:['코인','제단'], addedAt:'2025-10-28' },
+      { id:'t1_strawberry_mochi', name:'딸기모찌',   category:'요리', tier:'1차', desc:'시세 58 · 재료: 딸기, 슈가파우더, 밀가루 · 경험치 4',      tags:['요리사','디저트'], addedAt:'2025-10-28' },
+      { id:'t1_cucumber_muchim',  name:'오이무침',   category:'요리', tier:'1차', desc:'시세 86 · 재료: 오이, 고추, 밀가루 · 경험치 4',            tags:['요리사','한식'], addedAt:'2025-10-28' },
+      { id:'t1_salad',            name:'샐러드',     category:'요리', tier:'1차', desc:'시세 98 · 재료: 파프리카, 오이, 당근상자 2 · 경험치 4',    tags:['요리사','채소'], addedAt:'2025-10-28' },
+      { id:'t1_jellyfish_cold',   name:'해파리냉채', category:'요리', tier:'1차', desc:'시세 1420 · 재료: 1등급 해파리, 오이, 파프리카 · 경험치 15', tags:['요리사','해산물'], addedAt:'2025-10-28' },
+      { id:'t1_potion_low',       name:'하급 포션',  category:'요리', tier:'1차', desc:'체력 20% · 마나 8% · 쿨타임 30초 · 재료: 딸기, 파프리카, 네더사마귀 상자 2 · 경험치 4', tags:['요리사','포션'], addedAt:'2025-10-28' },
+      { id:'t1_strawberry_punch', name:'딸기 화채', category:'요리', tier:'1차', desc:'포화 1분 · 재료: 딸기, 수박쥬스, 시원한 얼음 · 경험치 5', tags:['요리사','화채'], addedAt:'2025-10-28' },
+      { id:'t1_sweet_potato_salad', name:'고구마 샐러드', category:'요리', tier:'1차', desc:'시세 98 · 재료: 고구마, 오이, 당근상자 2 · 경험치 4', tags:['요리사','채소'], addedAt:'2025-10-28' },
 
-    // ───────── 1차 요리 ─────────
-    { id:'t1_coin3', name:'요리사코인', category:'요리', tier:'기본',   desc:'시세 1200 · 제단 또는 재료',   tags:['코인','제단'], addedAt:'2025-10-28' },
-    { id:'t1_strawberry_mochi', name:'딸기모찌',   category:'요리', tier:'1차', desc:'시세 58 · 재료: 딸기, 슈가파우더, 밀가루 · 경험치 4',      tags:['요리사','디저트'], addedAt:'2025-10-28' },
-    { id:'t1_cucumber_muchim',  name:'오이무침',   category:'요리', tier:'1차', desc:'시세 86 · 재료: 오이, 고추, 밀가루 · 경험치 4',            tags:['요리사','한식'], addedAt:'2025-10-28' },
-    { id:'t1_salad',            name:'샐러드',     category:'요리', tier:'1차', desc:'시세 98 · 재료: 파프리카, 오이, 당근상자 2 · 경험치 4',    tags:['요리사','채소'], addedAt:'2025-10-28' },
-    { id:'t1_jellyfish_cold',   name:'해파리냉채', category:'요리', tier:'1차', desc:'시세 1420 · 재료: 1등급 해파리, 오이, 파프리카 · 경험치 15', tags:['요리사','해산물'], addedAt:'2025-10-28' },
-    { id:'t1_potion_low',       name:'하급 포션',  category:'요리', tier:'1차', desc:'체력 20% · 마나 8% · 쿨타임 30초 · 재료: 딸기, 파프리카, 네더사마귀 상자 2 · 경험치 4', tags:['요리사','포션'], addedAt:'2025-10-28' },
-    { id:'t1_strawberry_punch', name:'딸기 화채', category:'요리', tier:'1차', desc:'포화 1분 · 재료: 딸기, 수박쥬스, 시원한 얼음 · 경험치 5', tags:['요리사','화채'], addedAt:'2025-10-28' },
-    { id:'t1_sweet_potato_salad', name:'고구마 샐러드', category:'요리', tier:'1차', desc:'시세 98 · 재료: 고구마, 오이, 당근상자 2 · 경험치 4', tags:['요리사','채소'], addedAt:'2025-10-28' },
+      /* ───── 2차 요리 ───── */
+      { id:'t2_kkakdugi',     name:'깍두기',     category:'요리', tier:'2차', desc:'시세 100 · 재료: 무, 고추, 밀가루 · 경험치 5',               tags:['요리사','발효'], addedAt:'2025-10-28' },
+      { id:'t2_orange_pudding', name:'오렌지 푸딩', category:'요리', tier:'2차', desc:'시세 72 · 재료: 오렌지, 슈가파우더, 밀가루 · 경험치 5',      tags:['요리사','디저트'], addedAt:'2025-10-28' },
+      { id:'t2_zucchini_stew', name:'애호박 찌개', category:'요리', tier:'2차', desc:'시세 112 · 재료: 애호박, 대파, 감자상자 2 · 경험치 5',       tags:['요리사','국물'], addedAt:'2025-10-28' },
+      { id:'t2_gray_mullet_spicy', name:'숭어 매운탕', category:'요리', tier:'2차', desc:'시세 1420 · 재료: 1등급 숭어, 무, 대파 · 경험치 20',        tags:['요리사','해산물'], addedAt:'2025-10-28' },
+      { id:'t2_potion_basic',  name:'기본 포션',  category:'요리', tier:'2차', desc:'체력 25% · 마나 12% · 쿨타임 30초 · 재료: 애호박, 오렌지, 네더사마귀 상자 2 · 경험치 5', tags:['요리사','포션'], addedAt:'2025-10-28' },
+      { id:'t2_orange_punch',  name:'오렌지 화채', category:'요리', tier:'2차', desc:'포화 2분 · 재료: 오렌지, 수박쥬스, 시원한 얼음 · 경험치 8', tags:['요리사','화채'], addedAt:'2025-10-28' },
 
-    // ───────── 2차 요리 ─────────
-    { id:'t2_kkakdugi',     name:'깍두기',     category:'요리', tier:'2차', desc:'시세 100 · 재료: 무, 고추, 밀가루 · 경험치 5',               tags:['요리사','발효'], addedAt:'2025-10-28' },
-    { id:'t2_orange_pudding', name:'오렌지 푸딩', category:'요리', tier:'2차', desc:'시세 72 · 재료: 오렌지, 슈가파우더, 밀가루 · 경험치 5',      tags:['요리사','디저트'], addedAt:'2025-10-28' },
-    { id:'t2_zucchini_stew', name:'애호박 찌개', category:'요리', tier:'2차', desc:'시세 112 · 재료: 애호박, 대파, 감자상자 2 · 경험치 5',       tags:['요리사','국물'], addedAt:'2025-10-28' },
-    { id:'t2_gray_mullet_spicy', name:'숭어 매운탕', category:'요리', tier:'2차', desc:'시세 1420 · 재료: 1등급 숭어, 무, 대파 · 경험치 20',        tags:['요리사','해산물'], addedAt:'2025-10-28' },
-    { id:'t2_potion_basic',  name:'기본 포션',  category:'요리', tier:'2차', desc:'체력 25% · 마나 12% · 쿨타임 30초 · 재료: 애호박, 오렌지, 네더사마귀 상자 2 · 경험치 5', tags:['요리사','포션'], addedAt:'2025-10-28' },
-    { id:'t2_orange_punch',  name:'오렌지 화채', category:'요리', tier:'2차', desc:'포화 2분 · 재료: 오렌지, 수박쥬스, 시원한 얼음 · 경험치 8', tags:['요리사','화채'], addedAt:'2025-10-28' },
+      /* ───── 3차 요리 ───── */
+      { id:'t3_broccoli_salad', name:'브로콜리 샐러드', category:'요리', tier:'3차', desc:'시세 142 · 재료: 브로콜리, 양배추, 비트상자 1 · 경험치 6', tags:['요리사','채소'], addedAt:'2025-10-28' },
+      { id:'t3_tomato_pasta',  name:'토마토 파스타',  category:'요리', tier:'3차', desc:'시세 130 · 재료: 토마토, 대파, 밀가루 · 경험치 6',           tags:['요리사','면요리'], addedAt:'2025-10-28' },
+      { id:'t3_peach_ice_tea', name:'복숭아 아이스티', category:'요리', tier:'3차', desc:'시세 80 · 재료: 복숭아, 비트상자, 슈가파우더 2 · 경험치 6',  tags:['요리사','음료'], addedAt:'2025-10-28' },
+      { id:'t3_shrimp_grill',  name:'철판 새우',      category:'요리', tier:'3차', desc:'시세 1610 · 재료: 1등급 새우, 브로콜리, 당근 상자 2 · 경험치 25', tags:['요리사','해산물'], addedAt:'2025-10-28' },
+      { id:'t3_potion_mid',    name:'중급 포션',      category:'요리', tier:'3차', desc:'체력 30% · 마나 16% · 쿨타임 30초 · 재료: 복숭아, 토마토, 네더사마귀 상자 2 · 경험치 6', tags:['요리사','포션'], addedAt:'2025-10-28' },
+      { id:'t3_peach_punch',   name:'복숭아 화채',    category:'요리', tier:'3차', desc:'포화 3분 · 재료: 복숭아, 수박쥬스, 시원한 얼음 · 경험치 12', tags:['요리사','화채'], addedAt:'2025-10-28' },
 
-    // ───────── 3차 요리 ─────────
-    { id:'t3_broccoli_salad', name:'브로콜리 샐러드', category:'요리', tier:'3차', desc:'시세 142 · 재료: 브로콜리, 양배추, 비트상자 1 · 경험치 6', tags:['요리사','채소'], addedAt:'2025-10-28' },
-    { id:'t3_tomato_pasta',  name:'토마토 파스타',  category:'요리', tier:'3차', desc:'시세 130 · 재료: 토마토, 대파, 밀가루 · 경험치 6',           tags:['요리사','면요리'], addedAt:'2025-10-28' },
-    { id:'t3_peach_ice_tea', name:'복숭아 아이스티', category:'요리', tier:'3차', desc:'시세 80 · 재료: 복숭아, 비트상자, 슈가파우더 2 · 경험치 6',  tags:['요리사','음료'], addedAt:'2025-10-28' },
-    { id:'t3_shrimp_grill',  name:'철판 새우',      category:'요리', tier:'3차', desc:'시세 1610 · 재료: 1등급 새우, 브로콜리, 당근 상자 2 · 경험치 25', tags:['요리사','해산물'], addedAt:'2025-10-28' },
-    { id:'t3_potion_mid',    name:'중급 포션',      category:'요리', tier:'3차', desc:'체력 30% · 마나 16% · 쿨타임 30초 · 재료: 복숭아, 토마토, 네더사마귀 상자 2 · 경험치 6', tags:['요리사','포션'], addedAt:'2025-10-28' },
-    { id:'t3_peach_punch',   name:'복숭아 화채',    category:'요리', tier:'3차', desc:'포화 3분 · 재료: 복숭아, 수박쥬스, 시원한 얼음 · 경험치 12', tags:['요리사','화채'], addedAt:'2025-10-28' },
+      /* ───── 4차 요리 ───── */
+      { id:'t4_melon_bread', name:'메론빵',    category:'요리', tier:'4차', desc:'시세 90 · 재료: 멜론, 슈가파우더, 밀가루 · 경험치 7',   tags:['요리사','빵'], addedAt:'2025-10-28' },
+      { id:'t4_gimbap',      name:'김밥',      category:'요리', tier:'4차', desc:'시세 166 · 재료: 쌀, 양파, 비트 상자 1 · 경험치 7',     tags:['요리사','한식'], addedAt:'2025-10-28' },
+      { id:'t4_bibimbap',    name:'비빔밥',    category:'요리', tier:'4차', desc:'시세 166 · 재료: 쌀, 상추, 당근 상자 2 · 경험치 7',     tags:['요리사','한식'], addedAt:'2025-10-28' },
+      { id:'t4_fish_chip',   name:'생선 튀김', category:'요리', tier:'4차', desc:'시세 1610 · 재료: 1등급 도다리, 양파, 밀가루 · 경험치 30', tags:['요리사','해산물'], addedAt:'2025-10-28' },
+      { id:'t4_potion_high', name:'상급 포션', category:'요리', tier:'4차', desc:'체력 35% · 마나 20% · 쿨타임 30초 · 재료: 멜론, 상추, 네더사마귀 상자 2 · 경험치 7', tags:['요리사','포션'], addedAt:'2025-10-28' },
+      { id:'t4_melon_punch', name:'메론 화채', category:'요리', tier:'4차', desc:'포화 4분 · 재료: 멜론, 수박쥬스, 시원한 얼음 · 경험치 16', tags:['요리사','화채'], addedAt:'2025-10-28' },
 
-    // ───────── 4차 요리 ─────────
-    { id:'t4_melon_bread', name:'메론빵',    category:'요리', tier:'4차', desc:'시세 90 · 재료: 멜론, 슈가파우더, 밀가루 · 경험치 7',   tags:['요리사','빵'], addedAt:'2025-10-28' },
-    { id:'t4_gimbap',      name:'김밥',      category:'요리', tier:'4차', desc:'시세 166 · 재료: 쌀, 양파, 비트 상자 1 · 경험치 7',     tags:['요리사','한식'], addedAt:'2025-10-28' },
-    { id:'t4_bibimbap',    name:'비빔밥',    category:'요리', tier:'4차', desc:'시세 166 · 재료: 쌀, 상추, 당근 상자 2 · 경험치 7',     tags:['요리사','한식'], addedAt:'2025-10-28' },
-    { id:'t4_fish_chip',   name:'생선 튀김', category:'요리', tier:'4차', desc:'시세 1610 · 재료: 1등급 도다리, 양파, 밀가루 · 경험치 30', tags:['요리사','해산물'], addedAt:'2025-10-28' },
-    { id:'t4_potion_high', name:'상급 포션', category:'요리', tier:'4차', desc:'체력 35% · 마나 20% · 쿨타임 30초 · 재료: 멜론, 상추, 네더사마귀 상자 2 · 경험치 7', tags:['요리사','포션'], addedAt:'2025-10-28' },
-    { id:'t4_melon_punch', name:'메론 화채', category:'요리', tier:'4차', desc:'포화 4분 · 재료: 멜론, 수박쥬스, 시원한 얼음 · 경험치 16', tags:['요리사','화채'], addedAt:'2025-10-28' },
+      /* ───── 광물 ───── */
+      { id:'ore_coin2', name:'광부코인', category:'광물', tier:'기본',   desc:'단일 상점가 1200 · 제단 또는 재료',   tags:['코인','제단'], addedAt:'2025-10-28' },
+      { id:'ore_diamond', name:'다이아', category:'광물', tier:'기본', desc:'단일 상점가 72 · 블록 상점가 720', tags:['광물'], addedAt:'2025-10-28' },
+      { id:'ore_gold', name:'금', category:'광물', tier:'기본', desc:'단일 상점가 15 · 블록 상점가 150', tags:['광물'], addedAt:'2025-10-28' },
+      { id:'ore_iron', name:'철', category:'광물', tier:'기본', desc:'단일 상점가 10 · 블록 상점가 100', tags:['광물'], addedAt:'2025-10-28' },
+      { id:'ore_copper', name:'구리', category:'광물', tier:'기본', desc:'단일 상점가 4 · 블록 상점가 40', tags:['광물'], addedAt:'2025-10-28' },
+      { id:'ore_lapis', name:'청금석', category:'광물', tier:'기본', desc:'단일 상점가 6 · 블록 상점가 60', tags:['광물'], addedAt:'2025-10-28' },
+      { id:'ore_redstone', name:'레드스톤', category:'광물', tier:'기본', desc:'단일 상점가 6 · 블록 상점가 60', tags:['광물'], addedAt:'2025-10-28' },
+      { id:'ore_emerald', name:'에메랄드', category:'광물', tier:'기본', desc:'단일 상점가 120 · 블록 상점가 1200', tags:['광물'], addedAt:'2025-10-28' },
+      { id:'ore_quartz', name:'석영', category:'광물', tier:'기본', desc:'단일 상점가 8', tags:['광물'], addedAt:'2025-10-28' },
+      { id:'ore_netherite', name:'네더라이트', category:'광물', tier:'기본', desc:'단일 상점가 200 · 블록 상점가 2000', tags:['광물'], addedAt:'2025-10-28' },
+      { id:'ore_s1', name:'신비로운 스피넬', category:'광물', tier:'기본', desc:'단일 상점가 150', tags:['광물'], addedAt:'2025-10-28' },
+      { id:'ore_s2', name:'신비로운 태양석', category:'광물', tier:'기본', desc:'단일 상점가 500', tags:['광물'], addedAt:'2025-10-28' },
+      { id:'ore_s3', name:'신비로운 루비', category:'광물', tier:'기본', desc:'단일 상점가 1800', tags:['광물'], addedAt:'2025-10-28' },
+      { id:'ore_s4', name:'신비로운 크리스탈', category:'광물', tier:'기본', desc:'단일 상점가 12000', tags:['광물'], addedAt:'2025-10-28' },
 
-    // ───────── 광물 ─────────
-    { id:'ore_coin2', name:'광부코인', category:'광물', tier:'기본',   desc:'단일 상점가 1200 · 제단 또는 재료',   tags:['코인','제단'], addedAt:'2025-10-28' },
-    { id:'ore_diamond', name:'다이아', category:'광물', tier:'기본', desc:'단일 상점가 72 · 블록 상점가 720', tags:['광물'], addedAt:'2025-10-28' },
-    { id:'ore_gold', name:'금', category:'광물', tier:'기본', desc:'단일 상점가 15 · 블록 상점가 150', tags:['광물'], addedAt:'2025-10-28' },
-    { id:'ore_iron', name:'철', category:'광물', tier:'기본', desc:'단일 상점가 10 · 블록 상점가 100', tags:['광물'], addedAt:'2025-10-28' },
-    { id:'ore_copper', name:'구리', category:'광물', tier:'기본', desc:'단일 상점가 4 · 블록 상점가 40', tags:['광물'], addedAt:'2025-10-28' },
-    { id:'ore_lapis', name:'청금석', category:'광물', tier:'기본', desc:'단일 상점가 6 · 블록 상점가 60', tags:['광물'], addedAt:'2025-10-28' },
-    { id:'ore_redstone', name:'레드스톤', category:'광물', tier:'기본', desc:'단일 상점가 6 · 블록 상점가 60', tags:['광물'], addedAt:'2025-10-28' },
-    { id:'ore_emerald', name:'에메랄드', category:'광물', tier:'기본', desc:'단일 상점가 120 · 블록 상점가 1200', tags:['광물'], addedAt:'2025-10-28' },
-    { id:'ore_quartz', name:'석영', category:'광물', tier:'기본', desc:'단일 상점가 8', tags:['광물'], addedAt:'2025-10-28' },
-    { id:'ore_netherite', name:'네더라이트', category:'광물', tier:'기본', desc:'단일 상점가 200 · 블록 상점가 2000', tags:['광물'], addedAt:'2025-10-28' },
-    { id:'ore_s1', name:'신비로운 스피넬', category:'광물', tier:'기본', desc:'단일 상점가 150', tags:['광물'], addedAt:'2025-10-28' },
-    { id:'ore_s2', name:'신비로운 태양석', category:'광물', tier:'기본', desc:'단일 상점가 500', tags:['광물'], addedAt:'2025-10-28' },   
-    { id:'ore_s3', name:'신비로운 루비', category:'광물', tier:'기본', desc:'단일 상점가 1800', tags:['광물'], addedAt:'2025-10-28' },
-    { id:'ore_s4', name:'신비로운 크리스탈', category:'광물', tier:'기본', desc:'단일 상점가 12000', tags:['광물'], addedAt:'2025-10-28' },
+      /* ───── 도감 ───── */
+      { id:'dex_test', name:'테스트', category:'도감', tier:'기본', desc:'출현: 테스트 필드', tags:['테스트'], addedAt:'2025-10-28' },
 
-    // ───────── 도감 (가격 계산 대상 아님) ─────────
-    { id:'dex_test', name:'테스트', category:'도감', tier:'기본', desc:'출현: 테스트 필드', tags:['테스트'], addedAt:'2025-10-28' },
+      /* ───── 물고기 (일부) ───── */
+      { id:'fish_coin1', name:'어부코인', category:'물고기', tier:'기본',   desc:'시세 1200 · 제단 또는 재료',   tags:['코인','제단'], addedAt:'2025-10-28' },
+      { id:'fish_1', name:'1등급 조개 껍데기', category:'물고기', tier:'일반',   desc:'시세 360', tags:['물고기','낚시'], addedAt:'2025-10-28' },
+      { id:'fish_27', name:'게 발톱', category:'물고기', tier:'일반',   desc:'시세 1500', tags:['물고기','낚시'], addedAt:'2025-10-28' },
 
-    // ───────── 물고기 ─────────
-    { id:'fish_coin1', name:'어부코인', category:'물고기', tier:'기본',   desc:'시세 1200 · 제단 또는 재료',   tags:['코인','제단'], addedAt:'2025-10-28' },
-    { id:'fish_1', name:'1등급 조개 껍데기', category:'물고기', tier:'일반',   desc:'시세 360', tags:['물고기','낚시'], addedAt:'2025-10-28' },
-    { id:'fish_2', name:'1등급 해마', category:'물고기', tier:'일반',   desc:'시세 360', tags:['물고기','낚시'], addedAt:'2025-10-28' },
-    // … (생략: 나머지 물고기도 계속 같은 형식으로)
-    { id:'fish_27', name:'게 발톱', category:'물고기', tier:'일반',   desc:'시세 1500', tags:['물고기','낚시'], addedAt:'2025-10-28' },
+      /* ───── 농작물 (일부) ───── */
+      { id:'crop_coin0', name:'농부코인', category:'농작물', tier:'기본',   desc:'시세 1200 · 제단 또는 재료',   tags:['코인','제단'], addedAt:'2025-10-28' },
+      { id:'crop_wheat1', name:'1등급 마늘', category:'농작물', tier:'0차', desc:'시세 24', tags:['농작물','재배'], addedAt:'2025-10-28' },
+      { id:'crop_wheat39', name:'황금 멜론', category:'농작물', tier:'4차', desc:'시세 500', tags:['농작물','재배'], addedAt:'2025-10-28' },
+    ];
 
-    // ───────── 농작물 ─────────
-    { id:'crop_coin0', name:'농부코인', category:'농작물', tier:'기본',   desc:'시세 1200 · 제단 또는 재료',   tags:['코인','제단'], addedAt:'2025-10-28' },
-    { id:'crop_wheat1', name:'1등급 마늘', category:'농작물', tier:'0차', desc:'시세 24', tags:['농작물','재배'], addedAt:'2025-10-28' },
-    // … (생략: 나머지 농작물도 같은 형식)
-    { id:'crop_wheat39', name:'황금 멜론', category:'농작물', tier:'4차', desc:'시세 500', tags:['농작물','재배'], addedAt:'2025-10-28' },
-  ];
+    /* ========== 2) 상태/필터/렌더 ========== */
+    const state = { q:'', cat:'', tier:'', sort:'name', fav:0, page:1 };
 
-  // 3) 상태
-  const state = { q:'', cat:'', tier:'', sort:'name', fav:0, page:1 };
+    const match = (item, q) =>
+      !q || [item.name, item.desc, ...(item.tags||[])].some(v => norm(v).includes(norm(q)));
 
-  // 4) 필터/정렬
-  const match = (item, q) => !q || [item.name, item.desc, ...(item.tags||[])].some(v => norm(v).includes(norm(q)));
-  const apply = (list, st) => {
-    let out = list.filter(it => match(it, st.q));
-    if (st.cat) out = out.filter(it => it.category === st.cat);
-    if (st.tier) out = out.filter(it => it.tier === st.tier);
-    if (st.fav) out = out.filter(it => favs.has(it.id));
-    switch(st.sort){
-      case 'recent': out.sort((a,b)=> new Date(b.addedAt)-new Date(a.addedAt)); break;
-      case 'cat': out.sort((a,b)=> (a.category||'').localeCompare(b.category||'','ko') || a.name.localeCompare(b.name,'ko')); break;
-      default: out.sort((a,b)=> a.name.localeCompare(b.name,'ko'));
-    }
-    return out;
-  };
+    const apply = (list, st) => {
+      let out = list.filter(it => match(it, st.q));
+      if (st.cat) out = out.filter(it => it.category === st.cat);
+      if (st.tier) out = out.filter(it => it.tier === st.tier);
+      if (st.fav) out = out.filter(it => favs.has(it.id));
+      switch(st.sort){
+        case 'recent': out.sort((a,b)=> new Date(b.addedAt)-new Date(a.addedAt)); break;
+        case 'cat': out.sort((a,b)=> (a.category||'').localeCompare(b.category||'','ko') || a.name.localeCompare(b.name,'ko')); break;
+        default: out.sort((a,b)=> a.name.localeCompare(b.name,'ko'));
+      }
+      return out;
+    };
 
-  // 5) 카드 렌더
-  function card(it){
-    const el = document.createElement('div');
-    el.className = 'card';
-    el.innerHTML = `
-      <button class="fav ${favs.has(it.id)?'active':''}" aria-label="즐겨찾기" data-id="${it.id}">
-        ${favs.has(it.id)?'♥':'♡'}
-      </button>
-      <div class="name">${it.name}</div>
-      <div class="row">
-        <span class="chip">${it.category}</span>
-        <span class="chip">차수: ${it.tier}</span>
-      </div>
-      <div class="desc">${it.desc||''}</div>`;
-    el.querySelector('.fav').addEventListener('click', e=>{
-      e.stopPropagation();
-      const id = e.currentTarget.dataset.id;
-      favs.has(id)?favs.delete(id):favs.add(id);
-      saveFavs(); render();
-    });
-    return el;
-  }
-
-  function render(){
-    const filtered = apply(DATA, state);
-    const grid = $('#grid');
-    grid.innerHTML = '';
-    filtered.forEach(it => grid.appendChild(card(it)));
-    $('#favOnlyBtn').classList.toggle('primary', !!state.fav);
-    if (!filtered.length) {
-      const empty = document.createElement('div');
-      empty.className = 'empty';
-      empty.innerHTML = state.cat
-        ? `📂 <b>${state.cat}</b> 카테고리에 아직 항목이 없습니다.`
-        : '표시할 항목이 없습니다.';
-      grid.appendChild(empty);
-    }
-  }
-
-  // 6) 빠른 카테고리 버튼 (state 정의 후!)
-  document.getElementById('quickCats').addEventListener('click', e => {
-    const cat = e.target.dataset.cat;
-    if (cat === undefined) return;
-    state.cat = cat;
-    document.getElementById('cat').value = cat;
-    render();
-  });
-
-<!-- ▼▼ JS: 메모장 저장/로드 모듈 ▼▼ -->
-<script>
-// ───────── 메모장 저장/로드 ─────────
-const NOTE_KEY = 'penguin-notes-v1';
-const LOG_KEY  = 'penguin-notelogs-v1';
-
-const noteArea = document.getElementById('noteArea');   // 우측 메모 textarea
-const noteLog  = document.getElementById('noteLog');    // 최근 계산 로그 컨테이너
-
-function renderLogs(logs){
-  noteLog.innerHTML = '';
-  logs.forEach((row, idx)=>{
-    const div = document.createElement('div');
-    div.className = 'note-item';
-    div.innerHTML = `
-      <div>
-        <div><b>${row.name}</b> — ${row.result.toLocaleString()}원 
-          <small>(${row.base.toLocaleString()}원, ${row.kind}, ${row.rate}%)</small>
+    function card(it){
+      const el = document.createElement('div');
+      el.className = 'card';
+      el.innerHTML = `
+        <button class="fav ${favs.has(it.id)?'active':''}" aria-label="즐겨찾기" data-id="${it.id}">
+          ${favs.has(it.id)?'♥':'♡'}
+        </button>
+        <div class="name">${it.name}</div>
+        <div class="row">
+          <span class="chip">${it.category}</span>
+          <span class="chip">차수: ${it.tier}</span>
         </div>
-        <small>${row.time}</small>
-      </div>
-      <button class="note-del" data-idx="${idx}">삭제</button>
-    `;
-    noteLog.appendChild(div);
-  });
-}
-
-function loadNotes(){
-  noteArea.value = localStorage.getItem(NOTE_KEY) || '';
-  const logs = JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
-  renderLogs(logs);
-}
-
-function saveNotes(){
-  localStorage.setItem(NOTE_KEY, noteArea.value);
-}
-
-function addLog(entry){
-  const logs = JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
-  logs.unshift(entry);                                 // 최신이 위로 오도록
-  localStorage.setItem(LOG_KEY, JSON.stringify(logs.slice(0,200))); // 최대 200건 유지
-  renderLogs(logs.slice(0,200));
-}
-
-function clearNotesAndLogs(){
-  localStorage.removeItem(NOTE_KEY);
-  localStorage.removeItem(LOG_KEY);
-  noteArea.value = '';
-  renderLogs([]);
-}
-
-// 버튼/이벤트 연결
-document.getElementById('noteSave') .addEventListener('click', saveNotes);
-document.getElementById('noteClear').addEventListener('click', clearNotesAndLogs);
-
-// 로그 리스트에서 개별 삭제
-noteLog.addEventListener('click', (e)=>{
-  if(e.target.classList.contains('note-del')){
-    const idx = +e.target.dataset.idx;
-    const logs = JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
-    logs.splice(idx,1);
-    localStorage.setItem(LOG_KEY, JSON.stringify(logs));
-    renderLogs(logs);
-  }
-});
-
-// 입력 자동 저장(간단 디바운스)
-let noteTimer=null;
-noteArea.addEventListener('input', ()=>{
-  clearTimeout(noteTimer);
-  noteTimer = setTimeout(saveNotes, 400);
-});
-
-// 최초 로드
-loadNotes();
-
-// 팝업 핸들러에서 접근할 수 있도록 전역 노출(안전빵)
-window.addLog   = addLog;
-window.noteArea = noteArea;
-window.saveNotes= saveNotes;
-</script>
-<!-- ▲▲ JS: 메모장 저장/로드 모듈 ▲▲ -->
-
-  
-  // 7) 검색/필터 UI
-  $('#q').addEventListener('input', e=>{state.q=e.target.value; render();});
-  $('#cat').addEventListener('change', e=>{state.cat=e.target.value; render();});
-  $('#tier').addEventListener('change', e=>{state.tier=e.target.value; render();});
-  $('#sort').addEventListener('change', e=>{state.sort=e.target.value; render();});
-  $('#favOnlyBtn').addEventListener('click', ()=>{state.fav=state.fav?0:1; render();});
-  $('#share').addEventListener('click', e=>{e.preventDefault(); navigator.clipboard.writeText(location.href); alert('현재 검색 링크를 복사했습니다!');});
-
-  // 8) 팝업(계산기) — 단일 선언
-  let selectedItem = null;
-
-  const calcBox = document.createElement('div');
-  calcBox.id = 'calcBox';
-  calcBox.style.cssText = 'position:fixed;inset:auto auto 20px 20px;max-width:360px;z-index:1000;background:#22143d;border:1px solid #3b2a60;border-radius:12px;padding:14px;display:none;box-shadow:0 12px 28px rgba(0,0,0,.45);color:#fff';
-  calcBox.innerHTML = `
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-      <img id="calcThumb" alt="" style="width:36px;height:36px;border-radius:8px;object-fit:cover;border:1px solid #3b2a60;display:none">
-      <h3 id="calcTitle" style="margin:0">가격 계산기</h3>
-    </div>
-    <div id="calcDesc" style="opacity:.8;margin-bottom:12px;font-size:14px"></div>
-    <div id="oreMode" style="display:none; margin-bottom:8px;">
-      <label style="margin-right:10px;"><input type="radio" name="oreType" value="single" checked> 단일 상점가 기준</label>
-      <label><input type="radio" name="oreType" value="block"> 블록 상점가 기준</label>
-    </div>
-    <div id="rangeBox" style="margin:8px 0 10px;padding:10px;border:1px solid #3b2a60;border-radius:10px;background:#241443;">
-      <div style="font-weight:700;margin-bottom:6px;">가격 범위 (-30% ~ +80%)</div>
-      <div id="rangeValues" style="font-size:14px;opacity:.9;">기준가를 선택하면 자동 계산됩니다.</div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px;">
-      <input id="calcRate" type="number" placeholder="변동 퍼센트 입력 (-30~80)"
-        style="width:100%;padding:8px;border-radius:8px;border:1px solid #3b2a60;background:#2b1a4b;color:#fff;">
-      <input id="rateSlider" type="range" min="-30" max="80" value="0" style="width:100%">
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
-        <button class="btn" data-rate="-30">-30%</button>
-        <button class="btn" data-rate="-20">-20%</button>
-        <button class="btn" data-rate="0">0%</button>
-        <button class="btn" data-rate="20">+20%</button>
-        <button class="btn" data-rate="80">+80%</button>
-      </div>
-    </div>
-    <button id="calcRun" class="btn primary" style="width:100%;margin-bottom:8px;">계산하기</button>
-    <div id="calcResult" style="margin-top:6px;font-size:15px;color:#ffd770;"></div>
-    <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end">
-      <button id="calcClose" class="btn">닫기</button>
-    </div>
-  `;
-  document.body.appendChild(calcBox);
-
-  function clampRate(v){ return Math.min(80, Math.max(-30, v)); }
-  function getBasePriceForRange(item){
-    if (!item) return null;
-    if (['요리','물고기','농작물'].includes(item.category)) {
-      const m = /(?:시세|가격|판매가)\s*([\d,]+)/.exec(item.desc || '');
-      return m ? parseInt(m[1].replace(/,/g,''), 10) : null;
+        <div class="desc">${it.desc||''}</div>`;
+      el.querySelector('.fav').addEventListener('click', e=>{
+        e.stopPropagation();
+        const id = e.currentTarget.dataset.id;
+        favs.has(id)?favs.delete(id):favs.add(id);
+        saveFavs(); render();
+      });
+      return el;
     }
-    if (item.category === '광물') {
-      const mode = document.querySelector('input[name="oreType"]:checked')?.value || 'single';
-      if (mode === 'block') {
-        const m = /블록\s*상점가\s*([\d,]+)/.exec(item.desc || ''); return m ? parseInt(m[1].replace(/,/g,''), 10) : null;
-      } else {
-        const m = /단일\s*상점가\s*([\d,]+)/.exec(item.desc || ''); return m ? parseInt(m[1].replace(/,/g,''), 10) : null;
+
+    function render(){
+      const filtered = apply(DATA, state);
+      const grid = $('#grid'); grid.innerHTML='';
+      filtered.forEach(it => grid.appendChild(card(it)));
+      $('#favOnlyBtn').classList.toggle('primary', !!state.fav);
+      if (!filtered.length) {
+        const empty = document.createElement('div');
+        empty.className = 'empty';
+        empty.innerHTML = state.cat
+          ? `📂 <b>${state.cat}</b> 카테고리에 아직 항목이 없습니다.`
+          : '표시할 항목이 없습니다.';
+        grid.appendChild(empty);
       }
     }
-    return null;
-  }
-  function renderRangeBox(base){
-    const box = document.getElementById('rangeValues');
-    if (!base) { box.innerHTML = '기준가가 없어 범위를 계산할 수 없어요.'; return; }
-    const minP = Math.round(base * 0.70);
-    const maxP = Math.round(base * 1.80);
-    box.innerHTML = `최저가(−30%): <b>${minP.toLocaleString()}</b>원 · 최고가(+80%): <b>${maxP.toLocaleString()}</b>원
-                     <br><small>기준 ${base.toLocaleString()}원</small>`;
-  }
 
-  // 동기화
-  const rateInput  = document.getElementById('calcRate');
-  const rateSlider = document.getElementById('rateSlider');
-  rateInput.addEventListener('input', ()=>{ rateSlider.value = clampRate(parseFloat(rateInput.value) || 0); });
-  rateSlider.addEventListener('input', ()=>{ rateInput.value = rateSlider.value; });
-  document.querySelectorAll('#calcBox [data-rate]').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      rateInput.value = btn.dataset.rate; rateSlider.value = btn.dataset.rate;
+    /* ========== 3) 빠른 카테고리/검색 UI ========== */
+    document.getElementById('quickCats').addEventListener('click', e => {
+      const cat = e.target.dataset.cat;
+      if (cat === undefined) return;
+      state.cat = cat;
+      document.getElementById('cat').value = cat;
+      render();
     });
-  });
-  document.getElementById('oreMode').addEventListener('change', ()=>{
-    if (!selectedItem) return;
-    renderRangeBox(getBasePriceForRange(selectedItem));
-  });
-  document.getElementById('calcClose').addEventListener('click', ()=>{
-    calcBox.style.display = 'none'; selectedItem = null;
-  });
+    $('#q').addEventListener('input', e=>{state.q=e.target.value; render();});
+    $('#cat').addEventListener('change', e=>{state.cat=e.target.value; render();});
+    $('#tier').addEventListener('change', e=>{state.tier=e.target.value; render();});
+    $('#sort').addEventListener('change', e=>{state.sort=e.target.value; render();});
+    $('#favOnlyBtn').addEventListener('click', ()=>{state.fav=state.fav?0:1; render();});
+    $('#share').addEventListener('click', e=>{e.preventDefault(); navigator.clipboard.writeText(location.href); alert('현재 검색 링크를 복사했습니다!');});
 
-  // 9) 카드 클릭 시 팝업 열기 (원본 card 이후에 재정의)
-  const originalCard = card;
-  card = function(it){
-    const el = originalCard(it);
-    el.addEventListener('click', e=>{
-      if(e.target.classList.contains('fav')) return;
-      selectedItem = it;
+    /* ========== 4) 메모장 모듈 (한 번만) ========== */
+    const NOTE_KEY = 'penguin-notes-v1';
+    const LOG_KEY  = 'penguin-notelogs-v1';
+    const noteArea = document.getElementById('noteArea');
+    const noteLog  = document.getElementById('noteLog');
 
-      // 제목/설명/썸네일
-      document.getElementById('calcTitle').innerHTML = `📦 ${it.name} 가격 계산`;
-      document.getElementById('calcDesc').textContent = it.desc || '';
-      const thumb = document.getElementById('calcThumb');
-      const src = it.img || 'penguin_logo.png';
-      thumb.src = src;
-      thumb.onerror = ()=>{ thumb.style.display='none'; };
-      thumb.onload  = ()=>{ thumb.style.display='block'; };
-
-      // 광물 라디오 토글
-      document.getElementById('oreMode').style.display = (it.category === '광물') ? 'block' : 'none';
-
-      // 초기화 + 범위
-      document.getElementById('calcResult').textContent = '';
-      rateInput.value = ''; rateSlider.value = 0;
-      renderRangeBox(getBasePriceForRange(it));
-
-      // 오픈
-      calcBox.style.display = 'block';
+    function renderLogs(logs){
+      noteLog.innerHTML = '';
+      logs.forEach((row, idx)=>{
+        const div = document.createElement('div');
+        div.className = 'note-item';
+        div.innerHTML = `
+          <div>
+            <div><b>${row.name}</b> — ${row.result.toLocaleString()}원
+              <small>(${row.base.toLocaleString()}원, ${row.kind}, ${row.rate}%)</small>
+            </div>
+            <small>${row.time}</small>
+          </div>
+          <button class="note-del" data-idx="${idx}">삭제</button>`;
+        noteLog.appendChild(div);
+      });
+    }
+    function loadNotes(){
+      noteArea.value = localStorage.getItem(NOTE_KEY) || '';
+      const logs = JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
+      renderLogs(logs);
+    }
+    function saveNotes(){ localStorage.setItem(NOTE_KEY, noteArea.value); }
+    function addLog(entry){
+      const logs = JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
+      logs.unshift(entry);
+      localStorage.setItem(LOG_KEY, JSON.stringify(logs.slice(0,200)));
+      renderLogs(logs.slice(0,200));
+    }
+    function clearNotesAndLogs(){
+      localStorage.removeItem(NOTE_KEY);
+      localStorage.removeItem(LOG_KEY);
+      noteArea.value = '';
+      renderLogs([]);
+    }
+    document.getElementById('noteSave').addEventListener('click', saveNotes);
+    document.getElementById('noteClear').addEventListener('click', clearNotesAndLogs);
+    noteLog.addEventListener('click', (e)=>{
+      if(e.target.classList.contains('note-del')){
+        const idx = +e.target.dataset.idx;
+        const logs = JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
+        logs.splice(idx,1);
+        localStorage.setItem(LOG_KEY, JSON.stringify(logs));
+        renderLogs(logs);
+      }
     });
-    return el;
-  };
+    let noteTimer=null;
+    noteArea.addEventListener('input', ()=>{
+      clearTimeout(noteTimer);
+      noteTimer = setTimeout(saveNotes, 400);
+    });
+    loadNotes();
+    // 팝업 쪽에서 접근 가능하도록
+    window.addLog = addLog; window.noteArea = noteArea; window.saveNotes = saveNotes;
 
-  // 10) 계산 실행
-  document.getElementById('calcRun').addEventListener('click', ()=>{
-    if(!selectedItem) return;
-    const rate = parseFloat(rateInput.value);
-    if(isNaN(rate)) return alert('변동 퍼센트를 입력하세요.');
-    if(rate < -30 || rate > 80) return alert('변동 범위는 -30% ~ +80% 입니다.');
+    /* ========== 5) 계산 팝업 ========== */
+    let selectedItem = null;
 
-    const item = selectedItem;
-    let base = getBasePriceForRange(item);
-    let kind = (item.category==='광물'
-      ? (document.querySelector('input[name="oreType"]:checked')?.value === 'block' ? '블록 기준' : '단일 기준')
-      : '시세 기준');
+    // 팝업 DOM
+    const calcBox = document.createElement('div');
+    calcBox.id = 'calcBox';
+    calcBox.style.cssText = 'position:fixed;inset:auto auto 20px 20px;max-width:360px;z-index:1000;background:#22143d;border:1px solid #3b2a60;border-radius:12px;padding:14px;display:none;box-shadow:0 12px 28px rgba(0,0,0,.45);color:#fff';
+    calcBox.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <img id="calcThumb" alt="" style="width:36px;height:36px;border-radius:8px;object-fit:cover;border:1px solid #3b2a60;display:none">
+        <h3 id="calcTitle" style="margin:0">가격 계산기</h3>
+      </div>
+      <div id="calcDesc" style="opacity:.8;margin-bottom:12px;font-size:14px"></div>
 
-    if (!base) {
-      if (item.category === '광물' && document.querySelector('input[name="oreType"]:checked')?.value === 'block') {
-        document.getElementById('calcResult').innerHTML =
-          `<span style="color:#ffb3b3">블록 상점가 정보가 없어 계산할 수 없습니다.</span>
-           <br><small>단일 기준으로 계산해 보세요.</small>`;
+      <div id="oreMode" style="display:none; margin-bottom:8px;">
+        <label style="margin-right:10px;"><input type="radio" name="oreType" value="single" checked> 단일 상점가 기준</label>
+        <label><input type="radio" name="oreType" value="block"> 블록 상점가 기준</label>
+      </div>
+
+      <div id="rangeBox" style="margin:8px 0 10px;padding:10px;border:1px solid #3b2a60;border-radius:10px;background:#241443;">
+        <div style="font-weight:700;margin-bottom:6px;">가격 범위 (-30% ~ +80%)</div>
+        <div id="rangeValues" style="font-size:14px;opacity:.9;">기준가를 선택하면 자동 계산됩니다.</div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px;">
+        <input id="calcRate" type="number" placeholder="변동 퍼센트 입력 (-30~80)"
+          style="width:100%;padding:8px;border-radius:8px;border:1px solid #3b2a60;background:#2b1a4b;color:#fff;">
+        <input id="rateSlider" type="range" min="-30" max="80" value="0" style="width:100%">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="btn" data-rate="-30">-30%</button>
+          <button class="btn" data-rate="-20">-20%</button>
+          <button class="btn" data-rate="0">0%</button>
+          <button class="btn" data-rate="20">+20%</button>
+          <button class="btn" data-rate="80">+80%</button>
+        </div>
+      </div>
+
+      <button id="calcRun" class="btn primary" style="width:100%;margin-bottom:8px;">계산하기</button>
+      <div id="calcResult" style="margin-top:6px;font-size:15px;color:#ffd770;"></div>
+      <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end">
+        <button id="calcClose" class="btn">닫기</button>
+      </div>
+    `;
+    document.body.appendChild(calcBox);
+
+    // 도우미
+    function clampRate(v){ return Math.min(80, Math.max(-30, v)); }
+    function getBasePriceForRange(item){
+      if (!item) return null;
+      if (['요리','물고기','농작물'].includes(item.category)) {
+        const m = /(?:시세|가격|판매가)\s*([\d,]+)/.exec(item.desc || '');
+        return m ? parseInt(m[1].replace(/,/g,''), 10) : null;
+      }
+      if (item.category === '광물') {
+        const mode = document.querySelector('input[name="oreType"]:checked')?.value || 'single';
+        if (mode === 'block') {
+          const m = /블록\s*상점가\s*([\d,]+)/.exec(item.desc || '');
+          return m ? parseInt(m[1].replace(/,/g,''), 10) : null;
+        } else {
+          const m = /단일\s*상점가\s*([\d,]+)/.exec(item.desc || '');
+          return m ? parseInt(m[1].replace(/,/g,''), 10) : null;
+        }
+      }
+      return null;
+    }
+    function renderRangeBox(base){
+      const box = document.getElementById('rangeValues');
+      if (!base) { box.innerHTML = '기준가가 없어 범위를 계산할 수 없어요.'; return; }
+      const minP = Math.round(base * 0.70);
+      const maxP = Math.round(base * 1.80);
+      box.innerHTML = `최저가(−30%): <b>${minP.toLocaleString()}</b>원 · 최고가(+80%): <b>${maxP.toLocaleString()}</b>원
+                       <br><small>기준 ${base.toLocaleString()}원</small>`;
+    }
+
+    // 입력/슬라이더/프리셋/라디오 동기화
+    const rateInput  = document.getElementById('calcRate');
+    const rateSlider = document.getElementById('rateSlider');
+    rateInput.addEventListener('input', ()=>{ rateSlider.value = clampRate(parseFloat(rateInput.value) || 0); });
+    rateSlider.addEventListener('input', ()=>{ rateInput.value = rateSlider.value; });
+    document.querySelectorAll('#calcBox [data-rate]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{ rateInput.value = btn.dataset.rate; rateSlider.value = btn.dataset.rate; });
+    });
+    document.getElementById('oreMode').addEventListener('change', ()=>{
+      if (!selectedItem) return;
+      renderRangeBox(getBasePriceForRange(selectedItem));
+    });
+    document.getElementById('calcClose').addEventListener('click', ()=>{
+      calcBox.style.display = 'none'; selectedItem = null;
+    });
+
+    // 카드 클릭 시 팝업 열기
+    const originalCard = card;
+    card = function(it){
+      const el = originalCard(it);
+      el.addEventListener('click', e=>{
+        if(e.target.classList.contains('fav')) return; // 즐겨찾기 버튼은 제외
+        selectedItem = it;
+
+        $('#calcTitle').innerHTML = `📦 ${it.name} 가격 계산`;
+        $('#calcDesc').textContent = it.desc || '';
+
+        const thumb = $('#calcThumb');
+        const src = it.img || 'penguin_logo.png';
+        thumb.src = src;
+        thumb.onerror = ()=>{ thumb.style.display='none'; };
+        thumb.onload  = ()=>{ thumb.style.display='block'; };
+
+        $('#oreMode').style.display = (it.category === '광물') ? 'block' : 'none';
+
+        $('#calcResult').textContent = '';
+        rateInput.value = ''; rateSlider.value = 0;
+
+        renderRangeBox(getBasePriceForRange(it));
+        calcBox.style.display = 'block';
+      });
+      return el;
+    };
+
+    // 계산 실행 + 메모장 기록
+    document.getElementById('calcRun').addEventListener('click', ()=>{
+      if(!selectedItem) return;
+      const rate = parseFloat(rateInput.value);
+      if(isNaN(rate)) return alert('변동 퍼센트를 입력하세요.');
+      if(rate < -30 || rate > 80) return alert('변동 범위는 -30% ~ +80% 입니다.');
+
+      const item = selectedItem;
+      let base = getBasePriceForRange(item);
+      let kind = (item.category==='광물'
+        ? (document.querySelector('input[name="oreType"]:checked')?.value === 'block' ? '블록 기준' : '단일 기준')
+        : '시세 기준');
+
+      if (!base) {
+        if (item.category === '광물' && document.querySelector('input[name="oreType"]:checked')?.value === 'block') {
+          $('#calcResult').innerHTML =
+            `<span style="color:#ffb3b3">블록 상점가 정보가 없어 계산할 수 없습니다.</span>
+             <br><small>단일 기준으로 계산해 보세요.</small>`;
+          return;
+        }
+        $('#calcResult').innerHTML =
+          `<span style="color:#ffb3b3">가격 정보가 없어 계산할 수 없습니다.</span>
+           <br><small>이 항목은 판매/시세 데이터가 기록되어 있지 않아요.</small>`;
         return;
       }
-      document.getElementById('calcResult').innerHTML =
-        `<span style="color:#ffb3b3">가격 정보가 없어 계산할 수 없습니다.</span>
-         <br><small>이 항목은 판매/시세 데이터가 기록되어 있지 않아요.</small>`;
-      return;
-    }
 
-    const result = Math.round(base * (1 + rate/100));
-    const diff = result - base;
-    const diffText = diff >= 0
-      ? `<span style="color:#80ffae">+${diff.toLocaleString()}원 이익</span>`
-      : `<span style="color:#ff8080">${diff.toLocaleString()}원 손해</span>`;
+      const result = Math.round(base * (1 + rate/100));
+      const diff = result - base;
+      const diffText = diff >= 0
+        ? `<span style="color:#80ffae">+${diff.toLocaleString()}원 이익</span>`
+        : `<span style="color:#ff8080">${diff.toLocaleString()}원 손해</span>`;
 
-    document.getElementById('calcResult').innerHTML =
-      `💰 <b>${item.name}</b> 현재 시세: <span style="color:#ffd770">${result.toLocaleString()}</span>원<br>
-       (${diffText}, 기준 ${base.toLocaleString()}원, ${kind}, 변동 ${rate}% )`;
+      $('#calcResult').innerHTML =
+        `💰 <b>${item.name}</b> 현재 시세: <span style="color:#ffd770">${result.toLocaleString()}</span>원<br>
+         (${diffText}, 기준 ${base.toLocaleString()}원, ${kind}, 변동 ${rate}% )`;
 
-    // (선택) 메모장/로그가 있다면 여기에 addLog(), noteArea 등 연결
-    if (window.addLog) {
-      const now = new Date();
-      addLog({ name:item.name, base, rate, result, kind, diff, time: now.toLocaleString('ko-KR') });
-    }
-    if (window.noteArea && window.saveNotes) {
-      noteArea.value += `\n${item.name}: ${result.toLocaleString()}원 (${diff >= 0 ? '+' : ''}${diff.toLocaleString()}원, ${rate}%, ${kind})`;
-      noteArea.scrollTop = noteArea.scrollHeight;
-      saveNotes();
-    }
-  });
+      // 로그/메모 자동 기록
+      if (window.addLog) {
+        const now = new Date();
+        addLog({ name:item.name, base, rate, result, kind, diff, time: now.toLocaleString('ko-KR') });
+      }
+      if (window.noteArea && window.saveNotes) {
+        noteArea.value += `\n${item.name}: ${result.toLocaleString()}원 (${diff >= 0 ? '+' : ''}${diff.toLocaleString()}원, ${rate}%, ${kind})`;
+        noteArea.scrollTop = noteArea.scrollHeight;
+        saveNotes();
+      }
+    });
 
-  // 11) 첫 렌더 (맨 마지막에 한 번만!)
-  render();
-</script>
-
+    /* ========== 6) 첫 렌더 ========== */
+    render();
+  </script>
+</body>
+</html>
