@@ -568,6 +568,10 @@ footer .container{display:flex;justify-content:space-between;align-items:center;
     box-shadow: var(--shadow);
     color:var(--ink);
   `;
+    //반투명 유리 느낌
+    calcBox.style.backdropFilter = 'blur(10px) saturate(1.3)';
+    calcBox.style.background = 'rgba(255,255,255,0.85)';
+    
   calcBox.innerHTML = `
     <div id="calcHeader" style="display:flex;align-items:center;gap:10px;margin-bottom:8px;cursor:move">
       <img id="calcThumb" alt="" style="width:36px;height:36px;border-radius:8px;object-fit:cover;border:1px solid var(--line);display:none">
