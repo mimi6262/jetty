@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>펭귄 서버 검색기</title>
+  <title>펭귄 서버 검색기 </title>
   <meta name="theme-color" content="#111827" />
   <style>
     :root{ --bg:#0b1220; --panel:#111827; --muted:#6b7280; --txt:#e5e7eb; --brand:#60a5fa; --accent:#34d399; --danger:#f87171; --ring:0 0 0 3px rgba(96,165,250,.35); }
@@ -116,12 +116,12 @@
           <div class="chipbar" id="catChips" role="group" aria-label="카테고리"></div>
           <select id="tier" class="input" title="차수">
             <option value="">전체 차수</option>
+            <option>0차</option>
             <option>1차</option>
             <option>2차</option>
             <option>3차</option>
             <option>4차</option>
             <option>5차</option>
-            <option>6차</option>
           </select>
         </section>
 
@@ -229,24 +229,154 @@
   </div>
 
   <script>
-    // ===================== 데이터 (샘플) =====================
-    // 카테고리 명: 농부/요리사/광부/어부
+    // ===================== 데이터  =====================
+    // 무역섬(검색) 카테고리: 농부/요리사/광부/어부
     const CATEGORIES = ['전체','농부','요리사','광부','어부'];
 
     // 검색/무역섬 통합 아이템 (기준가 base 포함)
     const ITEMS = [
-      { id: 'i-001', name: '밀 이삭', category: '농부', tier: '1차', base: 100 },
-      { id: 'i-002', name: '신선한 우유', category: '농부', tier: '2차', base: 220 },
-      { id: 'i-003', name: '구운 생선', category: '어부', tier: '2차', base: 180 },
-      { id: 'i-004', name: '바위 수정', category: '광부', tier: '3차', base: 320 },
-      { id: 'i-005', name: '고급 요리 키트', category: '요리사', tier: '4차', base: 450 },
+
+      // 요리사 
+        { id: 'i-001', name:'갈릭 스테이크',   category:'요리사', tier:'0차',  base: 50 },
+        { id: 'i-002', name:'배추 김치',       category:'요리사', tier:'0차',  base: 78 },
+        { id: 'i-003', name:'레몬 당고',       category:'요리사', tier:'0차',  base: 48 },
+        { id: 'i-004', name:'요리사코인',         category:'요리사', tier:'0차', base: 1200 },
+      
+        { id: 'i-005', name:'딸기모찌',           category:'요리사', tier:'1차',  base: 58 },
+        { id: 'i-006', name:'오이무침',           category:'요리사', tier:'1차',  base: 86 },
+        { id: 'i-007', name:'샐러드',             category:'요리사', tier:'1차',  base: 98 },
+        { id: 'i-008', name:'해파리냉채',         category:'요리사', tier:'1차',  base: 1420 },
+        { id: 'i-009', name:'고구마 샐러드',      category:'요리사', tier:'1차',  base: 98 },
+      
+        { id: 'i-010', name:'깍두기',             category:'요리사', tier:'2차',  base: 100 },
+        { id: 'i-011', name:'오렌지 푸딩',        category:'요리사', tier:'2차',  base: 72 },
+        { id: 'i-012', name:'애호박 찌개',        category:'요리사', tier:'2차',  base: 112 },
+        { id: 'i-013', name:'숭어 매운탕',        category:'요리사', tier:'2차',  base: 1420 },
+      
+        { id: 'i-014', name:'브로콜리 샐러드',    category:'요리사', tier:'3차',  base: 142 },
+        { id: 'i-015', name:'토마토 파스타',      category:'요리사', tier:'3차',  base: 130 },
+        { id: 'i-016', name:'복숭아 아이스티',    category:'요리사', tier:'3차',  base: 80 },
+        { id: 'i-017', name:'철판 새우',          category:'요리사', tier:'3차',  base: 1610 },
+      
+        { id: 'i-018', name:'메론빵',             category:'요리사', tier:'4차',  base: 90 },
+        { id: 'i-019', name:'김밥',               category:'요리사', tier:'4차',  base: 166 },
+        { id: 'i-020', name:'비빔밥',             category:'요리사', tier:'4차',  base: 166 },
+        { id: 'i-021', name:'생선 튀김',          category:'요리사', tier:'4차',  base: 1610 },
+
+    //농부
+         { id: 'i-1000', name:'농부코인',       category:'농부', tier:'0차', base:1200 },
+        { id: 'i-1001', name:'1등급 마늘',     category:'농부', tier:'0차', base:24 },
+        { id: 'i-1002', name:'1등급 배추',     category:'농부', tier:'0차', base:24 },
+        { id: 'i-1003', name:'1등급 고추',     category:'농부', tier:'0차', base:24 },
+        { id: 'i-1004', name:'1등급 레몬',     category:'농부', tier:'0차', base:24 },
+        { id: 'i-1005', name:'황금 마늘',      category:'농부', tier:'0차', base:100 },
+        { id: 'i-1006', name:'황금 배추',      category:'농부', tier:'0차', base:100 },
+        { id: 'i-1007', name:'황금 레몬',      category:'농부', tier:'0차', base:100 },
+      
+        { id: 'i-1008', name:'1등급 고구마',    category:'농부', tier:'1차', base:30 },
+        { id: 'i-1009', name:'1등급 파프리카',  category:'농부', tier:'1차', base:30 },
+        { id: 'i-1010', name:'1등급 오이',     category:'농부', tier:'1차', base:30 },
+        { id: 'i-1011', name:'1등급 딸기',     category:'농부', tier:'1차', base:30 },
+        { id: 'i-1012', name:'황금 고구마',    category:'농부', tier:'1차', base:200 },
+        { id: 'i-1013', name:'황금 파프리카',  category:'농부', tier:'1차', base:200 },
+        { id: 'i-1014', name:'황금 오이',      category:'농부', tier:'1차', base:200 },
+        { id: 'i-1015', name:'황금 딸기',      category:'농부', tier:'1차', base:200 },
+      
+        { id: 'i-1016', name:'1등급 애호박',   category:'농부', tier:'2차', base:36 },
+        { id: 'i-1017', name:'1등급 대파',     category:'농부', tier:'2차', base:36 },
+        { id: 'i-1018', name:'1등급 무',       category:'농부', tier:'2차', base:36 },
+        { id: 'i-1019', name:'1등급 오렌지',   category:'농부', tier:'2차', base:36 },
+        { id: 'i-1020', name:'황금 애호박',    category:'농부', tier:'2차', base:300 },
+        { id: 'i-1021', name:'황금 대파',      category:'농부', tier:'2차', base:300 },
+        { id: 'i-1022', name:'황금 무',        category:'농부', tier:'2차', base:300 },
+        { id: 'i-1023', name:'황금 오렌지',    category:'농부', tier:'2차', base:300 },
+      
+        { id: 'i-1024', name:'1등급 토마토',   category:'농부', tier:'3차', base:42 },
+        { id: 'i-1025', name:'1등급 양배추',   category:'농부', tier:'3차', base:42 },
+        { id: 'i-1026', name:'1등급 브로콜리', category:'농부', tier:'3차', base:42 },
+        { id: 'i-1027', name:'1등급 복숭아',   category:'농부', tier:'3차', base:42 },
+        { id: 'i-1028', name:'황금 토마토',    category:'농부', tier:'3차', base:400 },
+        { id: 'i-1029', name:'황금 양배추',    category:'농부', tier:'3차', base:400 },
+        { id: 'i-1030', name:'황금 브로콜리',  category:'농부', tier:'3차', base:400 },
+        { id: 'i-1031', name:'황금 복숭아',    category:'농부', tier:'3차', base:400 },
+      
+        { id: 'i-1032', name:'1등급 상추',     category:'농부', tier:'4차', base:48 },
+        { id: 'i-1033', name:'1등급 씰',       category:'농부', tier:'4차', base:48 },
+        { id: 'i-1034', name:'1등급 양파',     category:'농부', tier:'4차', base:48 },
+        { id: 'i-1035', name:'1등급 멜론',     category:'농부', tier:'4차', base:48 },
+        { id: 'i-1036', name:'황금 상추',      category:'농부', tier:'4차', base:500 },
+        { id: 'i-1037', name:'황금 쌀',        category:'농부', tier:'4차', base:500 },
+        { id: 'i-1038', name:'황금 양파',      category:'농부', tier:'4차', base:500 },
+        { id: 'i-1039', name:'황금 멜론',      category:'농부', tier:'4차', base:500 },
+      
+// 어부
+      { id: 'i-2000', name:'어부코인',         category:'어부', tier:'0차', base:1200 },
+      { id: 'i-2001', name:'1등급 조개 껍데기', category:'어부', tier:'3차', base:360 },
+      { id: 'i-2002', name:'1등급 해마',        category:'어부', tier:'3차', base:360 },
+      { id: 'i-2003', name:'1등급 블롭',        category:'어부', tier:'3차', base:360 },
+      { id: 'i-2004', name:'1등급 가오리',      category:'어부', tier:'3차', base:360 },
+      { id: 'i-2005', name:'1등급 참치',        category:'어부', tier:'3차', base:360 },
+      { id: 'i-2006', name:'1등급 아귀',        category:'어부', tier:'3차', base:360 },
+      { id: 'i-2007', name:'1등급 돌 가오리',   category:'어부', tier:'3차', base:360 },
+      { id: 'i-2008', name:'1등급 딸기 블롭',   category:'어부', tier:'3차', base:360 },
+      { id: 'i-2009', name:'1등급 소라게',      category:'어부', tier:'3차', base:360 },
+      { id: 'i-2010', name:'1등급 거북이',      category:'어부', tier:'3차', base:1068 },
+      { id: 'i-2011', name:'1등급 보리새우',    category:'어부', tier:'3차', base:1068 },
+      { id: 'i-2012', name:'1등급 아기상어',    category:'어부', tier:'3차', base:1355 },
+      { id: 'i-2013', name:'1등급 진주품은 조개', category:'어부', tier:'3차', base:1355 },
+    
+      { id: 'i-2014', name:'바다 램프',        category:'어부', tier:'4차', base:1850 },
+      { id: 'i-2015', name:'도금 동전',        category:'어부', tier:'4차', base:1850 },
+      { id: 'i-2016', name:'닫힌 보물상자',     category:'어부', tier:'4차', base:1850 },
+      { id: 'i-2017', name:'수상한 보물상자',   category:'어부', tier:'4차', base:1850 },
+      { id: 'i-2018', name:'보물상자',         category:'어부', tier:'4차', base:1850 },
+      { id: 'i-2019', name:'편지가 든 유리병',  category:'어부', tier:'4차', base:1850 },
+      { id: 'i-2020', name:'물고기 유리병',     category:'어부', tier:'4차', base:1850 },
+      { id: 'i-2021', name:'메갈로돈 이빨',     category:'어부', tier:'4차', base:1850 },
+      { id: 'i-2022', name:'배키',             category:'어부', tier:'4차', base:1850 },
+      { id: 'i-2023', name:'앵커',             category:'어부', tier:'4차', base:1850 },
+      
+      { id: 'i-2024', name:'오징어 텐터클',     category:'어부', tier:'0차', base:2000 },
+      { id: 'i-2025', name:'돌고래 꼬리',       category:'어부', tier:'0차', base:2000 },
+      { id: 'i-2026', name:'게 비늘',          category:'어부', tier:'0차', base:1500 },
+      { id: 'i-2027', name:'게 발톱',          category:'어부', tier:'0차', base:1500 },
+
+//광부
+       { id: 'i-3000', name:'광부코인',       category:'광물', tier:'0차', base:1200 },
+      { id: 'i-3001', name:'다이아',         category:'광물', tier:'0차', base:72 },
+      { id: 'i-3002', name:'금',             category:'광물', tier:'0차', base:15 },
+      { id: 'i-3003', name:'철',             category:'광물', tier:'0차', base:10 },
+      { id: 'i-3004', name:'구리',           category:'광물', tier:'0차', base:4 },
+      { id: 'i-3005', name:'청금석',         category:'광물', tier:'0차', base:6 },
+      { id: 'i-3006', name:'레드스톤',       category:'광물', tier:'0차', base:6 },
+      { id: 'i-3007', name:'에메랄드',       category:'광물', tier:'0차', base:120 },
+      { id: 'i-3008', name:'석영',           category:'광물', tier:'0차', base:8 },
+      { id: 'i-3009', name:'네더라이트',     category:'광물', tier:'0차', base:200 },
+      { id: 'i-3010', name:'신비로운 스피넬', category:'광물', tier:'0차', base:150 },
+      { id: 'i-3011', name:'신비로운 태양석', category:'광물', tier:'0차', base:500 },
+      { id: 'i-3012', name:'신비로운 루비',   category:'광물', tier:'0차', base:1800 },
+      { id: 'i-3013', name:'신비로운 크리스탈', category:'광물', tier:'0차', base:12000 },
+      { id: 'i-3014', name:'다이아 블록',       category:'광물', tier:'0차', base:720 },
+      
+      { id: 'i-3015', name:'금 블록',           category:'광물', tier:'0차', base:150 },
+      { id: 'i-3016', name:'철 블록',           category:'광물', tier:'0차', base:100 },
+      { id: 'i-3017', name:'구리 블록',         category:'광물', tier:'0차', base:40 },
+      { id: 'i-3018', name:'청금석 블록',       category:'광물', tier:'0차', base:60 },
+      { id: 'i-3019', name:'레드스톤 블록',     category:'광물', tier:'0차', base:60 },
+      { id: 'i-3020', name:'에메랄드 블록',     category:'광물', tier:'0차', base:1200 },
+      { id: 'i-3021', name:'네더라이트 블록',   category:'광물', tier:'0차', base:2000 },
+      
     ];
 
-    // 컬렉션 요구사항 (체크박스/품목/필요 갯수)
+    // 컬렉션 요구사항 (체크박스/품목/필요 갯수) — 컬렉션 전용 카테고리(ccat)
     const COLLECTION = [
-      { id: 'i-001', need: 3 },
-      { id: 'i-004', need: 2 },
-      { id: 'i-005', need: 1 },
+      // 예1) 무역섬(검색)에도 있고, 컬렉션에도 포함되는 아이템
+      { id: 'i-001', need: 3, name: '1등급 배추', ccat: '자연' },
+      // 예2) 무역섬(검색)에는 없지만, 컬렉션에만 존재하는 아이템
+      { id: 'c-rough-dirt', need: 10, name: '거친 흙', ccat: '블록' },
+      // 기존 샘플도 컬렉션 전용 카테고리로 분류
+      { id: 'i-004', need: 2, ccat: '광물' },
+      { id: 'i-005', need: 1, ccat: '커스텀', name: '스페셜 요리사 키트' },
     ];
 
     // ===================== 상태/스토리지 =====================
@@ -255,7 +385,8 @@
     const save = (k,v) => localStorage.setItem(k, JSON.stringify(v));
     const load = (k, def) => JSON.parse(localStorage.getItem(k) || JSON.stringify(def));
 
-    const state = { q:'', category:'전체', tier:'', favoritesOnly:false, view:'search', mode:'search', collectionCategory:'전체' }; // mode: 'search' | 'trade'
+    // mode: 'search' | 'trade'; collectionCategory: '전체'|'블록'|'자연'|'광물'|'전리품'|'커스텀'
+    const state = { q:'', category:'전체', tier:'', favoritesOnly:false, view:'search', mode:'search', collectionCategory:'전체' };
 
     const favKey = 'jetty:favorites';
     const favorites = new Set(load(favKey, []));
@@ -271,8 +402,34 @@
     function logToMemo(line){ const txt=$('#memo'); txt.value=(txt.value?txt.value+"\n":"")+line; save(memoKey, txt.value); stampSaved(); }
 
     // ===================== 초기 UI =====================
-    function initChips(){ const wrap=$('#catChips'); wrap.innerHTML=''; CATEGORIES.forEach(cat=>{ const b=document.createElement('button'); b.className='chip'; b.type='button'; b.textContent=cat; b.setAttribute('aria-pressed', cat===state.category); b.addEventListener('click',()=>{ state.category=cat; renderSearch(); }); wrap.appendChild(b); }); }
-    function initCollectionChips(){ const wrap=document.getElementById('collectionChips'); if(!wrap) return; wrap.innerHTML=''; ['전체','농부','요리사','광부','어부'].forEach(cat=>{ const b=document.createElement('button'); b.className='chip'; b.type='button'; b.textContent=cat; b.setAttribute('aria-pressed', cat===state.collectionCategory); b.addEventListener('click',()=>{ state.collectionCategory=cat; renderCollection(); }); wrap.appendChild(b); }); }
+    function initChips(){
+      const wrap=$('#catChips');
+      wrap.innerHTML='';
+      CATEGORIES.forEach(cat=>{
+        const b=document.createElement('button');
+        b.className='chip';
+        b.type='button';
+        b.textContent=cat;
+        b.setAttribute('aria-pressed', cat===state.category);
+        b.addEventListener('click',()=>{ state.category=cat; renderSearch(); });
+        wrap.appendChild(b);
+      });
+    }
+
+    function initCollectionChips(){
+      const wrap=document.getElementById('collectionChips');
+      if(!wrap) return;
+      wrap.innerHTML='';
+      ['전체','블록','자연','광물','전리품','커스텀'].forEach(cat=>{
+        const b=document.createElement('button');
+        b.className='chip';
+        b.type='button';
+        b.textContent=cat;
+        b.setAttribute('aria-pressed', cat===state.collectionCategory);
+        b.addEventListener('click',()=>{ state.collectionCategory=cat; renderCollection(); });
+        wrap.appendChild(b);
+      });
+    }
 
     // ===================== 렌더: 검색/무역섬 통합 =====================
     function renderSearch(){
@@ -306,11 +463,9 @@
       // 칩 상태 업데이트
       document.querySelectorAll('#collectionChips .chip').forEach(ch=> ch.setAttribute('aria-pressed', ch.textContent===state.collectionCategory));
 
-      // 카테고리 필터링된 행
+      // 카테고리 필터링된 행 (컬렉션 전용 카테고리를 사용)
       const rows = COLLECTION.filter(row=>{
-        const prod = ITEMS.find(p=>p.id===row.id);
-        if(!prod) return true;
-        if(state.collectionCategory!=='전체' && prod.category!==state.collectionCategory) return false;
+        if(state.collectionCategory!=='전체' && (row.ccat||'').trim()!==state.collectionCategory) return false;
         return true;
       });
 
@@ -321,8 +476,8 @@
       document.getElementById('progBar').style.width=rate+'%';
 
       const tbody=document.getElementById('collectionBody'); tbody.innerHTML='';
-      rows.forEach(row=>{ const prod=ITEMS.find(p=>p.id===row.id) || {name:row.id}; const tr=document.createElement('tr'); const checked=collectionDone.has(row.id);
-        tr.innerHTML=`<td><input type="checkbox" ${checked?'checked':''} aria-label="${escapeHtml(prod.name)} 완료"></td><td>${escapeHtml(prod.name)}</td><td>${row.need}</td>`;
+      rows.forEach(row=>{ const prod=ITEMS.find(p=>p.id===row.id); const name = row.name || (prod&&prod.name) || row.id; const tr=document.createElement('tr'); const checked=collectionDone.has(row.id);
+        tr.innerHTML=`<td><input type="checkbox" ${checked?'checked':''} aria-label="${escapeHtml(name)} 완료"></td><td>${escapeHtml(name)}</td><td>${row.need}</td>`;
         const cb=tr.querySelector('input'); cb.addEventListener('change',()=>{ if(cb.checked) collectionDone.add(row.id); else collectionDone.delete(row.id); save(collectionDoneKey,[...collectionDone]); renderCollection(); });
         tbody.appendChild(tr);
       });
@@ -449,12 +604,33 @@
     init();
 
     // ===================== 간단 런타임 테스트 =====================
-    try {
-      console.assert(typeof renderSearch === 'function', 'renderSearch must exist');
-      console.assert(typeof renderCollection === 'function', 'renderCollection must exist');
-      console.assert(document.getElementById('list'), '#list must exist');
-      console.assert(document.getElementById('collectionBody'), '#collectionBody must exist');
-    } catch (e) { console.error('Self-test failed', e); }
+    (function selfTests(){
+      try {
+        console.assert(typeof renderSearch === 'function', 'renderSearch must exist');
+        console.assert(typeof renderCollection === 'function', 'renderCollection must exist');
+        console.assert(document.getElementById('list'), '#list must exist');
+        console.assert(document.getElementById('collectionBody'), '#collectionBody must exist');
+        // 추가 테스트: 컬렉션 칩 생성
+        const labels=['전체','블록','자연','광물','전리품','커스텀'];
+        const chips=[...document.querySelectorAll('#collectionChips .chip')].map(x=>x.textContent);
+        console.assert(labels.every(l=>chips.includes(l)), 'collection chips should include all categories');
+        // 필터 테스트: 블록 카테고리 선택 시 '거친 흙'이 존재
+        state.collectionCategory='블록'; renderCollection();
+        console.assert(document.querySelector('#collectionBody').textContent.includes('거친 흙'), '블록 필터 should show 거친 흙');
+        // 검색/무역섬 토글 테스트
+        state.mode='trade'; renderSearch();
+        const firstCard=document.querySelector('.card.clickable');
+        console.assert(!!firstCard, 'in trade mode, cards should be clickable');
+        // 즐겨찾기 토글 테스트
+        const before=favorites.size; favorites.add('test-id'); save(favKey,[...favorites]);
+        console.assert(favorites.size===before+1, 'favorites should add without error');
+        // 복구
+        favorites.delete('test-id'); save(favKey,[...favorites]);
+        // 컬렉션 상태 원복
+        state.collectionCategory='전체'; renderCollection();
+        state.mode='search'; renderSearch();
+      } catch (e) { console.error('Self-tests failed', e); }
+    })();
   </script>
 </body>
 </html>
