@@ -6,195 +6,175 @@
   <title>펭귄 서버 검색기</title>
   <meta name="description" content="펭귄 서버 검색기 (요리/재료/광물) - 차수 필터 & 즐겨찾기" />
 
+  <!-- ① 폰트 로드 (헤더 영역 그대로 유지) -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
   
-<style>
-
-     body {
-      font-family: 'Noto Sans KR', 'Poppins', sans-serif;
-    }
-    h1, h2, h3, .name {
-      font-family: 'Poppins', 'Noto Sans KR', sans-serif;
-      font-weight: 600;
-    }
+  <style>
+    /* ② 폰트 적용 (헤더 내부의 style 블록 상단) */
+    body { font-family: 'Noto Sans KR', 'Poppins', sans-serif; }
+    h1, h2, h3, .name { font-family: 'Poppins', 'Noto Sans KR', sans-serif; font-weight: 600; }
   
-:root{
-  /* 팔레트 */
-  --bg1:#F5EFE6;   /* 페이지 상단 배경 */
-  --bg2:#CBDCEB;   /* 페이지 하단 배경 */
-  --line:#D8CFC0;  /* 경계선 */
-  --ink:#2B3856;   /* 본문 글자 */
-  --muted:#5E6B81; /* 서브 텍스트 */
-  --card:#fff7e0;  /* 카드/입력 배경 */
-  --chip:#EEF5FF;  /* 칩/작은 배경 */
-  --accent:#6D94C5;  /* 포커스/버튼 메인 */
-  --accent2:#4E7FB4; /* 그라데이션 하단 */
-  --shadow:0 8px 18px rgba(0,0,0,.08), 0 2px 6px rgba(0,0,0,.05);
-}
+    /* ③ 색 변수/기본 스타일 (기존 팔레트 + 라이트 테마) */
+    :root{
+      /* 팔레트 */
+      --bg1:#F5EFE6;   /* 페이지 상단 배경 */
+      --bg2:#CBDCEB;   /* 페이지 하단 배경 */
+      --line:#D8CFC0;  /* 경계선 */
+      --ink:#2B3856;   /* 본문 글자 */
+      --muted:#5E6B81; /* 서브 텍스트 */
+      --card:#fff7e0;  /* 카드/입력 배경 */
+      --chip:#EEF5FF;  /* 칩/작은 배경 */
+      --accent:#6D94C5;  /* 포커스/버튼 메인 */
+      --accent2:#4E7FB4; /* 그라데이션 하단 */
+      --shadow:0 8px 18px rgba(0,0,0,.08), 0 2px 6px rgba(0,0,0,.05);
+    }
 
-*{box-sizing:border-box}
+    *{box-sizing:border-box}
 
-/* 배경/타이포 */
-body{
-  margin:0;
-  background:linear-gradient(180deg,var(--bg1),var(--bg1));
-  color:var(--ink);
-  font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,Noto Sans KR,Helvetica,Arial;
-  transition:background .3s,color .3s;
-}
-.container{max-width:1100px;margin:0 auto;padding:0 16px}
+    /* 배경/타이포 */
+    body{
+      margin:0;
+      background:linear-gradient(180deg,var(--bg1),var(--bg1));
+      color:var(--ink);
+      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,Noto Sans KR,Helvetica,Arial;
+      transition:background .3s,color .3s;
+    }
+    .container{max-width:1100px;margin:0 auto;padding:0 16px}
 
-/* 헤더/툴바 */
-header{
-  text-align:center;padding:28px 0 14px;
-  border-bottom:1px solid var(--line);
-}
-.subtitle{color:var(--muted)}
-.toolbar{
-  position:sticky;top:0;z-index:99;
-  background:rgba(245,239,230,0.7); /* 밝은 글래스 효과 */
-  backdrop-filter:saturate(1.1) blur(8px);
-  border-bottom:1px solid var(--line);
-  margin-bottom:24px;
-}
-.bar{
-  display:grid;gap:10px;grid-template-columns:1fr auto auto auto auto;
-  align-items:center;padding:12px 0;
-}
-@media (max-width:980px){.bar{grid-template-columns:1fr 1fr 1fr}}
-@media (max-width:560px){.bar{grid-template-columns:1fr 1fr}}
+    /* 헤더/툴바 */
+    header{ text-align:center;padding:28px 0 14px; border-bottom:1px solid var(--line); }
+    .subtitle{color:var(--muted)}
+    .toolbar{
+      position:sticky;top:0;z-index:99;
+      background:rgba(245,239,230,0.7); /* 밝은 글래스 효과 */
+      backdrop-filter:saturate(1.1) blur(8px);
+      border-bottom:1px solid var(--line);
+      margin-bottom:24px;
+    }
+    .bar{ display:grid;gap:10px;grid-template-columns:1fr auto auto auto auto; align-items:center;padding:12px 0; }
+    @media (max-width:980px){.bar{grid-template-columns:1fr 1fr 1fr}}
+    @media (max-width:560px){.bar{grid-template-columns:1fr 1fr}}
 
-/* 검색박스 */
-.search{
-  display:flex;align-items:center;gap:8px;
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:999px;padding:10px 14px;box-shadow:var(--shadow);
-}
-.search input{
-  flex:1;border:0;background:transparent;outline:0;color:var(--ink);
-}
+    /* 검색박스 */
+    .search{
+      display:flex;align-items:center;gap:8px;
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:999px;padding:10px 14px;box-shadow:var(--shadow);
+    }
+    .search input{ flex:1;border:0;background:transparent;outline:0;color:var(--ink); }
 
-/* 셀렉트/버튼 */
-select,.btn{
-  background:var(--card);
-  border:1px solid var(--line);color:var(--ink);
-  border-radius:999px;padding:10px 12px;
-  transition:box-shadow .2s,border-color .2s,background .2s,transform .1s,color .2s;
-}
-select:focus,.btn:focus{outline:none;box-shadow:0 0 0 3px rgba(109,148,197,.25);border-color:var(--accent)}
-.btn{cursor:pointer}
-.btn:hover{transform:translateY(-1px)}
+    /* 셀렉트/버튼 */
+    select,.btn{
+      background:var(--card);
+      border:1px solid var(--line);color:var(--ink);
+      border-radius:999px;padding:10px 12px;
+      transition:box-shadow .2s,border-color .2s,background .2s,transform .1s,color .2s;
+    }
+    select:focus,.btn:focus{outline:none;box-shadow:0 0 0 3px rgba(109,148,197,.25);border-color:var(--accent)}
+    .btn{cursor:pointer}
+    .btn:hover{transform:translateY(-1px)}
+    /* 프라이머리 버튼 — 글자색/배경 확실히 고정 */
+    .btn.primary{
+      background:linear-gradient(135deg,var(--accent),var(--accent2)) !important;
+      border-color:transparent; color:#fff !important; box-shadow:var(--shadow);
+    }
+    .btn.primary:hover{ background:linear-gradient(135deg,var(--accent2),var(--accent)) !important; }
+    .btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
 
-/* 프라이머리 버튼 — 글자색/배경 확실히 고정 */
-.btn.primary{
-  background:linear-gradient(135deg,var(--accent),var(--accent2)) !important;
-  border-color:transparent; color:#fff !important; box-shadow:var(--shadow);
-}
-.btn.primary:hover{
-  background:linear-gradient(135deg,var(--accent2),var(--accent)) !important;
-}
-.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+    /* 드롭다운(옵션) 색상 */
+    select option{background:#fff;color:#222}
+    select option:checked, select option:hover{background:#e9f1fb;color:#111}
 
-/* 드롭다운(옵션) 색상 */
-select option{background:#fff;color:#222}
-select option:checked,
-select option:hover{background:#e9f1fb;color:#111}
+    /* 레이아웃/그리드 */
+    main{padding:8px 0 28px}
+    .grid{ display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); margin-top:12px }
 
-/* 레이아웃/그리드 */
-main{padding:8px 0 28px}
-.grid{
-  display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
-  margin-top:12px
-}
+    /* 카드 */
+    .card{
+      position:relative; background:var(--card); border:1px solid var(--line);
+      border-radius:20px; padding:14px; box-shadow:var(--shadow);
+      transition:transform .15s,box-shadow .2s;
+    }
+    .card:hover{ transform:translateY(-4px); box-shadow:0 12px 32px rgba(109,148,197,0.25); }
+    .name{font-weight:800;font-size:18px;margin-bottom:6px;letter-spacing:-.02em}
+    .row{display:flex;gap:6px;flex-wrap:wrap}
+    .chip{ background:var(--chip);border:1px solid var(--line); border-radius:999px;padding:3px 8px;font-size:12px;color:#243447; }
+    .desc{font-size:14px;margin-top:8px;color:#3a3a3a;white-space:pre-line}
 
-/* 카드 */
-.card{
-  position:relative;
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:20px;
-  padding:14px;
-  box-shadow:var(--shadow);
-  transition:transform .15s,box-shadow .2s;
-}
-.card:hover{
-  transform:translateY(-4px);
-  box-shadow:0 12px 32px rgba(109,148,197,0.25);
-}
-.name{font-weight:800;font-size:18px;margin-bottom:6px;letter-spacing:-.02em}
-.row{display:flex;gap:6px;flex-wrap:wrap}
-.chip{
-  background:var(--chip);border:1px solid var(--line);
-  border-radius:999px;padding:3px 8px;font-size:12px;color:#243447;
-}
-.desc{font-size:14px;margin-top:8px;color:#3a3a3a;white-space:pre-line}
+    /* 즐겨찾기 버튼 */
+    .fav{
+      position:absolute;right:10px;top:10px;border:0;
+      background:#ffffff; border:1px solid var(--line);
+      border-radius:999px;padding:6px 10px;cursor:pointer;color:#e86b8d;
+      box-shadow:var(--shadow);
+    }
+    .fav.active{background:#ff6f9a;color:#fff;border-color:#ff6f9a}
 
-/* 즐겨찾기 버튼 */
-.fav{
-  position:absolute;right:10px;top:10px;border:0;
-  background:#ffffff; border:1px solid var(--line);
-  border-radius:999px;padding:6px 10px;cursor:pointer;color:#e86b8d;
-  box-shadow:var(--shadow);
-}
-.fav.active{background:#ff6f9a;color:#fff;border-color:#ff6f9a}
+    /* 퀵 카테고리 버튼이 칩 클래스를 쓰는 경우 대비 */
+    #quickCats .chip{ background:#fff;border-color:var(--line);color:var(--ink); }
+    #quickCats .chip:hover{background:#f3f7fc}
 
-/* 퀵 카테고리 버튼이 칩 클래스를 쓰는 경우 대비 */
-#quickCats .chip{
-  background:#fff;border-color:var(--line);color:var(--ink);
-}
-#quickCats .chip:hover{background:#f3f7fc}
+    /* 메모장 영역 (오른쪽 패널) */
+    .page{display:grid;gap:16px;grid-template-columns:2fr 1fr;align-items:start}
+    @media (max-width:980px){.page{grid-template-columns:1fr}}
+    #notePanel{ position:sticky;top:80px;background:var(--card); border:1px solid var(--line);border-radius:16px;padding:14px; box-shadow:var(--shadow);min-height:300px;color:var(--ink); }
+    .note-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+    .note-title{font-weight:800}
+    .note-actions .btn{padding:6px 10px;border-radius:10px}
+    #noteArea{ width:100%;min-height:160px;resize:vertical;background:#fff;color:var(--ink); border:1px solid var(--line);border-radius:10px;padding:10px;font-family:inherit; }
+    .note-subtitle{margin:10px 0 6px;color:var(--muted);font-size:14px}
+    .note-log{display:flex;flex-direction:column;gap:6px;max-height:220px;overflow:auto}
+    .note-item{ background:#fff;border:1px solid var(--line);border-radius:10px; padding:8px;font-size:14px;color:var(--ink); display:flex;justify-content:space-between;gap:8px;align-items:center }
+    .note-item small{opacity:.7}
+    .note-del{border:0;background:#eef5ff;color:#1c3f76;border-radius:8px;padding:4px 8px;cursor:pointer}
+    .note-del:hover{background:#ddebff}
 
-/* 메모장 영역 (오른쪽 패널) */
-.page{display:grid;gap:16px;grid-template-columns:2fr 1fr;align-items:start}
-@media (max-width:980px){.page{grid-template-columns:1fr}}
-#notePanel{
-  position:sticky;top:80px;background:var(--card);
-  border:1px solid var(--line);border-radius:16px;padding:14px;
-  box-shadow:var(--shadow);min-height:300px;color:var(--ink);
-}
-.note-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
-.note-title{font-weight:800}
-.note-actions .btn{padding:6px 10px;border-radius:10px}
-#noteArea{
-  width:100%;min-height:160px;resize:vertical;background:#fff;color:var(--ink);
-  border:1px solid var(--line);border-radius:10px;padding:10px;font-family:inherit;
-}
-.note-subtitle{margin:10px 0 6px;color:var(--muted);font-size:14px}
-.note-log{display:flex;flex-direction:column;gap:6px;max-height:220px;overflow:auto}
-.note-item{
-  background:#fff;border:1px solid var(--line);border-radius:10px;
-  padding:8px;font-size:14px;color:var(--ink);
-  display:flex;justify-content:space-between;gap:8px;align-items:center
-}
-.note-item small{opacity:.7}
-.note-del{border:0;background:#eef5ff;color:#1c3f76;border-radius:8px;padding:4px 8px;cursor:pointer}
-.note-del:hover{background:#ddebff}
+    /* 팝업(계산기) */
+    #calcBox{ background:var(--card);border:1px solid var(--line);border-radius:16px; box-shadow:var(--shadow);color:var(--ink); }
+    #calcBox input[type="number"], #calcBox input[type="range"]{ accent-color:var(--accent); }
+    #rangeBox{ background:#f6fbff;border:1px solid var(--line); border-radius:10px;padding:10px }
 
-/* 팝업(계산기) */
-#calcBox{
-  background:var(--card);border:1px solid var(--line);border-radius:16px;
-  box-shadow:var(--shadow);color:var(--ink);
-}
-#calcBox input[type="number"], #calcBox input[type="range"]{
-  accent-color:var(--accent);
-}
-#rangeBox{
-  background:#f6fbff;border:1px solid var(--line);
-  border-radius:10px;padding:10px
-}
+    /* 푸터 */
+    footer{border-top:1px solid var(--line)}
+    footer .container{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 0;color:var(--muted);flex-wrap:wrap}
 
-/* 푸터 */
-footer{border-top:1px solid var(--line)}
-footer .container{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 0;color:var(--muted);flex-wrap:wrap}
+    /* 공통 트랜지션 살짝 */
+    .card, .btn, select, input, #calcBox{transition:all .25s ease}
 
-/* 공통 트랜지션 살짝 */
-.card, .btn, select, input, #calcBox{transition:all .25s ease}
-</style>
+    /* ④ (신규 추가) ───────── Collection Book 스타일 ───────── */
+    .collect-summary{ display:grid; gap:12px; grid-template-columns:1fr 1fr; margin:10px 0 16px; }
+    @media (max-width:780px){ .collect-summary{ grid-template-columns:1fr; } }
+    .c-card{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px; box-shadow:var(--shadow); color:var(--ink); }
+    .c-title{ font-weight:700; margin-bottom:8px; }
+    .c-row{ display:flex; gap:8px; flex-wrap:wrap; }
+    .c-row select, .c-row input{ background:var(--card); border:1px solid var(--line); border-radius:999px; padding:10px 12px; color:var(--ink); }
+    .c-row input{ flex:1; min-width:180px; }
+    .c-note{ color:var(--muted); font-size:13px; margin-top:6px; }
 
+    .c-progress{ display:grid; gap:8px; align-items:center; }
+    .c-bar{ position:relative; height:10px; background:#eef5ff; border:1px solid var(--line); border-radius:999px; overflow:hidden; }
+    .c-bar span{ display:block; height:100%; background:linear-gradient(135deg,var(--accent),var(--accent2)); }
+    .c-pct{ font-size:18px; }
 
+    .c-meta{ display:flex; gap:14px; flex-wrap:wrap; color:var(--muted); margin-top:2px; }
+    .c-meta b{ color:var(--ink); }
 
-  
+    .collect-list{ display:grid; gap:8px; }
+    .c-item{ display:grid; grid-template-columns:auto 1fr auto auto; align-items:center; gap:10px; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:10px 12px; }
+    @media (max-width:640px){ .c-item{ grid-template-columns:auto 1fr auto; grid-auto-rows:auto; } .c-item .c-qty{ grid-column:1 / -1; justify-self:end; } }
+
+    .c-item input[type="checkbox"]{ transform:scale(1.2); accent-color:var(--accent); }
+    .c-name{ font-weight:600; }
+    .c-type{ font-size:12px; padding:2px 8px; border:1px solid var(--line); border-radius:999px; background:var(--chip); color:#243447; }
+
+    .c-qty{ display:flex; align-items:center; gap:6px; font-size:14px; color:var(--muted); }
+    .c-qty .num{ width:78px; text-align:center; background:#fff; color:var(--ink); border:1px solid var(--line); border-radius:8px; padding:6px 8px; }
+    .c-qty .btn{ padding:6px 10px; border-radius:10px; }
+
+    .c-item.done{ opacity:.7; }
+    .c-item.done .c-name{ text-decoration:line-through; color:#6a6a6a; }
+  </style>
 </head>
 <body>
   <header>
@@ -214,7 +194,6 @@ footer .container{display:flex;justify-content:space-between;align-items:center;
         <option value="요리">요리</option>
         <option value="재료">재료</option>
         <option value="광물">광물</option>
-        <option value="도감">도감</option>
         <option value="물고기">물고기</option>
         <option value="농작물">농작물</option>
       </select>
@@ -241,7 +220,7 @@ footer .container{display:flex;justify-content:space-between;align-items:center;
 
   <!-- 빠른 카테고리 버튼 -->
   <div class="container" id="quickCats"
-       style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 0;justify-content:center;">
+       style="display:flex;gap:18px;flex-wrap:wrap;margin:18px 0 0;justify-content:center;">
     <button class="chip" data-cat="">전체</button>
     <button class="chip" data-cat="요리">요리</button>
     <button class="chip" data-cat="재료">재료</button>
@@ -270,6 +249,43 @@ footer .container{display:flex;justify-content:space-between;align-items:center;
     </aside>
   </div>
 
+  <!-- ⑤ (신규 추가) ───────── 여기부터 컬렉션 북 섹션 ───────── -->
+  <section class="container" id="collection-book" style="margin:28px auto;">
+    <h2 style="margin:0 0 10px;">📚 컬렉션 북</h2>
+
+    <!-- 요약 카드 -->
+    <div class="collect-summary">
+      <div class="c-card">
+        <div class="c-title">진행률</div>
+        <div class="c-progress">
+          <div class="c-bar"><span id="c-bar-fill" style="width:0%"></span></div>
+          <div class="c-pct"><b id="c-pct">0%</b></div>
+        </div>
+        <div class="c-meta">
+          <span>완료 <b id="c-done">0</b>개</span>
+          <span>남음 <b id="c-left">0</b>개</span>
+          <span>총 <b id="c-total">0</b>개</span>
+        </div>
+      </div>
+
+      <div class="c-card">
+        <div class="c-title">필터</div>
+        <div class="c-row">
+          <select id="c-type">
+            <option value="">종류 전체</option>
+          </select>
+          <input id="c-q" placeholder="이름 검색 (예: 껍질, 참나무)" />
+          <button class="btn" id="c-reset">초기화</button>
+        </div>
+        <div class="c-note">체크박스를 누르면 해당 항목이 완료로 표시되고, 진행률이 자동 조정됩니다. 숫자를 직접 입력해도 돼요.</div>
+      </div>
+    </div>
+
+    <!-- 목록 -->
+    <div id="c-list" class="collect-list"></div>
+  </section>
+  <!-- ───────── 컬렉션 북 섹션 끝 ───────── -->
+
   <footer>
     <div class="container">
       <div>© 2025 펭귄 서버 검색기 · GitHub Pages</div>
@@ -277,6 +293,7 @@ footer .container{display:flex;justify-content:space-between;align-items:center;
     </div>
   </footer>
 
+  <!-- ⑥ 기존 검색/메모/계산 팝업 스크립트 -->
   <script>
     /* ========== 0) 유틸 & 저장소 ========== */
     const $ = s => document.querySelector(s);
@@ -351,89 +368,20 @@ footer .container{display:flex;justify-content:space-between;align-items:center;
       { id:'ore_s3', name:'신비로운 루비', category:'광물', tier:'기본', desc:'단일 상점가 1800', tags:['광물'], addedAt:'2025-10-28' },
       { id:'ore_s4', name:'신비로운 크리스탈', category:'광물', tier:'기본', desc:'단일 상점가 12000', tags:['광물'], addedAt:'2025-10-28' },
 
-      /* ───── 도감 ───── */
-      { id:'dex_test', name:'테스트', category:'도감', tier:'기본', desc:'출현: 테스트 필드', tags:['테스트'], addedAt:'2025-10-28' },
-
-      /* ───── 물고기 (일부) ───── */
-{ id:'fish_coin1', name:'어부코인', category:'물고기', tier:'기본',   desc:'시세 1200 · 제단 또는 재료',   tags:['코인','제단'], addedAt:'2025-10-28' },
-{ id:'fish_1', name:'1등급 조개 껍데기', category:'물고기', tier:'일반',   desc: '시세 360',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_2', name:'1등급 해마', category:'물고기', tier:'일반',   desc: '시세 360',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_3', name:'1등급 블롭', category:'물고기', tier:'일반',   desc: '시세 360',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_4', name:'1등급 가오리', category:'물고기', tier:'일반',   desc: '시세 360',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_5', name:'1등급 참치', category:'물고기', tier:'일반',   desc: '시세 360',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_6', name:'1등급 아귀', category:'물고기', tier:'일반',   desc: '시세 360',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_7', name:'1등급 돌 가오리', category:'물고기', tier:'일반',   desc: '시세 360',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_8', name:'1등급 딸기 블롭', category:'물고기', tier:'일반',   desc: '시세 360',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_9', name:'1등급 소라게', category:'물고기', tier:'일반',   desc: '시세 360',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_10', name:'1등급 거북이', category:'물고기', tier:'일반',   desc: '시세 1068',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_11', name:'1등급 보리새우', category:'물고기', tier:'일반',   desc: '시세 1068',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_12', name:'1등급 아기상어', category:'물고기', tier:'일반',   desc: '시세 1355',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_13', name:'1등급 진주품은 조개', category:'물고기', tier:'일반',   desc: '시세 1355',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_14', name:'바다 램프', category:'물고기', tier:'일반',   desc: '시세 1850',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_15', name:'도금 동전', category:'물고기', tier:'일반',   desc: '시세 1850',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_16', name:'닫힌 보물상자', category:'물고기', tier:'일반',   desc: '시세 1850',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_17', name:'수상한 보물상자', category:'물고기', tier:'일반',   desc: '시세 1850',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_18', name:'보물상자', category:'물고기', tier:'일반',   desc: '시세 1850',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_19', name:'편지가 든 유리병', category:'물고기', tier:'일반',   desc: '시세 1850',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_20', name:'물고기 유리병', category:'물고기', tier:'일반',   desc: '시세 1850',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_21', name:'메갈로돈 이빨', category:'물고기', tier:'일반',   desc: '시세 1850',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_22', name:'배키', category:'물고기', tier:'일반',   desc: '시세 1850',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_23', name:'앵커', category:'물고기', tier:'일반',   desc: '시세 1850',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_24', name:'오징어 텐터클', category:'물고기', tier:'일반',   desc: '시세 2000',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_25', name:'돌고래 꼬리', category:'물고기', tier:'일반',   desc: '시세 2000',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_26', name:'게 비늘', category:'물고기', tier:'일반',   desc: '시세 1500',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-{ id:'fish_27', name:'게 발톱', category:'물고기', tier:'일반',   desc: '시세 1500',   tags:['물고기','낚시'], addedAt:'2025-10-28' },
-
-      /* ───── 농작물 (일부) ───── */
-{ id:'crop_coin0', name:'농부코인', category:'농작물', tier:'기본',   desc:'시세 1200 · 제단 또는 재료',   tags:['코인','제단'], addedAt:'2025-10-28' },
-{ id:'crop_wheat1', name:'1등급 마늘', category:'농작물', tier:'0차',   desc:'시세 24',   tags:['농작물','재배'], addedAt:'2025-10-28' },
-{ id:'crop_wheat2', name:'1등급 배추', category:'농작물', tier:'0차',   desc:'시세 24',   tags:['농작물','재배'], addedAt:'2025-10-28' },
-{ id:'crop_wheat3', name:'1등급 고추', category:'농작물', tier:'0차',   desc:'시세 24',   tags:['농작물','재배'], addedAt:'2025-10-28' },
-{ id:'crop_wheat4', name:'1등급 레몬', category:'농작물', tier:'0차',   desc:'시세 24',   tags:['농작물','재배'], addedAt:'2025-10-28' },
-{ id:'crop_wheat5', name:'황금 마늘', category:'농작물', tier:'0차',   desc:'시세 100',   tags:['농작물','재배'], addedAt:'2025-10-28' },
-{ id:'crop_wheat6', name:'황금 배추', category:'농작물', tier:'0차',   desc:'시세 100',   tags:['농작물','재배'], addedAt:'2025-10-28' },
-{ id:'crop_wheat7', name:'황금 레몬', category:'농작물', tier:'0차',   desc:'시세 100',   tags:['농작물','재배'], addedAt:'2025-10-28' },
-{ id:'crop_wheat8', name:'1등급 고구마', category:'농작물', tier:'1차',   desc:'시세 30',   tags:['농작물','재배'], addedAt:'2025-10-28' },
-{ id:'crop_wheat9', name:'1등급 파프리카', category:'농작물', tier:'1차',   desc:'시세 30',   tags:['농작물','재배'], addedAt:'2025-10-28' },
-{ id:'crop_wheat10', name:'1등급 오이', category:'농작물', tier:'1차',   desc:'시세 30',   tags:['농작물','재배'], addedAt:'2025-10-28' },
-{ id:'crop_wheat11', name:'1등급 딸기', category:'농작물', tier:'1차',   desc:'시세 30',   tags:['농작물','재배'], addedAt:'2025-10-28' },
-{ id:'crop_wheat12', name:'황금 고구마', category:'농작물', tier:'1차',   desc:'시세 200',   tags:['농작물','재배'], addedAt:'2025-10-28' },
-{ id:'crop_wheat13', name:'황금 파프리카', category:'농작물', tier:'1차',   desc:'시세 200',   tags:['농작물','재배'], addedAt:'2025-10-28' },
-{ id:'crop_wheat14', name:'황금 오이', category:'농작물', tier:'1차',   desc:'시세 200',   tags:['농작물','재배'], addedAt:'2025-10-28' },
-{ id:'crop_wheat15', name:'황금 딸기', category:'농작물', tier:'1차',   desc:'시세 200',   tags:['농작물','재배'], addedAt:'2025-10-28' },
-{ id:'crop_wheat16', name:'1등급 애호박', category:'농작물', tier:'2차',   desc:'시세 36',   tags:['농작물','재배'], addedAt:'2025-10-28' },
-{ id:'crop_wheat17', name:'1등급 대파', category:'농작물', tier:'2차',   desc:'시세 36',   tags:['농작물','재배'], addedAt:'2025-10-28' },   
-{ id:'crop_wheat18', name:'1등급 무', category:'농작물', tier:'2차',   desc:'시세 36',   tags:['농작물','재배'], addedAt:'2025-10-28' },   
-{ id:'crop_wheat19', name:'1등급 오렌지', category:'농작물', tier:'2차',   desc:'시세 36',   tags:['농작물','재배'], addedAt:'2025-10-28' },   
-{ id:'crop_wheat20', name:'황금 애호박', category:'농작물', tier:'2차',   desc:'시세 300',   tags:['농작물','재배'], addedAt:'2025-10-28' },
-{ id:'crop_wheat21', name:'황금 대파', category:'농작물', tier:'2차',   desc:'시세 300',   tags:['농작물','재배'], addedAt:'2025-10-28' },   
-{ id:'crop_wheat22', name:'황금 무', category:'농작물', tier:'2차',   desc:'시세 300',   tags:['농작물','재배'], addedAt:'2025-10-28' },   
-{ id:'crop_wheat23', name:'황금 오렌지', category:'농작물', tier:'2차',   desc:'시세 300',   tags:['농작물','재배'], addedAt:'2025-10-28' },   
-{ id:'crop_wheat24', name:'1등급 토마토', category:'농작물', tier:'3차',   desc:'시세 42',   tags:['농작물','재배'], addedAt:'2025-10-28' },      
-{ id:'crop_wheat25', name:'1등급 양배추', category:'농작물', tier:'3차',   desc:'시세 42',   tags:['농작물','재배'], addedAt:'2025-10-28' },         
-{ id:'crop_wheat26', name:'1등급 브로콜리', category:'농작물', tier:'3차',   desc:'시세 42',   tags:['농작물','재배'], addedAt:'2025-10-28' },      
-{ id:'crop_wheat27', name:'1등급 복숭아', category:'농작물', tier:'3차',   desc:'시세 42',   tags:['농작물','재배'], addedAt:'2025-10-28' },      
-{ id:'crop_wheat28', name:'황금 토마토', category:'농작물', tier:'3차',   desc:'시세 400',   tags:['농작물','재배'], addedAt:'2025-10-28' },      
-{ id:'crop_wheat29', name:'황금 양배추', category:'농작물', tier:'3차',   desc:'시세 400',   tags:['농작물','재배'], addedAt:'2025-10-28' },         
-{ id:'crop_wheat30', name:'황금 브로콜리', category:'농작물', tier:'3차',   desc:'시세 400',   tags:['농작물','재배'], addedAt:'2025-10-28' },      
-{ id:'crop_wheat31', name:'황금 복숭아', category:'농작물', tier:'3차',   desc:'시세 400',   tags:['농작물','재배'], addedAt:'2025-10-28' }, 
-{ id:'crop_wheat32', name:'1등급 상추', category:'농작물', tier:'4차',   desc:'시세 48',   tags:['농작물','재배'], addedAt:'2025-10-28' },      
-{ id:'crop_wheat33', name:'1등급 씰', category:'농작물', tier:'4차',   desc:'시세 48',   tags:['농작물','재배'], addedAt:'2025-10-28' },         
-{ id:'crop_wheat34', name:'1등급 양파', category:'농작물', tier:'4차',   desc:'시세 48',   tags:['농작물','재배'], addedAt:'2025-10-28' },      
-{ id:'crop_wheat35', name:'1등급 멜론', category:'농작물', tier:'4차',   desc:'시세 48',   tags:['농작물','재배'], addedAt:'2025-10-28' },      
-{ id:'crop_wheat36', name:'황금 상추', category:'농작물', tier:'4차',   desc:'시세 500',   tags:['농작물','재배'], addedAt:'2025-10-28' },      
-{ id:'crop_wheat37', name:'황금 쌀', category:'농작물', tier:'4차',   desc:'시세 500',   tags:['농작물','재배'], addedAt:'2025-10-28' },         
-{ id:'crop_wheat38', name:'황금 양파', category:'농작물', tier:'4차',   desc:'시세 500',   tags:['농작물','재배'], addedAt:'2025-10-28' },      
-{ id:'crop_wheat39', name:'황금 멜론', category:'농작물', tier:'4차',   desc:'시세 500',   tags:['농작물','재배'], addedAt:'2025-10-28' }, 
-
-      
+      /* ───── 물고기/농작물 (일부) ───── */
+      { id:'fish_coin1', name:'어부코인', category:'물고기', tier:'기본',   desc:'시세 1200 · 제단 또는 재료', tags:['코인','제단'], addedAt:'2025-10-28' },
+      { id:'fish_1', name:'1등급 조개 껍데기', category:'물고기', tier:'일반', desc:'시세 360', tags:['물고기','낚시'], addedAt:'2025-10-28' },
+      { id:'fish_2', name:'1등급 해마', category:'물고기', tier:'일반', desc:'시세 360', tags:['물고기','낚시'], addedAt:'2025-10-28' },
+      { id:'fish_27', name:'게 발톱', category:'물고기', tier:'일반', desc:'시세 1500', tags:['물고기','낚시'], addedAt:'2025-10-28' },
+      { id:'crop_coin0', name:'농부코인', category:'농작물', tier:'기본', desc:'시세 1200 · 제단 또는 재료', tags:['코인','제단'], addedAt:'2025-10-28' },
+      { id:'crop_wheat1', name:'1등급 마늘', category:'농작물', tier:'0차', desc:'시세 24', tags:['농작물','재배'], addedAt:'2025-10-28' },
+      { id:'crop_wheat39', name:'황금 멜론', category:'농작물', tier:'4차', desc:'시세 500', tags:['농작물','재배'], addedAt:'2025-10-28' },
     ];
 
     /* ========== 2) 상태/필터/렌더 ========== */
     const state = { q:'', cat:'', tier:'', sort:'name', fav:0, page:1 };
 
-    const match = (item, q) =>
-      !q || [item.name, item.desc, ...(item.tags||[])].some(v => norm(v).includes(norm(q)));
+    const match = (item, q) => !q || [item.name, item.desc, ...(item.tags||[])].some(v => norm(v).includes(norm(q)));
 
     const apply = (list, st) => {
       let out = list.filter(it => match(it, st.q));
@@ -500,7 +448,7 @@ footer .container{display:flex;justify-content:space-between;align-items:center;
     $('#favOnlyBtn').addEventListener('click', ()=>{state.fav=state.fav?0:1; render();});
     $('#share').addEventListener('click', e=>{e.preventDefault(); navigator.clipboard.writeText(location.href); alert('현재 검색 링크를 복사했습니다!');});
 
-    /* ========== 4) 메모장 모듈 (한 번만) ========== */
+    /* ========== 4) 메모장 모듈 ========== */
     const NOTE_KEY = 'penguin-notes-v1';
     const LOG_KEY  = 'penguin-notelogs-v1';
     const noteArea = document.getElementById('noteArea');
@@ -557,141 +505,84 @@ footer .container{display:flex;justify-content:space-between;align-items:center;
       noteTimer = setTimeout(saveNotes, 400);
     });
     loadNotes();
-    // 팝업 쪽에서 접근 가능하도록
+    // 팝업 쪽에서 접근 가능하도록 전역 노출
     window.addLog = addLog; window.noteArea = noteArea; window.saveNotes = saveNotes;
 
     /* ========== 5) 계산 팝업 ========== */
-  let selectedItem = null;
+    let selectedItem = null;
 
-  // 팝업 DOM (멀티라인 백틱(`)으로 정상 종료!)
-  const calcBox = document.createElement('div');
-  calcBox.id = 'calcBox';
-  calcBox.style.cssText = `
-    position:fixed;
-    inset:auto auto 20px 20px;
-    max-width:360px;
-    z-index:1000;
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:16px;
-    padding:14px;
-    display:none;
-    box-shadow: var(--shadow);
-    color:var(--ink);
-  `;
-    //반투명 유리 느낌
+    const calcBox = document.createElement('div');
+    calcBox.id = 'calcBox';
+    calcBox.style.cssText = `
+      position:fixed; inset:auto auto 20px 20px; max-width:360px; z-index:1000;
+      background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px;
+      display:none; box-shadow: var(--shadow); color:var(--ink);
+    `;
+    // 반투명 유리 느낌
     calcBox.style.backdropFilter = 'blur(10px) saturate(1.3)';
     calcBox.style.background = 'rgba(255,255,255,0.85)';
-    
-  calcBox.innerHTML = `
-    <div id="calcHeader" style="display:flex;align-items:center;gap:10px;margin-bottom:8px;cursor:move">
-      <img id="calcThumb" alt="" style="width:36px;height:36px;border-radius:8px;object-fit:cover;border:1px solid var(--line);display:none">
-      <h3 id="calcTitle" style="margin:0">가격 계산기</h3>
-    </div>
 
-    <div id="calcDesc" style="opacity:.8;margin-bottom:12px;font-size:14px"></div>
-
-    <div id="oreMode" style="display:none; margin-bottom:8px;">
-      <label style="margin-right:10px;"><input type="radio" name="oreType" value="single" checked> 단일 상점가 기준</label>
-      <label><input type="radio" name="oreType" value="block"> 블록 상점가 기준</label>
-    </div>
-
-    <!-- 라이트 테마에 맞게 상자/인풋 배경도 밝게 -->
-    <div id="rangeBox" style="margin:8px 0 10px;padding:10px;border:1px solid var(--line);border-radius:10px;background:#f6fbff;">
-      <div style="font-weight:700;margin-bottom:6px;">가격 범위 (-30% ~ +80%)</div>
-      <div id="rangeValues" style="font-size:14px;opacity:.9;">기준가를 선택하면 자동 계산됩니다.</div>
-    </div>
-
-    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px;">
-      <input id="calcRate" type="number" placeholder="변동 퍼센트 입력 (-30~80)"
-        style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--ink);">
-      <input id="rateSlider" type="range" min="-30" max="80" value="0" style="width:100%">
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
-        <button class="btn" data-rate="-30">-30%</button>
-        <button class="btn" data-rate="-20">-20%</button>
-        <button class="btn" data-rate="0">0%</button>
-        <button class="btn" data-rate="20">+20%</button>
-        <button class="btn" data-rate="80">+80%</button>
+    calcBox.innerHTML = `
+      <div id="calcHeader" style="display:flex;align-items:center;gap:10px;margin-bottom:8px;cursor:move">
+        <img id="calcThumb" alt="" style="width:36px;height:36px;border-radius:8px;object-fit:cover;border:1px solid var(--line);display:none">
+        <h3 id="calcTitle" style="margin:0">가격 계산기</h3>
       </div>
-    </div>
+      <div id="calcDesc" style="opacity:.8;margin-bottom:12px;font-size:14px"></div>
+      <div id="oreMode" style="display:none; margin-bottom:8px;">
+        <label style="margin-right:10px;"><input type="radio" name="oreType" value="single" checked> 단일 상점가 기준</label>
+        <label><input type="radio" name="oreType" value="block"> 블록 상점가 기준</label>
+      </div>
+      <div id="rangeBox" style="margin:8px 0 10px;padding:10px;border:1px solid var(--line);border-radius:10px;background:#f6fbff;">
+        <div style="font-weight:700;margin-bottom:6px;">가격 범위 (-30% ~ +80%)</div>
+        <div id="rangeValues" style="font-size:14px;opacity:.9;">기준가를 선택하면 자동 계산됩니다.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px;">
+        <input id="calcRate" type="number" placeholder="변동 퍼센트 입력 (-30~80)"
+          style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--ink);">
+        <input id="rateSlider" type="range" min="-30" max="80" value="0" style="width:100%">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="btn" data-rate="-30">-30%</button>
+          <button class="btn" data-rate="-20">-20%</button>
+          <button class="btn" data-rate="0">0%</button>
+          <button class="btn" data-rate="20">+20%</button>
+          <button class="btn" data-rate="80">+80%</button>
+        </div>
+      </div>
+      <button id="calcRun" class="btn primary" style="width:100%;margin-bottom:8px;">계산하기</button>
+      <div id="calcResult" style="margin-top:6px;font-size:15px;color:#8a6b00;"></div>
+      <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end">
+        <button id="calcClose" class="btn">닫기</button>
+      </div>
+    `;
+    document.body.appendChild(calcBox);
 
-    <button id="calcRun" class="btn primary" style="width:100%;margin-bottom:8px;">계산하기</button>
-    <div id="calcResult" style="margin-top:6px;font-size:15px;color:#8a6b00;"></div>
-    <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end">
-      <button id="calcClose" class="btn">닫기</button>
-    </div>
-  `;
-  document.body.appendChild(calcBox);
-
- 
-      
-// ===== 팝업 드래그 가능하게 =====
-(function(){
-  const box = document.getElementById('calcBox');
-  const handle = document.getElementById('calcHeader');
-  let isDown = false, startX = 0, startY = 0, startLeft = 0, startTop = 0;
-
-  function point(e){
-    if(e.touches && e.touches[0]) return { x:e.touches[0].clientX, y:e.touches[0].clientY };
-    return { x:e.clientX, y:e.clientY };
-  }
-  function px(n){ return Math.round(n) + 'px'; }
-
-  function onDown(e){
-    const p = point(e);
-    isDown = true;
-    const r = box.getBoundingClientRect();
-    startLeft = r.left;
-    startTop  = r.top;
-    startX = p.x;
-    startY = p.y;
-
-    // 드래그 시작 시 좌표계 고정 (right/bottom/transform 제거)
-    box.style.right = 'auto';
-    box.style.bottom = 'auto';
-    box.style.transform = 'none';
-    box.style.left = px(startLeft);
-    box.style.top  = px(startTop);
-    e.preventDefault();
-  }
-  function onMove(e){
-    if(!isDown) return;
-    const p = point(e);
-    let newLeft = startLeft + (p.x - startX);
-    let newTop  = startTop  + (p.y - startY);
-
-    // 화면 밖으로 못 나가게 클램프
-    const vw = window.innerWidth, vh = window.innerHeight;
-    const rect = box.getBoundingClientRect();
-    const w = rect.width, h = rect.height;
-    newLeft = Math.max(8, Math.min(vw - w - 8, newLeft));
-    newTop  = Math.max(8, Math.min(vh - h - 8, newTop));
-
-    box.style.left = px(newLeft);
-    box.style.top  = px(newTop);
-    e.preventDefault();
-  }
-  function onUp(){ isDown = false; }
-
-  handle.addEventListener('mousedown', onDown);
-  document.addEventListener('mousemove', onMove);
-  document.addEventListener('mouseup', onUp);
-
-  handle.addEventListener('touchstart', onDown, {passive:false});
-  document.addEventListener('touchmove', onMove, {passive:false});
-  document.addEventListener('touchend', onUp);
-
-  // 창 크기 바뀌면 화면 안으로 재클램프
-  window.addEventListener('resize', ()=>{
-    const r = box.getBoundingClientRect();
-    const vw = window.innerWidth, vh = window.innerHeight;
-    const w = r.width, h = r.height;
-    const left = Math.max(8, Math.min(vw - w - 8, r.left));
-    const top  = Math.max(8, Math.min(vh - h - 8, r.top));
-    box.style.left = px(left);
-    box.style.top  = px(top);
-  });
-})();
+    // 팝업 드래그
+    (function(){
+      const box = document.getElementById('calcBox');
+      const handle = document.getElementById('calcHeader');
+      let isDown = false, startX = 0, startY = 0, startLeft = 0, startTop = 0;
+      const point = (e)=> e.touches?.[0] ? {x:e.touches[0].clientX,y:e.touches[0].clientY}:{x:e.clientX,y:e.clientY};
+      const px = (n)=> Math.round(n)+'px';
+      function onDown(e){
+        const p = point(e); isDown = true; const r = box.getBoundingClientRect();
+        startLeft=r.left; startTop=r.top; startX=p.x; startY=p.y;
+        box.style.right='auto'; box.style.bottom='auto'; box.style.transform='none';
+        box.style.left=px(startLeft); box.style.top=px(startTop); e.preventDefault();
+      }
+      function onMove(e){ if(!isDown) return; const p=point(e);
+        let newLeft = startLeft + (p.x-startX); let newTop = startTop + (p.y-startY);
+        const vw=innerWidth,vh=innerHeight; const rect=box.getBoundingClientRect();
+        const w=rect.width,h=rect.height; newLeft=Math.max(8,Math.min(vw-w-8,newLeft)); newTop=Math.max(8,Math.min(vh-h-8,newTop));
+        box.style.left=px(newLeft); box.style.top=px(newTop); e.preventDefault(); }
+      function onUp(){ isDown=false; }
+      handle.addEventListener('mousedown', onDown); document.addEventListener('mousemove', onMove); document.addEventListener('mouseup', onUp);
+      handle.addEventListener('touchstart', onDown, {passive:false}); document.addEventListener('touchmove', onMove, {passive:false}); document.addEventListener('touchend', onUp);
+      addEventListener('resize', ()=>{
+        const r=box.getBoundingClientRect(); const vw=innerWidth,vh=innerHeight; const w=r.width,h=r.height;
+        const left=Math.max(8,Math.min(vw-w-8,r.left)); const top=Math.max(8,Math.min(vh-h-8,r.top));
+        box.style.left=px(left); box.style.top=px(top);
+      });
+    })();
 
     // 도우미
     function clampRate(v){ return Math.min(80, Math.max(-30, v)); }
@@ -731,50 +622,35 @@ footer .container{display:flex;justify-content:space-between;align-items:center;
       btn.addEventListener('click', ()=>{ rateInput.value = btn.dataset.rate; rateSlider.value = btn.dataset.rate; });
     });
     document.getElementById('oreMode').addEventListener('change', ()=>{
-      if (!selectedItem) return;
-      renderRangeBox(getBasePriceForRange(selectedItem));
+      if (!selectedItem) return; renderRangeBox(getBasePriceForRange(selectedItem));
     });
-    document.getElementById('calcClose').addEventListener('click', ()=>{
-      calcBox.style.display = 'none'; selectedItem = null;
-    });
+    document.getElementById('calcClose').addEventListener('click', ()=>{ calcBox.style.display = 'none'; selectedItem = null; });
 
     // 카드 클릭 시 팝업 열기
     const originalCard = card;
     card = function(it){
       const el = originalCard(it);
       el.addEventListener('click', e=>{
-        if(e.target.classList.contains('fav')) return; // 즐겨찾기 버튼은 제외
+        if(e.target.classList.contains('fav')) return; // 즐겨찾기 버튼 제외
         selectedItem = it;
-
-        $('#calcTitle').innerHTML = `📦 ${it.name} 가격 계산`;
-        $('#calcDesc').textContent = it.desc || '';
-
-        const thumb = $('#calcThumb');
+        document.getElementById('calcTitle').innerHTML = `📦 ${it.name} 가격 계산`;
+        document.getElementById('calcDesc').textContent = it.desc || '';
+        const thumb = document.getElementById('calcThumb');
         const src = it.img || 'penguin_logo.png';
-        thumb.src = src;
-        thumb.onerror = ()=>{ thumb.style.display='none'; };
-        thumb.onload  = ()=>{ thumb.style.display='block'; };
-
-        $('#oreMode').style.display = (it.category === '광물') ? 'block' : 'none';
-
-        $('#calcResult').textContent = '';
+        thumb.src = src; thumb.onerror = ()=>{ thumb.style.display='none'; }; thumb.onload = ()=>{ thumb.style.display='block'; };
+        document.getElementById('oreMode').style.display = (it.category === '광물') ? 'block' : 'none';
+        document.getElementById('calcResult').textContent = '';
         rateInput.value = ''; rateSlider.value = 0;
-
         renderRangeBox(getBasePriceForRange(it));
         calcBox.style.display = 'block';
-  
-   if (!calcBox.dataset.placed) {
- 
-  // 최초 오픈 시 중앙 정렬
-  const w = calcBox.offsetWidth, h = calcBox.offsetHeight;
-  calcBox.style.left = ((window.innerWidth - w) / 2) + 'px';
-  calcBox.style.top  = Math.max(20, (window.innerHeight - h) / 2) + 'px';
-  calcBox.style.right = 'auto';
-  calcBox.style.bottom = 'auto';
-  calcBox.style.transform = 'none';
-  calcBox.dataset.placed = '1';
-}
-  
+        // 최초 오픈 시 중앙 정렬 (1회)
+        if (!calcBox.dataset.placed) {
+          const w = calcBox.offsetWidth, h = calcBox.offsetHeight;
+          calcBox.style.left = ((innerWidth - w) / 2) + 'px';
+          calcBox.style.top  = Math.max(20, (innerHeight - h) / 2) + 'px';
+          calcBox.style.right = 'auto'; calcBox.style.bottom = 'auto'; calcBox.style.transform = 'none';
+          calcBox.dataset.placed = '1';
+        }
       });
       return el;
     };
@@ -785,50 +661,117 @@ footer .container{display:flex;justify-content:space-between;align-items:center;
       const rate = parseFloat(rateInput.value);
       if(isNaN(rate)) return alert('변동 퍼센트를 입력하세요.');
       if(rate < -30 || rate > 80) return alert('변동 범위는 -30% ~ +80% 입니다.');
-
-      const item = selectedItem;
-      let base = getBasePriceForRange(item);
+      const item = selectedItem; let base = getBasePriceForRange(item);
       let kind = (item.category==='광물'
         ? (document.querySelector('input[name="oreType"]:checked')?.value === 'block' ? '블록 기준' : '단일 기준')
         : '시세 기준');
-
       if (!base) {
         if (item.category === '광물' && document.querySelector('input[name="oreType"]:checked')?.value === 'block') {
-          $('#calcResult').innerHTML =
-            `<span style="color:#ffb3b3">블록 상점가 정보가 없어 계산할 수 없습니다.</span>
-             <br><small>단일 기준으로 계산해 보세요.</small>`;
-          return;
+          document.getElementById('calcResult').innerHTML = `<span style="color:#ffb3b3">블록 상점가 정보가 없어 계산할 수 없습니다.</span><br><small>단일 기준으로 계산해 보세요.</small>`; return;
         }
-        $('#calcResult').innerHTML =
-          `<span style="color:#ffb3b3">가격 정보가 없어 계산할 수 없습니다.</span>
-           <br><small>이 항목은 판매/시세 데이터가 기록되어 있지 않아요.</small>`;
-        return;
+        document.getElementById('calcResult').innerHTML = `<span style="color:#ffb3b3">가격 정보가 없어 계산할 수 없습니다.</span><br><small>이 항목은 판매/시세 데이터가 기록되어 있지 않아요.</small>`; return;
       }
-
       const result = Math.round(base * (1 + rate/100));
       const diff = result - base;
-      const diffText = diff >= 0
-        ? `<span style="color:#80ffae">+${diff.toLocaleString()}원 이익</span>`
-        : `<span style="color:#ff8080">${diff.toLocaleString()}원 손해</span>`;
-
-      $('#calcResult').innerHTML =
-        `💰 <b>${item.name}</b> 현재 시세: <span style="color:#ffd770">${result.toLocaleString()}</span>원<br>
-         (${diffText}, 기준 ${base.toLocaleString()}원, ${kind}, 변동 ${rate}% )`;
-
-      // 로그/메모 자동 기록
-      if (window.addLog) {
-        const now = new Date();
-        addLog({ name:item.name, base, rate, result, kind, diff, time: now.toLocaleString('ko-KR') });
-      }
+      const diffText = diff >= 0 ? `<span style="color:#2d7a46">+${diff.toLocaleString()}원 이익</span>` : `<span style="color:#b84a4a">${diff.toLocaleString()}원 손해</span>`;
+      document.getElementById('calcResult').innerHTML = `💰 <b>${item.name}</b> 현재 시세: <span style="color:#8a6b00">${result.toLocaleString()}</span>원<br> (${diffText}, 기준 ${base.toLocaleString()}원, ${kind}, 변동 ${rate}% )`;
+      if (window.addLog) { const now = new Date(); addLog({ name:item.name, base, rate, result, kind, diff, time: now.toLocaleString('ko-KR') }); }
       if (window.noteArea && window.saveNotes) {
         noteArea.value += `\n${item.name}: ${result.toLocaleString()}원 (${diff >= 0 ? '+' : ''}${diff.toLocaleString()}원, ${rate}%, ${kind})`;
-        noteArea.scrollTop = noteArea.scrollHeight;
-        saveNotes();
+        noteArea.scrollTop = noteArea.scrollHeight; saveNotes();
       }
     });
 
     /* ========== 6) 첫 렌더 ========== */
     render();
+  </script>
+
+  <!-- ⑦ (신규 추가) ───────── 컬렉션 북 로직: 이 블록은 body 끝, footer 뒤에 추가 ───────── -->
+  <script>
+    // 컬렉션 데이터
+    const COLLECTION = [
+      { id:'oak_stripped', name:'껍질 벗긴 참나무', type:'목재', target:50 },
+      { id:'spruce_stripped', name:'껍질 벗긴 가문비나무', type:'목재', target:50 },
+      { id:'birch_stripped', name:'껍질 벗긴 자작나무', type:'목재', target:50 },
+      { id:'cobblestone', name:'조약돌', type:'채굴', target:200 },
+      { id:'coal', name:'석탄', type:'채굴', target:100 },
+      { id:'iron_ingot', name:'철 주괴', type:'제련', target:80 },
+      { id:'fish_common', name:'일반 물고기', type:'낚시', target:30 },
+    ];
+    const COL_KEY = 'penguin-collection-v1';
+    let colState = JSON.parse(localStorage.getItem(COL_KEY) || '{}'); // { [id]: number }
+    const cState = { q:'', type:'' };
+
+    (function initCollection(){
+      // 종류 드롭다운 채움
+      const types = [...new Set(COLLECTION.map(x=>x.type))].sort();
+      const typeSel = document.getElementById('c-type');
+      types.forEach(t=>{ const opt=document.createElement('option'); opt.value=t; opt.textContent=t; typeSel.appendChild(opt); });
+
+      // 이벤트
+      document.getElementById('c-q').addEventListener('input', e=>{ cState.q=(e.target.value||'').trim().toLowerCase(); renderCollection(); });
+      typeSel.addEventListener('change', e=>{ cState.type=e.target.value; renderCollection(); });
+      document.getElementById('c-reset').addEventListener('click', ()=>{ if(!confirm('컬렉션 진행 상황을 모두 초기화할까요?')) return; colState={}; saveCollection(); renderCollection(); });
+
+      renderCollection();
+    })();
+
+    function saveCollection(){ localStorage.setItem(COL_KEY, JSON.stringify(colState)); }
+
+    function filteredCollection(){
+      return COLLECTION.filter(it=>{
+        if (cState.type && it.type !== cState.type) return false;
+        if (cState.q){ const key=(it.name+' '+it.type).toLowerCase(); if(!key.includes(cState.q)) return false; }
+        return true;
+      });
+    }
+
+    function renderCollection(){
+      const list = document.getElementById('c-list'); list.innerHTML = '';
+      const items = filteredCollection();
+      const total = items.length; let done = 0;
+      items.forEach(it=>{ const cur = +colState[it.id] || 0; if (cur >= it.target) done++; });
+      const pct = total ? Math.round(done/total*100) : 0; const left = total - done;
+      document.getElementById('c-total').textContent = total;
+      document.getElementById('c-done').textContent  = done;
+      document.getElementById('c-left').textContent  = left;
+      document.getElementById('c-pct').textContent   = pct+'%';
+      document.getElementById('c-bar-fill').style.width = pct+'%';
+
+      items.forEach(it=>{
+        const cur = +colState[it.id] || 0; const isDone = cur >= it.target;
+        const row = document.createElement('div'); row.className = 'c-item' + (isDone ? ' done':'');
+        row.innerHTML = `
+          <input type="checkbox" class="c-check" ${isDone?'checked':''} aria-label="완료">
+          <div>
+            <div class="c-name">${it.name}</div>
+            <div style="display:flex;gap:6px;align-items:center;margin-top:2px;">
+              <span class="c-type">${it.type}</span>
+              <small style="color:var(--muted)">목표 ${it.target}개</small>
+            </div>
+          </div>
+          <div class="c-qty">
+            <button class="btn c-dec">-</button>
+            <input class="num" type="number" min="0" value="${cur}">
+            <button class="btn c-inc">+</button>
+          </div>
+          <div style="min-width:68px;text-align:right;">
+            <span ${isDone?'style="color:#2d7a46;font-weight:700"':'style="color:#a55555;font-weight:700"'}>
+              ${isDone?'완료':'남음 '+Math.max(0,it.target-cur)}
+            </span>
+          </div>
+        `;
+        const num = row.querySelector('.num');
+        const chk = row.querySelector('.c-check');
+        chk.addEventListener('change', ()=>{ if (chk.checked){ colState[it.id]=it.target; num.value=it.target; } else { colState[it.id]=Math.min(+num.value, it.target-1); num.value=colState[it.id]||0; } saveCollection(); renderCollection(); });
+        num.addEventListener('input', ()=>{ const v=Math.max(0, Math.floor(+num.value||0)); colState[it.id]=v; saveCollection(); renderCollection(); });
+        row.querySelector('.c-inc').addEventListener('click', ()=>{ const v=Math.min((+colState[it.id]||0)+1, it.target); colState[it.id]=v; num.value=v; saveCollection(); renderCollection(); });
+        row.querySelector('.c-dec').addEventListener('click', ()=>{ const v=Math.max((+colState[it.id]||0)-1, 0); colState[it.id]=v; num.value=v; saveCollection(); renderCollection(); });
+        list.appendChild(row);
+      });
+
+      if (!items.length){ const empty=document.createElement('div'); empty.className='c-card'; empty.textContent='조건에 맞는 항목이 없습니다.'; list.appendChild(empty); }
+    }
   </script>
 </body>
 </html>
