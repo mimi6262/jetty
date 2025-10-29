@@ -8,6 +8,7 @@
 
 <style>
 :root{
+  /* 팔레트 */
   --bg1:#F5EFE6;   /* 페이지 상단 배경 */
   --bg2:#CBDCEB;   /* 페이지 하단 배경 */
   --line:#D8CFC0;  /* 경계선 */
@@ -20,14 +21,13 @@
   --shadow:0 8px 18px rgba(0,0,0,.08), 0 2px 6px rgba(0,0,0,.05);
 }
 
-
 *{box-sizing:border-box}
 
 /* 배경/타이포 */
 body{
   margin:0;
-  background:linear-gradient(180deg,var(--bg1),var(--bg2)) !important;
-  color:var(--ink) !important;
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  color:var(--ink);
   font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,Noto Sans KR,Helvetica,Arial;
   transition:background .3s,color .3s;
 }
@@ -56,8 +56,8 @@ header{
 /* 검색박스 */
 .search{
   display:flex;align-items:center;gap:8px;
-  background:var(--card) !important;
-  border:1px solid var(--line) !important;
+  background:var(--card);
+  border:1px solid var(--line);
   border-radius:999px;padding:10px 14px;box-shadow:var(--shadow);
 }
 .search input{
@@ -66,21 +66,24 @@ header{
 
 /* 셀렉트/버튼 */
 select,.btn{
-  background:var(--card) !important;
+  background:var(--card);
   border:1px solid var(--line);color:var(--ink);
   border-radius:999px;padding:10px 12px;
-  transition:box-shadow .2s,border-color .2s,background .2s,transform .1s;
+  transition:box-shadow .2s,border-color .2s,background .2s,transform .1s,color .2s;
 }
 select:focus,.btn:focus{outline:none;box-shadow:0 0 0 3px rgba(109,148,197,.25);border-color:var(--accent)}
 .btn{cursor:pointer}
 .btn:hover{transform:translateY(-1px)}
+
+/* 프라이머리 버튼 — 글자색/배경 확실히 고정 */
 .btn.primary{
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  border-color:transparent;color:#fff;box-shadow:var(--shadow)
+  background:linear-gradient(135deg,var(--accent),var(--accent2)) !important;
+  border-color:transparent; color:#fff !important; box-shadow:var(--shadow);
 }
 .btn.primary:hover{
-  background:linear-gradient(135deg,var(--accent2),var(--accent));
+  background:linear-gradient(135deg,var(--accent2),var(--accent)) !important;
 }
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
 
 /* 드롭다운(옵션) 색상 */
 select option{background:#fff;color:#222}
@@ -104,9 +107,10 @@ main{padding:8px 0 28px}
   box-shadow:var(--shadow);
   transition:transform .15s,box-shadow .2s;
 }
-.card:hover{transform:translateY(-4px);
-            box-shadow:0 12px 32px rgba(109,148,197,0.25);
-           }
+.card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 12px 32px rgba(109,148,197,0.25);
+}
 .name{font-weight:800;font-size:18px;margin-bottom:6px;letter-spacing:-.02em}
 .row{display:flex;gap:6px;flex-wrap:wrap}
 .chip{
@@ -176,6 +180,7 @@ footer .container{display:flex;justify-content:space-between;align-items:center;
 /* 공통 트랜지션 살짝 */
 .card, .btn, select, input, #calcBox{transition:all .25s ease}
 </style>
+
 
 
   
