@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>펭귄 서버 검색기 </title>
+  <title>펭귄 서버 검색기</title>
   <meta name="theme-color" content="#111827" />
   <style>
     :root{ --bg:#0b1220; --panel:#111827; --muted:#6b7280; --txt:#e5e7eb; --brand:#60a5fa; --accent:#34d399; --danger:#f87171; --ring:0 0 0 3px rgba(96,165,250,.35); }
@@ -36,6 +36,7 @@
     .row{display:flex; align-items:center; justify-content:space-between; gap:8px}
     .muted{color:var(--muted)}
     .tag{display:inline-flex; padding:2px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.1); font-size:12px; color:#9ca3af}
+
     .hidden{display:none !important}
 
     /* 레이아웃: 메인 + 우측 메모 고정 */
@@ -137,10 +138,12 @@
             <strong>📚 컬렉션북</strong>
             <span class="muted">— 진행률과 필요 수량을 한눈에</span>
           </div>
-          <div class="row" style="gap:6px">
-            <button id="btnExport" class="btn ghost" title="즐겨찾기/컬렉션 내보내기">⤴︎ 내보내기</button>
-            <!-- 요구에 따라 가져오기 버튼 제거 -->
-          </div>
+          <div class="row" style="gap:6px"><!-- import/export 제거됨 --></div>
+        </section>
+
+        <!-- 컬렉션북 전용 카테고리 -->
+        <section class="panel toolbar" aria-label="컬렉션 카테고리">
+          <div class="chipbar" id="collectionChips" role="group" aria-label="컬렉션 카테고리"></div>
         </section>
 
         <section class="panel" aria-label="진행률">
@@ -252,7 +255,7 @@
     const save = (k,v) => localStorage.setItem(k, JSON.stringify(v));
     const load = (k, def) => JSON.parse(localStorage.getItem(k) || JSON.stringify(def));
 
-    const state = { q:'', category:'전체', tier:'', favoritesOnly:false, view:'search', mode:'search' }; // mode: 'search' | 'trade'
+    const state = { q:'', category:'전체', tier:'', favoritesOnly:false, view:'search', mode:'search', collectionCategory:'전체' }; // mode: 'search' | 'trade'
 
     const favKey = 'jetty:favorites';
     const favorites = new Set(load(favKey, []));
@@ -269,6 +272,7 @@
 
     // ===================== 초기 UI =====================
     function initChips(){ const wrap=$('#catChips'); wrap.innerHTML=''; CATEGORIES.forEach(cat=>{ const b=document.createElement('button'); b.className='chip'; b.type='button'; b.textContent=cat; b.setAttribute('aria-pressed', cat===state.category); b.addEventListener('click',()=>{ state.category=cat; renderSearch(); }); wrap.appendChild(b); }); }
+    function initCollectionChips(){ const wrap=document.getElementById('collectionChips'); if(!wrap) return; wrap.innerHTML=''; ['전체','농부','요리사','광부','어부'].forEach(cat=>{ const b=document.createElement('button'); b.className='chip'; b.type='button'; b.textContent=cat; b.setAttribute('aria-pressed', cat===state.collectionCategory); b.addEventListener('click',()=>{ state.collectionCategory=cat; renderCollection(); }); wrap.appendChild(b); }); }
 
     // ===================== 렌더: 검색/무역섬 통합 =====================
     function renderSearch(){
@@ -292,23 +296,37 @@
 
     // ===================== 렌더: 컬렉션북 =====================
     function renderCollection(){
-      $('#subtitle').textContent = '컬렉션북';
-      $('#view-search').classList.add('hidden');
-      $('#view-collection').classList.remove('hidden');
-      $('#btnCollection').setAttribute('aria-pressed','true');
-      // [요청] 컬렉션북에 들어오면 즐겨찾기만 자동 해제
-      if(state.favoritesOnly){ state.favoritesOnly=false; $('#btnFavoritesOnly').setAttribute('aria-pressed','false'); }
+      document.getElementById('subtitle').textContent = '컬렉션북';
+      document.getElementById('view-search').classList.add('hidden');
+      document.getElementById('view-collection').classList.remove('hidden');
+      document.getElementById('btnCollection').setAttribute('aria-pressed','true');
+      // 컬렉션북 진입 시 즐겨찾기만 자동 해제
+      if(state.favoritesOnly){ state.favoritesOnly=false; document.getElementById('btnFavoritesOnly').setAttribute('aria-pressed','false'); }
 
-      const total=COLLECTION.length; const done=COLLECTION.filter(r=>collectionDone.has(r.id)).length; const left=total-done; const rate=total? Math.round(done/total*100):0;
-      $('#statRate').textContent=rate+'%'; $('#statDone').textContent=String(done); $('#statLeft').textContent=String(left); $('#progBar').style.width=rate+'%';
+      // 칩 상태 업데이트
+      document.querySelectorAll('#collectionChips .chip').forEach(ch=> ch.setAttribute('aria-pressed', ch.textContent===state.collectionCategory));
 
-      const tbody=$('#collectionBody'); tbody.innerHTML='';
-      COLLECTION.forEach(row=>{ const prod=ITEMS.find(p=>p.id===row.id) || {name:row.id}; const tr=document.createElement('tr'); const checked=collectionDone.has(row.id);
+      // 카테고리 필터링된 행
+      const rows = COLLECTION.filter(row=>{
+        const prod = ITEMS.find(p=>p.id===row.id);
+        if(!prod) return true;
+        if(state.collectionCategory!=='전체' && prod.category!==state.collectionCategory) return false;
+        return true;
+      });
+
+      const total=rows.length; const done=rows.filter(r=>collectionDone.has(r.id)).length; const left=total-done; const rate=total? Math.round(done/total*100):0;
+      document.getElementById('statRate').textContent=rate+'%';
+      document.getElementById('statDone').textContent=String(done);
+      document.getElementById('statLeft').textContent=String(left);
+      document.getElementById('progBar').style.width=rate+'%';
+
+      const tbody=document.getElementById('collectionBody'); tbody.innerHTML='';
+      rows.forEach(row=>{ const prod=ITEMS.find(p=>p.id===row.id) || {name:row.id}; const tr=document.createElement('tr'); const checked=collectionDone.has(row.id);
         tr.innerHTML=`<td><input type="checkbox" ${checked?'checked':''} aria-label="${escapeHtml(prod.name)} 완료"></td><td>${escapeHtml(prod.name)}</td><td>${row.need}</td>`;
         const cb=tr.querySelector('input'); cb.addEventListener('change',()=>{ if(cb.checked) collectionDone.add(row.id); else collectionDone.delete(row.id); save(collectionDoneKey,[...collectionDone]); renderCollection(); });
         tbody.appendChild(tr);
       });
-      $('#emptyCollection').classList.toggle('hidden', COLLECTION.length>0);
+      document.getElementById('emptyCollection').classList.toggle('hidden', rows.length>0);
     }
 
     // ===================== 컴포넌트 =====================
@@ -404,22 +422,39 @@
     $('#btnMemo').addEventListener('click', ()=>{ $('#memoPane').classList.toggle('open'); if($('#memoPane').classList.contains('open')) $('#memo').focus(); });
 
     // ===================== URL 동기화 =====================
-    function syncUrl(){ const p=new URLSearchParams(); if(state.q) p.set('q', state.q); if(state.category&&state.category!=='전체') p.set('cat', state.category); if(state.tier) p.set('tier', state.tier); if(state.favoritesOnly) p.set('fav','1'); p.set('view', state.view); p.set('mode', state.mode); history.replaceState(null, '', `${location.pathname}?${p.toString()}`); }
-    function readUrl(){ const p=new URLSearchParams(location.search); state.q=p.get('q')||''; $('#q').value=state.q; state.category=p.get('cat')||'전체'; state.tier=p.get('tier')||''; $('#tier').value=state.tier; state.favoritesOnly=p.get('fav')==='1'; $('#btnFavoritesOnly').setAttribute('aria-pressed', String(state.favoritesOnly)); const v=p.get('view'); state.view=(v==='collection')? v : 'search'; state.mode = (p.get('mode')==='trade')? 'trade' : 'search'; }
-
-    // ===================== 내보내기 =====================
-    $('#btnExport').addEventListener('click', ()=>{
-      const data = {
-        favorites: [...favorites],
-        collectionDone: [...collectionDone]
-      };
-      const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
-      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'jetty-export.json'; a.click(); URL.revokeObjectURL(a.href);
-    });
+    function syncUrl(){
+      const p=new URLSearchParams();
+      if(state.q) p.set('q', state.q);
+      if(state.category&&state.category!=='전체') p.set('cat', state.category);
+      if(state.tier) p.set('tier', state.tier);
+      if(state.favoritesOnly) p.set('fav','1');
+      p.set('view', state.view);
+      p.set('mode', state.mode);
+      if(state.collectionCategory && state.collectionCategory!=='전체') p.set('ccat', state.collectionCategory);
+      history.replaceState(null, '', `${location.pathname}?${p.toString()}`);
+    }
+    function readUrl(){
+      const p=new URLSearchParams(location.search);
+      state.q=p.get('q')||''; document.getElementById('q').value=state.q;
+      state.category=p.get('cat')||'전체';
+      state.tier=p.get('tier')||''; document.getElementById('tier').value=state.tier;
+      state.favoritesOnly=p.get('fav')==='1'; document.getElementById('btnFavoritesOnly').setAttribute('aria-pressed', String(state.favoritesOnly));
+      const v=p.get('view'); state.view=(v==='collection')? v : 'search';
+      state.mode = (p.get('mode')==='trade')? 'trade' : 'search';
+      state.collectionCategory = p.get('ccat') || '전체';
+    }
 
     // ===================== 부트스트랩 =====================
-    function init(){ initChips(); initMemo(); readUrl(); if(state.view==='collection') renderCollection(); else renderSearch(); stampSaved(); }
+    function init(){ initChips(); initCollectionChips(); initMemo(); readUrl(); if(state.view==='collection') renderCollection(); else renderSearch(); stampSaved(); }
     init();
+
+    // ===================== 간단 런타임 테스트 =====================
+    try {
+      console.assert(typeof renderSearch === 'function', 'renderSearch must exist');
+      console.assert(typeof renderCollection === 'function', 'renderCollection must exist');
+      console.assert(document.getElementById('list'), '#list must exist');
+      console.assert(document.getElementById('collectionBody'), '#collectionBody must exist');
+    } catch (e) { console.error('Self-test failed', e); }
   </script>
 </body>
 </html>
