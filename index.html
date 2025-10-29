@@ -550,13 +550,13 @@ footer .container{display:flex;justify-content:space-between;align-items:center;
     window.addLog = addLog; window.noteArea = noteArea; window.saveNotes = saveNotes;
 
     /* ========== 5) 계산 팝업 ========== */
-    let selectedItem = null;
+  let selectedItem = null;
 
-    // 팝업 DOM
-    const calcBox = document.createElement('div');
-    calcBox.id = 'calcBox';
-    calcBox.style.cssText = '
-      position:fixed;
+  // 팝업 DOM (멀티라인 백틱(`)으로 정상 종료!)
+  const calcBox = document.createElement('div');
+  calcBox.id = 'calcBox';
+  calcBox.style.cssText = `
+    position:fixed;
     inset:auto auto 20px 20px;
     max-width:360px;
     z-index:1000;
@@ -567,43 +567,46 @@ footer .container{display:flex;justify-content:space-between;align-items:center;
     display:none;
     box-shadow: var(--shadow);
     color:var(--ink);
-    calcBox.innerHTML = `
-      <div id="calcHeader" style="display:flex;align-items:center;gap:10px;margin-bottom:8px;cursor:move">
-        <img id="calcThumb" alt="" style="width:36px;height:36px;border-radius:8px;object-fit:cover;border:1px solid var(--line);display:none">
-        <h3 id="calcTitle" style="margin:0">가격 계산기</h3>
-      </div>
-      <div id="calcDesc" style="opacity:.8;margin-bottom:12px;font-size:14px"></div>
+  `;
+  calcBox.innerHTML = `
+    <div id="calcHeader" style="display:flex;align-items:center;gap:10px;margin-bottom:8px;cursor:move">
+      <img id="calcThumb" alt="" style="width:36px;height:36px;border-radius:8px;object-fit:cover;border:1px solid var(--line);display:none">
+      <h3 id="calcTitle" style="margin:0">가격 계산기</h3>
+    </div>
 
-      <div id="oreMode" style="display:none; margin-bottom:8px;">
-        <label style="margin-right:10px;"><input type="radio" name="oreType" value="single" checked> 단일 상점가 기준</label>
-        <label><input type="radio" name="oreType" value="block"> 블록 상점가 기준</label>
-      </div>
+    <div id="calcDesc" style="opacity:.8;margin-bottom:12px;font-size:14px"></div>
 
-      <div id="rangeBox" style="margin:8px 0 10px;padding:10px;border:1px solid var(--line);border-radius:10px;background:#241443;">
-        <div style="font-weight:700;margin-bottom:6px;">가격 범위 (-30% ~ +80%)</div>
-        <div id="rangeValues" style="font-size:14px;opacity:.9;">기준가를 선택하면 자동 계산됩니다.</div>
-      </div>
+    <div id="oreMode" style="display:none; margin-bottom:8px;">
+      <label style="margin-right:10px;"><input type="radio" name="oreType" value="single" checked> 단일 상점가 기준</label>
+      <label><input type="radio" name="oreType" value="block"> 블록 상점가 기준</label>
+    </div>
 
-      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px;">
-        <input id="calcRate" type="number" placeholder="변동 퍼센트 입력 (-30~80)"
-          style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--line);background:#2b1a4b;color:#fff;">
-        <input id="rateSlider" type="range" min="-30" max="80" value="0" style="width:100%">
-        <div style="display:flex;gap:6px;flex-wrap:wrap">
-          <button class="btn" data-rate="-30">-30%</button>
-          <button class="btn" data-rate="-20">-20%</button>
-          <button class="btn" data-rate="0">0%</button>
-          <button class="btn" data-rate="20">+20%</button>
-          <button class="btn" data-rate="80">+80%</button>
-        </div>
-      </div>
+    <!-- 라이트 테마에 맞게 상자/인풋 배경도 밝게 -->
+    <div id="rangeBox" style="margin:8px 0 10px;padding:10px;border:1px solid var(--line);border-radius:10px;background:#f6fbff;">
+      <div style="font-weight:700;margin-bottom:6px;">가격 범위 (-30% ~ +80%)</div>
+      <div id="rangeValues" style="font-size:14px;opacity:.9;">기준가를 선택하면 자동 계산됩니다.</div>
+    </div>
 
-      <button id="calcRun" class="btn primary" style="width:100%;margin-bottom:8px;">계산하기</button>
-      <div id="calcResult" style="margin-top:6px;font-size:15px;color:#ffd770;"></div>
-      <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end">
-        <button id="calcClose" class="btn">닫기</button>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px;">
+      <input id="calcRate" type="number" placeholder="변동 퍼센트 입력 (-30~80)"
+        style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--ink);">
+      <input id="rateSlider" type="range" min="-30" max="80" value="0" style="width:100%">
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn" data-rate="-30">-30%</button>
+        <button class="btn" data-rate="-20">-20%</button>
+        <button class="btn" data-rate="0">0%</button>
+        <button class="btn" data-rate="20">+20%</button>
+        <button class="btn" data-rate="80">+80%</button>
       </div>
-    `;
-    document.body.appendChild(calcBox);
+    </div>
+
+    <button id="calcRun" class="btn primary" style="width:100%;margin-bottom:8px;">계산하기</button>
+    <div id="calcResult" style="margin-top:6px;font-size:15px;color:#8a6b00;"></div>
+    <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end">
+      <button id="calcClose" class="btn">닫기</button>
+    </div>
+  `;
+  document.body.appendChild(calcBox);
 
  
       
