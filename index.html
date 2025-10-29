@@ -8,33 +8,26 @@
 
 <style>
 :root{
-  /* 🌿 새 팔레트 */
-  --bg1:#F5EFE6;   /* 메인 배경 */
-  --bg2:#E8DFCA;   /* 보조 배경 */
-  --line:#CBDCEB;  /* 경계선/Divider */
-  --card:#FFFFFF;  /* 카드/팝업 */
-  --chip:#CBDCEB;  /* 칩/태그 배경 */
-
-  /* ✏️ 텍스트 */
-  --ink:#1c1c1c;   /* 본문 */
-  --muted:#6d6d6d; /* 보조 */
-
-  /* 🎨 포인트 */
-  --accent:#6D94C5;   /* 기본 포인트 */
-  --accent2:#557EB3;  /* hover 포인트 */
-
-  /* ☁️ 그림자 */
-  --shadow:0 12px 28px rgba(109,148,197,0.22),
-           0 2px 6px rgba(0,0,0,0.08);
+  --bg1:#F5EFE6;   /* 페이지 상단 배경 */
+  --bg2:#CBDCEB;   /* 페이지 하단 배경 */
+  --line:#D8CFC0;  /* 경계선 */
+  --ink:#2B3856;   /* 본문 글자 */
+  --muted:#5E6B81; /* 서브 텍스트 */
+  --card:#FFFFFF;  /* 카드/입력 배경 */
+  --chip:#EEF5FF;  /* 칩/작은 배경 */
+  --accent:#6D94C5;  /* 포커스/버튼 메인 */
+  --accent2:#4E7FB4; /* 그라데이션 하단 */
+  --shadow:0 8px 18px rgba(0,0,0,.08), 0 2px 6px rgba(0,0,0,.05);
 }
+
 
 *{box-sizing:border-box}
 
 /* 배경/타이포 */
 body{
   margin:0;
-  background:linear-gradient(180deg,var(--bg1),var(--bg2));
-  color:var(--ink);
+  background:linear-gradient(180deg,var(--bg1),var(--bg2)) !important;
+  color:var(--ink) !important;
   font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,Noto Sans KR,Helvetica,Arial;
   transition:background .3s,color .3s;
 }
@@ -63,7 +56,8 @@ header{
 /* 검색박스 */
 .search{
   display:flex;align-items:center;gap:8px;
-  background:#fff;border:1px solid var(--line);
+  background:var(--card) !important;
+  border:1px solid var(--line) !important;
   border-radius:999px;padding:10px 14px;box-shadow:var(--shadow);
 }
 .search input{
@@ -72,7 +66,8 @@ header{
 
 /* 셀렉트/버튼 */
 select,.btn{
-  background:#fff;border:1px solid var(--line);color:var(--ink);
+  background:var(--card) !important;
+  border:1px solid var(--line);color:var(--ink);
   border-radius:999px;padding:10px 12px;
   transition:box-shadow .2s,border-color .2s,background .2s,transform .1s;
 }
@@ -80,7 +75,7 @@ select:focus,.btn:focus{outline:none;box-shadow:0 0 0 3px rgba(109,148,197,.25);
 .btn{cursor:pointer}
 .btn:hover{transform:translateY(-1px)}
 .btn.primary{
-  background:linear-gradient(135deg,var(--accent),#89aee8);
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
   border-color:transparent;color:#fff;box-shadow:var(--shadow)
 }
 .btn.primary:hover{
