@@ -446,7 +446,7 @@
     calcBox.id = 'calcBox';
     calcBox.style.cssText = 'position:fixed;inset:auto auto 20px 20px;max-width:360px;z-index:1000;background:#22143d;border:1px solid #3b2a60;border-radius:12px;padding:14px;display:none;box-shadow:0 12px 28px rgba(0,0,0,.45);color:#fff';
     calcBox.innerHTML = `
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <div id="calcHeader" style="display:flex;align-items:center;gap:10px;margin-bottom:8px;cursor:move">
         <img id="calcThumb" alt="" style="width:36px;height:36px;border-radius:8px;object-fit:cover;border:1px solid #3b2a60;display:none">
         <h3 id="calcTitle" style="margin:0">가격 계산기</h3>
       </div>
@@ -482,6 +482,76 @@
       </div>
     `;
     document.body.appendChild(calcBox);
+
+ 
+      
+// ===== 팝업 드래그 가능하게 =====
+(function(){
+  const box = document.getElementById('calcBox');
+  const handle = document.getElementById('calcHeader');
+  let isDown = false, startX = 0, startY = 0, startLeft = 0, startTop = 0;
+
+  function point(e){
+    if(e.touches && e.touches[0]) return { x:e.touches[0].clientX, y:e.touches[0].clientY };
+    return { x:e.clientX, y:e.clientY };
+  }
+  function px(n){ return Math.round(n) + 'px'; }
+
+  function onDown(e){
+    const p = point(e);
+    isDown = true;
+    const r = box.getBoundingClientRect();
+    startLeft = r.left;
+    startTop  = r.top;
+    startX = p.x;
+    startY = p.y;
+
+    // 드래그 시작 시 좌표계 고정 (right/bottom/transform 제거)
+    box.style.right = 'auto';
+    box.style.bottom = 'auto';
+    box.style.transform = 'none';
+    box.style.left = px(startLeft);
+    box.style.top  = px(startTop);
+    e.preventDefault();
+  }
+  function onMove(e){
+    if(!isDown) return;
+    const p = point(e);
+    let newLeft = startLeft + (p.x - startX);
+    let newTop  = startTop  + (p.y - startY);
+
+    // 화면 밖으로 못 나가게 클램프
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const rect = box.getBoundingClientRect();
+    const w = rect.width, h = rect.height;
+    newLeft = Math.max(8, Math.min(vw - w - 8, newLeft));
+    newTop  = Math.max(8, Math.min(vh - h - 8, newTop));
+
+    box.style.left = px(newLeft);
+    box.style.top  = px(newTop);
+    e.preventDefault();
+  }
+  function onUp(){ isDown = false; }
+
+  handle.addEventListener('mousedown', onDown);
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup', onUp);
+
+  handle.addEventListener('touchstart', onDown, {passive:false});
+  document.addEventListener('touchmove', onMove, {passive:false});
+  document.addEventListener('touchend', onUp);
+
+  // 창 크기 바뀌면 화면 안으로 재클램프
+  window.addEventListener('resize', ()=>{
+    const r = box.getBoundingClientRect();
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const w = r.width, h = r.height;
+    const left = Math.max(8, Math.min(vw - w - 8, r.left));
+    const top  = Math.max(8, Math.min(vh - h - 8, r.top));
+    box.style.left = px(left);
+    box.style.top  = px(top);
+  });
+})();
 
     // 도우미
     function clampRate(v){ return Math.min(80, Math.max(-30, v)); }
@@ -552,6 +622,19 @@
 
         renderRangeBox(getBasePriceForRange(it));
         calcBox.style.display = 'block';
+  
+   if (!calcBox.dataset.placed) {
+ 
+  // 최초 오픈 시 중앙 정렬
+  const w = calcBox.offsetWidth, h = calcBox.offsetHeight;
+  calcBox.style.left = ((window.innerWidth - w) / 2) + 'px';
+  calcBox.style.top  = Math.max(20, (window.innerHeight - h) / 2) + 'px';
+  calcBox.style.right = 'auto';
+  calcBox.style.bottom = 'auto';
+  calcBox.style.transform = 'none';
+  calcBox.dataset.placed = '1';
+}
+  
       });
       return el;
     };
