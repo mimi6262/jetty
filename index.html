@@ -174,7 +174,7 @@
 
         <div class="row" style="gap:8px">
           <button id="btnBackToSearch" class="btn">← 검색으로</button>
-          <span class="muted">T: 무역섬 모드 • C: 도감 • F: 즐겨찾기만 • /: 검색 • M: 메모</span>
+          <span class="muted">T: 무역섬 모드 • B: 도감 • F: 즐겨찾기만 • /: 검색 • M: 메모</span>
         </div>
       </main>
     </div>
@@ -955,7 +955,7 @@
     window.addEventListener('keydown',(e)=>{
       if(e.key==='/'&&document.activeElement!==$('#q')){ e.preventDefault(); $('#q').focus(); }
       if(e.key.toLowerCase()==='f'){ e.preventDefault(); $('#btnFavoritesOnly').click(); }
-      if(e.key.toLowerCase()==='c'){ e.preventDefault(); $('#btnCollection').click(); }
+      if(e.key.toLowerCase()==='b'){ e.preventDefault(); $('#btnCollection').click(); }
       if(e.key.toLowerCase()==='t'){ e.preventDefault(); $('#btnTrade').click(); }
       if(e.key.toLowerCase()==='m'){
         e.preventDefault();
