@@ -237,7 +237,7 @@
     const ITEMS = [
 
       // 요리사 
-        { id: 'i-001', name:'갈릭 스테이크',   category:'요리사', tier:'0차',  base: 50 },
+    { id: 'i-001', name:'갈릭 스테이크',   category:'요리사', tier:'0차',  base: 50 , img: 'https://raw.githubusercontent.com/mimi6262/jetty/main/%EA%B0%88%EB%A6%AD%EC%8A%A4%ED%85%8C%EC%9D%B4%ED%81%AC.png'},
         { id: 'i-002', name:'배추 김치',       category:'요리사', tier:'0차',  base: 78 },
         { id: 'i-003', name:'레몬 당고',       category:'요리사', tier:'0차',  base: 48 },
         { id: 'i-004', name:'요리사코인',         category:'요리사', tier:'0차', base: 1200 },
@@ -875,25 +875,53 @@
     }
 
     // ===================== 컴포넌트 =====================
-    function Card(it){
-      const root=document.createElement('article'); root.className='card';
-      if(state.mode==='trade') root.classList.add('clickable');
-      root.innerHTML=`
-        <div class="row">
-          <h3>${escapeHtml(it.name)}</h3>
-          <div class="row" style="gap:6px">
-            <span class="tag">${escapeHtml(it.category)} • ${escapeHtml(it.tier||'-')}</span>
-            <button class="btn ghost fav" aria-label="즐겨찾기" title="즐겨찾기">${favorites.has(it.id)?'⭐':'☆'}</button>
-          </div>
-        </div>
-        <div class="row muted"><span>기준가</span><strong>${fmt(it.base||0)}</strong></div>`;
-      // 모드가 무역섬이면 카드 클릭 시 계산 팝업
-      if(state.mode==='trade') root.addEventListener('click',()=> openCalc(it));
-      // 즐겨찾기 버튼 토글 (버블링 막기)
-      const favBtn=root.querySelector('.fav');
-      favBtn.addEventListener('click',(e)=>{ e.stopPropagation(); if(favorites.has(it.id)) favorites.delete(it.id); else favorites.add(it.id); save(favKey,[...favorites]); favBtn.textContent=favorites.has(it.id)?'⭐':'☆'; });
-      return root;
-    }
+// ===================== 컴포넌트 =====================
+function Card(it){
+  const root = document.createElement('article');
+  root.className = 'card' + (state.mode === 'trade' ? ' clickable' : '');
+
+  root.innerHTML = `
+    <img src="${it.img || ''}" class="item-icon"
+         style="width:48px; height:auto; margin:auto; display:${it.img ? 'block' : 'none'}; image-rendering:pixelated;">
+
+    <!-- 1줄: 이름 + 즐겨찾기 -->
+    <div class="row">
+      <h3>${escapeHtml(it.name)}</h3>
+      <button class="btn ghost fav" aria-label="즐겨찾기" title="즐겨찾기">
+        ${favorites.has(it.id) ? '⭐' : '☆'}
+      </button>
+    </div>
+
+    <!-- 2줄: 카테고리/차수 -->
+    <div class="row muted">
+      <span class="tag">${escapeHtml(it.category)}</span>
+      <span>${escapeHtml(it.tier || '-')}</span>
+    </div>
+
+    <!-- 3줄: 기준가 -->
+    <div class="row muted">
+      <span>기준가</span><strong>${fmt(it.base || 0)}</strong>
+    </div>
+  `;
+
+  // 무역섬 모드면 카드 클릭 시 계산 팝업
+  if (state.mode === 'trade') {
+    root.addEventListener('click', () => openCalc(it));
+  }
+
+  // 즐겨찾기 토글 (버블링 막기: 카드 클릭과 분리)
+  const favBtn = root.querySelector('.fav');
+  favBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (favorites.has(it.id)) favorites.delete(it.id);
+    else favorites.add(it.id);
+    save(favKey, [...favorites]);
+    favBtn.textContent = favorites.has(it.id) ? '⭐' : '☆';
+  });
+
+  return root;
+}
+
 
     // ===================== 계산 모달 =====================
     const modal=$('#calcModal');
